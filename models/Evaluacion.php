@@ -2,7 +2,7 @@
 
 namespace Model;
 
-class Cont_Evaluaciones extends ActiveRecord{
+class Evaluacion extends ActiveRecord{
     protected static $tabla = 'cont_evaluaciones';
     protected static $columnasDB = ['eva_nombre','eva_situacion'];
     protected static $idTabla = 'eva_id';

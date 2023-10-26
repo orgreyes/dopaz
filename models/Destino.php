@@ -2,7 +2,7 @@
 
 namespace Model;
 
-class Cont_Destinos extends ActiveRecord{
+class Destino extends ActiveRecord{
     protected static $tabla = 'cont_destinos';
     protected static $columnasDB = ['dest_nombre','dest_latitud','dest_longitud','dest_situacion'];
     protected static $idTabla = 'dest_id';

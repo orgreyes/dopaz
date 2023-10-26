@@ -83,7 +83,7 @@ CREATE TABLE cont_destinos (
 -- Tabla Cont_Evaluaciones
 CREATE TABLE cont_evaluaciones (
     eva_id SERIAL PRIMARY KEY,
-    eva_nombre INT,
+    eva_nombre CHAR(50),
     eva_situacion SMALLINT
 );
 
@@ -91,7 +91,6 @@ CREATE TABLE cont_evaluaciones (
 CREATE TABLE cont_puestos (
     pue_id SERIAL PRIMARY KEY,
     pue_nombre CHAR(150),
-    pue_grado INT,
     pue_situacion SMALLINT
 );
 
@@ -104,7 +103,8 @@ CREATE TABLE cont_aspirantes (
     asp_nom2 CHAR(50),
     asp_ape1 CHAR(50),
     asp_ape2 CHAR(50),
-    asp_genero CHAR(1),
+    asp_grado SMALLINT,
+    asp_arma SMALLINT,
     asp_situacion SMALLINT
 );
 
@@ -192,7 +192,16 @@ DROP TABLE cont_asig_plazas
 
 --!Datos
 
+-- !Para Destinos
 
-
-
+INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
+VALUES ('Ciudad de Guatemala, Guatemala', 14.634915, -90.506882, 1);
+INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
+VALUES ('Tikal, Petén', 17.2221, -89.6237, 1);
+INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
+VALUES ('Cobán, Alta Verapaz', 15.512633921525016, -90.42345748659254, 1);
+INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
+VALUES ('huehuetenango', 15.320491580384575, -91.47435156855786, 1);
+INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
+VALUES ('jutiapa', 14.275063888696463, -89.88035314944871, 1);
 

@@ -34,9 +34,17 @@
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/aplicaciones/nueva"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Subitem</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/evaluaciones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Evaluaciones</a>
                             </li>
-                        
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/puestos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Puestos</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/destinos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Mapa</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/usuarios"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Aspirantes</a>
+                            </li>
                     
                         
                         </ul>
