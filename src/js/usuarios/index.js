@@ -1,69 +1,47 @@
 import { Alert, Dropdown } from "bootstrap";
 import Swal from "sweetalert2";
-import { validarFormulario, Toast, confirmacion } from "../funciones";
+import { validarFormulario, Toast, confirmacion} from "../funciones";
 import Datatable from "datatables.net-bs5";
-import { lenguaje } from "../lenguaje";
+import { lenguaje  } from "../lenguaje";
+
 
 const formulario = document.querySelector('#formularioUsuarios');
 const btnBuscar = document.getElementById('btnBuscar');
 
+const buscar = async () => {
 
+    let per_catalogo = formulario.per_catalogo.value;
 
-const buscar = async (e) => {
- 
-
-    let catalogo = e.target.value
-
-
-    if (catalogo.trim().length < 6) {
-        catalogoValido = false;
-        return
+    const url = `/dopaz/API/usuarios/buscar?per_catalogo=${per_catalogo}`;
+    const config = {
+        method: 'GET'
     }
     try {
-        const url = `/dopaz/API/usuarios/buscarCatalogo?catalogo=${catalogo}`
-        const headers = new Headers();
-        headers.append("X-Requested-With", "fetch");
-
-        const config = {
-            method: 'GET',
-            headers
-        }
-
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
+
         console.log(data);
+        data.forEach(d => {
         
-        if (data) {
-            catalogoValido = true
-            const { grado, nombre } = data;
-
-            if(e.target.id=='catalogo'){
-                inputNombre.value = grado + " " + nombre
-
-
-            }if(e.target.id=='catalogog1'){
-
-                inputnombreg1.value = grado + " " + nombre
-
-            }if(e.target.id=='catalogog3'){
-                inputnombreg3.value = grado + " " + nombre
-
-            }
-
-           
-
-
-        } else {
-            catalogoValido = false
-        }
-
+            formulario.per_nom1.value = d.per_nom1
+            formulario.per_nom2.value = d.per_nom2
+            formulario.per_ape1.value = d.per_ape1
+            formulario.per_ape2.value = d.per_ape2
+            formulario.per_sexo.value = d.per_sexo
+            formulario.per_dpi.value = d.per_dpi
+            formulario.gra_desc_md.value = d.gra_desc_md
+            formulario.arm_desc_md.value = d.arm_desc_md
+            
+        });
 
     } catch (error) {
-
+        console.log(error);
     }
+};
 
 
-    console.log(catalogoValido);
-}
+
+// buscar();
+
 
 btnBuscar.addEventListener('click', buscar);

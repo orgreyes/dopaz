@@ -46,11 +46,12 @@ class UsuarioController
     //         return [];
     //     }
     // }
-  public static function buscarAPI(){
-    getHeadersApi();
-    $catalogo = filter_var(trim($_GET['catalogo']), FILTER_SANITIZE_NUMBER_INT);
-    try {
-        $data = Usuario::fetchFirst("SELECT 
+    public static function buscarAPI()
+    {
+
+        $per_catalogo = $_GET['per_catalogo'];
+
+        $sql = "SELECT 
         mper.per_catalogo,
         mper.per_nom1,
         mper.per_nom2,
@@ -63,15 +64,30 @@ class UsuarioController
     FROM mper
     INNER JOIN grados ON mper.per_grado = grados.gra_codigo
     INNER JOIN armas ON mper.per_arma = armas.arm_codigo
-    WHERE mper.per_catalogo = $catalogo");
+    ";
 
-        echo json_encode($data);
-    } catch (Exception $e) {
-        echo json_encode([
-            "detalle" => $e->getMessage(),
-            "mensaje" => "Ocurrió un error en base de datos",
-            "codigo" => 4,
-        ]);
+        $conditions = [];
+
+        // Verificar y agregar las condiciones de búsqueda según los parámetros proporcionados
+        if (!empty($per_catalogo)) {
+            $conditions[] = "mper.per_catalogo = '$per_catalogo'";
+        }
+
+        // Comprobar si hay condiciones y agregarlas a la consulta
+        if (!empty($conditions)) {
+            $sql .= " AND " . implode(" AND ", $conditions);
+        }
+
+
+        try {
+            $usuarios = Usuario::fetchArray($sql);
+            echo json_encode($usuarios);
+        } catch (Exception $e) {
+            echo json_encode([
+                'detalle' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
     }
 }
-  }

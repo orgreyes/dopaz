@@ -53,9 +53,9 @@
                 <div class="col-md-9">
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="catalogo"><i class="fas fa-id-card"></i> Número de Catálogo:</label>
+                            <label for="per_catalogo"><i class="fas fa-id-card"></i> Número de Catálogo:</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="catalogo" name="catalogo">
+                                <input type="number" class="form-control" id="per_catalogo" name="per_catalogo">
                                 <div class="input-group-append">
                                     <button type="button" id="btnBuscar" class="btn btn-outline-success">
                                         <i class="fas fa-search"></i> Buscar
@@ -101,7 +101,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="per_dpi"><i class="fas fa-id-card"></i>DPI:</label>
-                            <input type="number" class="form-control" id="per_dpi" disabled name="per_dpi" placeholder="DPI">
+                            <input type="text" class="form-control" id="per_dpi" disabled name="per_dpi" placeholder="DPI">
                         </div>
                     </div>
 
