@@ -11,41 +11,13 @@ use MVC\Router;
 
 class UsuarioController
 {
-
     public static function index(Router $router)
     {
-        // $grados = static::buscarGrado();
-        // $armas = static::buscarArma();
-
         $router->render('usuarios/index', [
         ]);
-        // 'grados' => $grados,
-        // 'armas' => $armas,
     }
 
-    // public static function buscarGrado()
-    // {
-    //     $sql = "SELECT * FROM grados where gra_clase = 1";
-
-    //     try {
-    //         $grados = Grado::fetchArray($sql);
-    //         return $grados;
-    //     } catch (Exception $e) {
-    //         return [];
-    //     }
-    // }
-
-    // public static function buscarArma()
-    // {
-    //     $sql = "select arm_desc_md from armas";
-
-    //     try {
-    //         $armas = Arma::fetchArray($sql);
-    //         return $armas;
-    //     } catch (Exception $e) {
-    //         return [];
-    //     }
-    // }
+//!Funcion Buscar
     public static function buscarAPI()
     {
 
@@ -58,7 +30,11 @@ class UsuarioController
         mper.per_ape1,
         mper.per_ape2,
         mper.per_dpi,
-        mper.per_sexo,
+        CASE 
+            WHEN mper.per_sexo = 'M' THEN 'MASCULINO'
+            WHEN mper.per_sexo = 'F' THEN 'FEMENINO'
+            ELSE 'DESCONOCIDO'
+        END AS per_sexo,
         grados.gra_desc_md,
         armas.arm_desc_md
     FROM mper
@@ -90,4 +66,32 @@ class UsuarioController
             ]);
         }
     }
+
+//!Funcion Guardar
+ public static function guardarAPI(){
+     
+    try {
+        $aspirante = new Aspirante($_POST);
+        $resultado = $aspirante->crear();
+
+        if ($resultado['resultado'] == 1) {
+            echo json_encode([
+                'mensaje' => 'Registro guardado correctamente',
+                'codigo' => 1
+            ]);
+        } else {
+            echo json_encode([
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+        // echo json_encode($resultado);
+    } catch (Exception $e) {
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'Ocurrió un error',
+            'codigo' => 0
+        ]);
+    }
+}
 }

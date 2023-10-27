@@ -103,8 +103,9 @@ CREATE TABLE cont_aspirantes (
     asp_nom2 CHAR(50),
     asp_ape1 CHAR(50),
     asp_ape2 CHAR(50),
-    asp_grado SMALLINT,
-    asp_arma SMALLINT,
+    asp_grado CHAR(50),
+    asp_arma CHAR(50),
+    asp_genero CHAR(10),
     asp_situacion SMALLINT
 );
 
