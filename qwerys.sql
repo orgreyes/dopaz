@@ -107,7 +107,8 @@ CREATE TABLE cont_aspirantes (
     asp_arma CHAR(15),
     asp_genero CHAR(1),
     asp_anio INTEGER,
-    asp_situacion SMALLINT
+    asp_situacion SMALLINT,
+    UNIQUE (asp_catalogo, asp_anio)
 );
 
 -- Tabla Contingente
