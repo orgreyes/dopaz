@@ -4,7 +4,7 @@ namespace Model;
 
 class Aspirante extends ActiveRecord{
     protected static $tabla = 'cont_aspirantes';
-    protected static $columnasDB = ['asp_catalogo','asp_dpi','asp_nom1','asp_nom2','asp_ape1','asp_ape2','asp_grado','asp_arma','asp_genero','asp_situacion'];
+    protected static $columnasDB = ['asp_catalogo','asp_dpi','asp_nom1','asp_nom2','asp_ape1','asp_ape2','asp_grado','asp_arma','asp_genero','asp_anio','asp_situacion'];
     protected static $idTabla = 'asp_id';
 
     public $asp_id;
@@ -17,6 +17,7 @@ class Aspirante extends ActiveRecord{
     public $asp_grado;
     public $asp_arma;
     public $asp_genero;
+    public $asp_anio;
     public $asp_situacion;
 
     public function __construct($args = [])
@@ -31,6 +32,7 @@ class Aspirante extends ActiveRecord{
         $this->asp_grado = $args['asp_grado'] ?? '';
         $this->asp_arma = $args['asp_arma'] ?? '';
         $this->asp_genero = $args['asp_genero'] ?? '';
+        $this->asp_anio = date('Y');
         $this->asp_situacion = $args['asp_situacion'] ?? '1';
     }
 }

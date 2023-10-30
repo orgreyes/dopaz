@@ -15,16 +15,7 @@ const btnGuardar = document.getElementById('btnGuardar');
 // //!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
-    if (!validarFormulario(formulario, ['asp_id'])) {
-        Toast.fire({
-            icon: 'info',
-            text: 'Debe llenar todos los datos'
-        });
-        return;
-    }
-
     const body = new FormData(formulario);
-    body.delete('asp_id');
     const url = 'API/usuarios/guardar';
     const headers = new Headers();
     headers.append("X-Requested-With", "fetch");
@@ -74,7 +65,7 @@ const buscar = async () => {
 
     let per_catalogo = formulario.asp_catalogo.value;
 
-    const url = `/dopaz/API/usuarios/buscar?per_catalogo=${per_catalogo}`;
+    const url = `API/usuarios/buscar?per_catalogo=${per_catalogo}`;
     const config = {
         method: 'GET'
     }

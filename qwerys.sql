@@ -97,15 +97,16 @@ CREATE TABLE cont_puestos (
 -- Tabla Cont_Aspirantes
 CREATE TABLE cont_aspirantes (
     asp_id SERIAL PRIMARY KEY,
-    asp_catalogo INT,
-    asp_dpi INT,
-    asp_nom1 CHAR(50),
-    asp_nom2 CHAR(50),
-    asp_ape1 CHAR(50),
-    asp_ape2 CHAR(50),
-    asp_grado CHAR(50),
-    asp_arma CHAR(50),
-    asp_genero CHAR(10),
+    asp_catalogo INTEGER,
+    asp_dpi CHAR(15),
+    asp_nom1 CHAR(15),
+    asp_nom2 CHAR(15),
+    asp_ape1 CHAR(15),
+    asp_ape2 CHAR(15),
+    asp_grado CHAR(15),
+    asp_arma CHAR(15),
+    asp_genero CHAR(1),
+    asp_anio INTEGER,
     asp_situacion SMALLINT
 );
 
