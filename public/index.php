@@ -9,6 +9,7 @@ use Controllers\EvaluacionController;
 use Controllers\PuestoController;
 use Controllers\DestinoController;
 use Controllers\UsuarioController;
+use Controllers\AspiranteController;
 
 
 $router = new Router();
@@ -43,12 +44,17 @@ $router->post('/API/destinos/modificar', [DestinoController::class,'modificarAPI
 $router->post('/API/destinos/guardar', [DestinoController::class,'guardarAPI']);
 
 
-//!Rutas para Aspirantes
+//!Rutas para Primer Ingreso del Personal
 $router->get('/usuarios', [UsuarioController::class,'index']);
 $router->get('/API/usuarios/buscar', [UsuarioController::class,'buscarAPI']);
-$router->post('/API/usuarios/eliminar', [UsuarioController::class,'eliminarAPI']);
-$router->post('/API/usuarios/modificar', [UsuarioController::class,'modificarAPI']);
 $router->post('/API/usuarios/guardar', [UsuarioController::class,'guardarAPI']);
+
+//!Rutas para Primer Ingreso del Personal
+$router->get('/aspirantes', [AspiranteController::class,'index']);
+$router->get('/API/aspirantes/buscar', [AspiranteController::class,'buscarAPI']);
+$router->post('/API/aspirantes/eliminar', [AspiranteController::class,'eliminarAPI']);
+$router->post('/API/aspirantes/modificar', [AspiranteController::class,'modificarAPI']);
+$router->post('/API/aspirantes/guardar', [AspiranteController::class,'guardarAPI']);
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador

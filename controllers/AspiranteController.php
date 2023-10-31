@@ -4,18 +4,18 @@ namespace Controllers;
 
 use Exception;
 use Model\Personal;
-use Model\Usuario;
+use Model\Aspirante;
 use Model\Grado;
 use Model\Arma;
 use Model\Puesto;
 use MVC\Router;
 
-class UsuarioController
+class AspiranteController
 {
     public static function index(Router $router)
     {
         $puestos = static::buscarPuesto();
-        $router->render('usuarios/index', [
+        $router->render('aspirantes/index', [
             'puestos' => $puestos,
         ]);
     }

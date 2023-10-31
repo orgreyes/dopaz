@@ -94,21 +94,21 @@ CREATE TABLE cont_puestos (
     pue_situacion SMALLINT
 );
 
--- Tabla Cont_Aspirantes
-CREATE TABLE cont_aspirantes (
-    asp_id SERIAL PRIMARY KEY,
-    asp_catalogo INTEGER,
-    asp_dpi CHAR(15),
-    asp_nom1 CHAR(15),
-    asp_nom2 CHAR(15),
-    asp_ape1 CHAR(15),
-    asp_ape2 CHAR(15),
-    asp_grado CHAR(15),
-    asp_arma CHAR(15),
-    asp_genero CHAR(1),
-    asp_anio INTEGER,
-    asp_situacion SMALLINT,
-    UNIQUE (asp_catalogo, asp_anio)
+-- Tabla cont_personal
+CREATE TABLE cont_personal (
+    per_id SERIAL PRIMARY KEY,
+    per_catalogo INTEGER UNIQUE,
+    per_dpi CHAR(15),
+    per_nom1 CHAR(15),
+    per_nom2 CHAR(15),
+    per_ape1 CHAR(15),
+    per_ape2 CHAR(15),
+    per_grado CHAR(15),
+    per_arma CHAR(15),
+    per_genero CHAR(1),
+    per_puesto INTEGER,
+    per_fecha_regis DATE,
+    per_situacion SMALLINT
 );
 
 -- Tabla Contingente
@@ -124,17 +124,20 @@ CREATE TABLE contingentes (
     FOREIGN KEY (cont_destino) REFERENCES cont_destinos(dest_id)
 );
 
--- Tabla Cont_Ingresos
-CREATE TABLE cont_ingresos (
-    ing_id SERIAL PRIMARY KEY,
-    ing_asp INT,
-    ing_contingente INT,
-    ing_fecha_cont DATETIME YEAR TO MINUTE NOT NULL,
-    ing_puesto INT,
-    ing_situacion SMALLINT,
-    FOREIGN KEY (ing_puesto) REFERENCES cont_puestos(pue_id),
-    FOREIGN KEY (ing_asp) REFERENCES cont_aspirantes(asp_id),
-    FOREIGN KEY (ing_contingente) REFERENCES contingentes(cont_id)
+-- Tabla cont_aspirantes
+CREATE TABLE cont_aspirantes (
+    asp_id SERIAL PRIMARY KEY,
+    asp_nombre INT,
+    asp_contingente INT,
+    asp_anio INT,
+    asp_puesto INT,
+    asp_grado SMALLINT, 
+    asp_situacion SMALLINT,
+    FOREIGN KEY (asp_grado) REFERENCES grados(gra_codigo),
+    FOREIGN KEY (asp_puesto) REFERENCES cont_puestos(pue_id),
+    FOREIGN KEY (asp_nombre) REFERENCES cont_personal(per_id),
+    FOREIGN KEY (asp_contingente) REFERENCES contingentes(cont_id),
+    UNIQUE (asp_nombre, asp_anio)
 );
 
 
@@ -142,8 +145,9 @@ CREATE TABLE cont_ingresos (
 CREATE TABLE cont_aprovados (
     apro_id SERIAL PRIMARY KEY,
     apro_asp INT,
+    apro_puesto INTEGER,
     apro_situacion SMALLINT,
-    FOREIGN KEY (apro_asp) REFERENCES cont_ingresos(ing_id)
+    FOREIGN KEY (apro_asp) REFERENCES cont_aspirantes(asp_id)
 );
 
 
@@ -151,18 +155,16 @@ CREATE TABLE cont_plazas (
     plaz_id SERIAL PRIMARY KEY,
     plaz_codigo CHAR(30) UNIQUE,
     plaz_nombre CHAR(100),
-    plaz_grado SMALLINT,
-    plaz_situacion SMALLINT,
-    FOREIGN KEY (plaz_grado) REFERENCES grados(gra_codigo)
+    plaz_situacion SMALLINT
 );
 
 -- Tabla cont_asig_plazas
 CREATE TABLE cont_asig_plazas(
     asig_id SERIAL PRIMARY KEY,
-    asig_situacion SMALLINT,
     asig_puesto INT,
     asig_plaza INT, 
     asig_contingente INT,
+    asig_situacion SMALLINT,
     FOREIGN KEY (asig_puesto) REFERENCES cont_puestos (pue_id),
     FOREIGN KEY (asig_plaza) REFERENCES cont_plazas (plaz_id),
     FOREIGN KEY (asig_contingente) REFERENCES contingentes (cont_id)
@@ -172,11 +174,11 @@ CREATE TABLE cont_asig_plazas(
 -- Tabla Cont_Resultado
 CREATE TABLE cont_resultados (
     res_id SERIAL PRIMARY KEY,
-    res_ingreso INT NOT NULL,
+    res_aspirante INT NOT NULL,
     res_nota DECIMAL(5, 2),
     res_evaluacion INT,
     res_situacion SMALLINT,
-    FOREIGN KEY (res_ingreso) REFERENCES cont_ingresos(ing_id),
+    FOREIGN KEY (res_aspirante) REFERENCES cont_aspirantes(asp_id),
     FOREIGN KEY (res_evaluacion) REFERENCES cont_evaluaciones(eva_id)
 );
 
@@ -186,7 +188,7 @@ DROP TABLE cont_aprovados
 DROP TABLE cont_evaluaciones
 DROP TABLE cont_puestos
 DROP TABLE cont_aspirantes
-DROP TABLE cont_ingresos
+DROP TABLE cont_personal
 DROP TABLE cont_resultados
 DROP TABLE cont_destinos
 DROP TABLE cont_plazas

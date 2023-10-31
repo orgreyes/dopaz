@@ -10,6 +10,7 @@ module.exports = {
     'js/puestos/index' : './src/js/puestos/index.js',
     'js/destinos/index' : './src/js/destinos/index.js',
     'js/usuarios/index' : './src/js/usuarios/index.js',
+    'js/aspirantes/index' : './src/js/aspirantes/index.js',
 
   },
   output: {
