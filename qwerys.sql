@@ -92,7 +92,7 @@ CREATE TABLE cont_puestos (
     pue_id SERIAL PRIMARY KEY,
     pue_nombre CHAR(150),
     pue_grado SMALLINT,
-    pue_situacion SMALLINT
+    pue_situacion SMALLINT,
     FOREIGN KEY (pue_grado) REFERENCES grados (gra_codigo)
 );
 
