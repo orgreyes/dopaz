@@ -91,19 +91,20 @@ CREATE TABLE cont_evaluaciones (
 CREATE TABLE cont_puestos (
     pue_id SERIAL PRIMARY KEY,
     pue_nombre CHAR(150),
-    pue_puesto INTEGER,
+    pue_grado SMALLINT,
     pue_situacion SMALLINT
+    FOREIGN KEY (pue_grado) REFERENCES grados (gra_codigo)
 );
 
 -- Tabla cont_aspirantes
 CREATE TABLE cont_aspirantes (
     asp_id SERIAL PRIMARY KEY,
     asp_catalogo INTEGER UNIQUE,
-    asp_dpi CHAR(15),
     asp_nom1 CHAR(15),
     asp_nom2 CHAR(15),
     asp_ape1 CHAR(15),
     asp_ape2 CHAR(15),
+    asp_dpi CHAR(15),
     asp_genero CHAR(1),
     asp_situacion SMALLINT
 );

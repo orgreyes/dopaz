@@ -50,12 +50,12 @@ $router->get('/API/usuarios/buscar', [UsuarioController::class,'buscarAPI']);
 $router->post('/API/usuarios/guardar', [UsuarioController::class,'guardarAPI']);
 $router->post('/API/usuarios/enviar', [UsuarioController::class,'enviarAPI']);
 
-//!Rutas para Primer Ingreso del Personal
-$router->get('/aspirantes', [AspiranteController::class,'index']);
-$router->get('/API/aspirantes/buscar', [AspiranteController::class,'buscarAPI']);
-$router->post('/API/aspirantes/eliminar', [AspiranteController::class,'eliminarAPI']);
-$router->post('/API/aspirantes/modificar', [AspiranteController::class,'modificarAPI']);
-$router->post('/API/aspirantes/guardar', [AspiranteController::class,'guardarAPI']);
+// //!Rutas para Primer Ingreso del Personal
+// $router->get('/aspirantes', [AspiranteController::class,'index']);
+// $router->get('/API/aspirantes/buscar', [AspiranteController::class,'buscarAPI']);
+// $router->post('/API/aspirantes/eliminar', [AspiranteController::class,'eliminarAPI']);
+// $router->post('/API/aspirantes/modificar', [AspiranteController::class,'modificarAPI']);
+// $router->post('/API/aspirantes/guardar', [AspiranteController::class,'guardarAPI']);
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador

@@ -3,7 +3,7 @@
 namespace Controllers;
 
 use Exception;
-use Model\Personal;
+use Model\Ingreso;
 use Model\Aspirante;
 use Model\Grado;
 use Model\Arma;
@@ -79,8 +79,8 @@ public static function buscarAPI()
  public static function guardarAPI(){
      
     try {
-        $personal = new Personal($_POST);
-        $resultado = $personal->crear();
+        $aspirante = new Aspirante($_POST);
+        $resultado = $aspirante->crear();
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([

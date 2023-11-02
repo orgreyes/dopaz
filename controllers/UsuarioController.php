@@ -3,7 +3,7 @@
 namespace Controllers;
 
 use Exception;
-use Model\Personal;
+use Model\Ingreso;
 use Model\Aspirante;
 use Model\Usuario;
 use Model\Grado;
@@ -83,12 +83,13 @@ public static function buscarAPI()
 //!Funcion Guardar
 public static function guardarAPI(){
     try {
-        $cat = $_POST['per_catalogo'];
+        $cat = $_POST['asp_catalogo'];
       
-        $personal = new Personal($_POST);
-   
-        $resultado = $personal->crear();
+        $aspirante = new Aspirante($_POST);
 
+        $resultado = $aspirante->crear();
+        echo json_encode($resultado);
+        exit;
 
         $id_aspirante =$resultado['id'];
         echo json_encode($id_aspirante);

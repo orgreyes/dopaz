@@ -15,7 +15,6 @@ const btnCancelar = document.getElementById('btnCancelar');
 const btnSiguiente1 = document.getElementById('btnSiguiente1');
 const formulario = document.querySelector('#formularioPersonal');
 const formularioGuardar = document.getElementById('formularioGuardar');
-const formularioEnviar = document.getElementById('formularioEnviar');
 
 
 //?--------------------------------------------------------------
@@ -24,7 +23,7 @@ const formularioEnviar = document.getElementById('formularioEnviar');
 const guardar = async (evento) => {
     evento.preventDefault();
 
-    if (!validarFormulario(formulario, ['per_id'])) {
+    if (!validarFormulario(formulario, ['asp_id'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
@@ -32,7 +31,7 @@ const guardar = async (evento) => {
         return;
     }
     const body = new FormData(formulario);
-    body.delete('per_id');
+    body.delete('asp_id');
     const url = 'API/usuarios/guardar';
     const headers = new Headers();
     headers.append("X-Requested-With", "fetch");
@@ -84,7 +83,7 @@ return
 
 // //!Funcion Buscar
 const buscar = async () => {
-    const per_catalogo = formulario.per_catalogo.value;
+    const per_catalogo = formulario.asp_catalogo.value;
 
     if (!per_catalogo) {
         Toast.fire({
@@ -113,16 +112,16 @@ const buscar = async () => {
 
         if (Array.isArray(data)) {
             data.forEach(d => {
-                formulario.per_nom1.value = d.per_nom1;
-                formulario.per_nom2.value = d.per_nom2;
-                formulario.per_ape1.value = d.per_ape1;
-                formulario.per_ape2.value = d.per_ape2;
-                formulario.per_genero.value = d.per_sexo;
-                formulario.per_dpi.value = d.per_dpi;
+                formulario.asp_nom1.value = d.per_nom1;
+                formulario.asp_nom2.value = d.per_nom2;
+                formulario.asp_ape1.value = d.per_ape1;
+                formulario.asp_ape2.value = d.per_ape2;
+                formulario.asp_genero.value = d.per_sexo;
+                formulario.asp_dpi.value = d.per_dpi;
                 formulario.per_grado.value = d.gra_desc_md;
                 formulario.per_arma.value = d.arm_desc_md;
-                formulario.foto.src = 
-                `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${d.per_catalogo}.jpg`;
+                formulario.foto.src = `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${d.per_catalogo}.jpg`;
+                console.log(data)
             });
         } else {
             Swal.fire({
@@ -144,7 +143,6 @@ const buscar = async () => {
 //!Ocultar el Formulario al inicio
 formulario.style.display = 'none';
 formularioGuardar.style.display = 'none';
-formularioEnviar.style.display = 'none';
 btnIniciar.style.display = 'block';
 
 //!Mostrar el formulario, ocultar btnIniciar
