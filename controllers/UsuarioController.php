@@ -83,33 +83,40 @@ public static function buscarAPI()
 //!Funcion Guardar
 public static function guardarAPI(){
     try {
-        $cat = $_POST['asp_catalogo'];
+        
+   
+        $puesto = $_POST['ing_puesto'];
+        $fecha_hoy = date("d/m/Y");
+
       
         $aspirante = new Aspirante($_POST);
 
-        $resultado = $aspirante->crear();
-        echo json_encode($resultado);
-        exit;
+         $resultado = $aspirante->crear();
+
 
         $id_aspirante =$resultado['id'];
-        echo json_encode($id_aspirante);
+
+$datos ['ing_aspirante'] = $id_aspirante;
+// $datos ['ing_contingente'];
+ $datos ['ing_fecha_cont'] = $fecha_hoy;
+// $datos ['ing_anio'];
+ $datos ['ing_puesto'] = $puesto;
+
+        $ingresos = new Ingreso ($datos);
+        $result = $ingresos->guardar();
+        echo json_encode($result);
 exit;
-        
-
-
-       // $ingresos = new Aspirante ();
-
-            if ($resultado['resultado'] == 1) {
-            echo json_encode([
-                'mensaje' => 'Registro guardado correctamente',
-                'codigo' => 1
-            ]);
-        } else {
-            echo json_encode([
-                'mensaje' => 'Ocurrió un error',
-                'codigo' => 0
-            ]);
-        }
+        //     if ($resultado['resultado'] == 1) {
+        //     echo json_encode([
+        //         'mensaje' => 'Registro guardado correctamente',
+        //         'codigo' => 1
+        //     ]);
+        // } else {
+        //     echo json_encode([
+        //         'mensaje' => 'Ocurrió un error',
+        //         'codigo' => 0
+        //     ]);
+        // }
     } catch (Exception $e) {
         echo json_encode([
             'detalle' => $e->getMessage(),

@@ -110,7 +110,7 @@
                         <div class="row mb-3 col-md-7">
                         <div class="col">
                             <label for="per_puesto"><i class="fas fa-shield"></i>Seleccione el Puesto solicitado</label>
-                            <select name="per_puesto" id="per_puesto" class="form-control">
+                            <select name="ing_puesto" id="ing_puesto" class="form-control">
                                 <option value="">SELECCIONE...</option>
                                 <?php foreach ($puestos as $puesto) : ?>
                                     <option value="<?= $puesto['pue_id'] ?>">
