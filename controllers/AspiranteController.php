@@ -40,27 +40,24 @@ public static function buscarAPI()
     try {
         if ($catalogo != '') {
             $sql = "SELECT 
-                per_catalogo,
-                per_nom1,
-                per_nom2,
-                per_ape1,
-                per_ape2,
-                per_dpi,
-                CASE 
-                    WHEN per_sexo = 'M' THEN 'MASCULINO'
-                    WHEN per_sexo = 'F' THEN 'FEMENINO'
-                    ELSE 'DESCONOCIDO'
-                END AS per_sexo,
-                grados.gra_desc_md,
-                armas.arm_desc_md
-            FROM mper
-            INNER JOIN grados ON mper.per_grado = grados.gra_codigo
-            INNER JOIN armas ON mper.per_arma = armas.arm_codigo
-            where per_catalogo = $catalogo
+            p.per_id,
+            p.per_dpi,
+            p.per_nom1,
+            p.per_nom2,
+            p.per_ape1,
+            p.per_ape2,
+            p.per_grado, 
+            p.per_arma, 
+            p.per_genero,
+            p.per_catalogo,
+            c.pue_nombre AS nombre_puesto
+        FROM cont_personal p
+        LEFT JOIN cont_puestos c ON p.per_puesto = c.pue_id
+        WHERE p.per_catalogo = $catalogo
             ";
-            $usuarios = Usuario::fetchArray($sql);
+            $aspirantes = Aspirante::fetchArray($sql);
         
-            echo json_encode($usuarios);
+            echo json_encode($aspirantes);
         } else {
             echo json_encode([
                 'mensaje' => 'Por favor, ingrese un número de catálogo',

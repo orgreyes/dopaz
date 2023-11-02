@@ -25,14 +25,11 @@
 
         .form-container .form-group {
             margin-bottom: 20px;
-            /* Corrección: cambié "margin bottom" por "margin-bottom" */
         }
 
         .form-container label {
             font-weight: bold;
-            /* Corrección: cambié "font weight" por "font-weight" */
         }
-
 
         .form-container .name-input-group {
             display: flex;
@@ -41,14 +38,21 @@
 </head>
 
 <body>
-    <div class="container mt-4"> 
-        <h2>Primer Ingreso de Personal Aspirante para Contingente</h2>
+    <div class="container mt-4">
+        <h2 id="titulo">Formulario para personal que viaja por primera vez a Contingente</h2><br>
 
-        <form class="form-container" id="formularioUsuarios">
+        <div class="col-6 mx-auto">
+            <button type="button" id="btnIniciar" class="btn btn-primary w-100">
+                <i class="fas fa-play-circle"></i> Iniciar el Registro de Personal nuevo
+            </button>
+        </div>
 
+        <form class="form-container" id="formularioPersonal">
+            <h5><b>Paso 1.</b> Ingrese la Información Requerida del Aspirante</h5>
+            <br>
             <div class="row">
                 <div class="col-md-3">
-                    <img src="./images/foto.jpg" alt="Fotografía">
+                    <img for="per_catalogo" id="foto" src="./images/foto.jpg" alt="Fotografía">
                 </div>
                 <div class="col-md-9">
                     <div class="form-row">
@@ -107,30 +111,57 @@
                         </div>
 
                         <div class="row mb-3 col-md-7">
-                        <div class="col">
-                            <label for="per_puesto"><i class="fas fa-shield"></i>Seleccione el Puesto solicitado</label>
-                            <select name="per_puesto" id="per_puesto" class="form-control">
-                                <option value="">SELECCIONE...</option>
-                                <?php foreach ($puestos as $puesto) : ?>
-                                    <option value="<?= $puesto['pue_id'] ?>">
-                                        <?= $puesto['pue_nombre'] ?></option>
-                                <?php endforeach ?>
-                            </select>
+                            <div class="col">
+                                <label for="per_puesto"><i class="fas fa-shield"></i>Seleccione el Puesto solicitado</label>
+                                <select name="per_puesto" id="per_puesto" class="form-control">
+                                    <option value="">SELECCIONE...</option>
+                                    <?php foreach ($puestos as $puesto) : ?>
+                                        <option value="<?= $puesto['pue_id'] ?>">
+                                            <?= $puesto['pue_nombre'] ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-
-
-                    
                         <br>
-                        <div class="col-12">
-                        <button type="button" id="btnGuardar" class="btn btn-info w-100">Mandar solicitud</button>
-                    </div>
-                    
-                    </div>
+                        <div class="col-6">
+                            <button type="button" id="btnSiguiente1" class="btn btn-primary w-100">
+                                Siguiente <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
 
+                    </div>
 
                 </div>
             </div>
+        </form>
+        <br>
+
+        <form class="form-container" id="formularioGuardar">
+            <center><h5><b>Paso 2.</b> Guarde la Información</h5></center>
+            <br>
+            <div class="col-6 mx-auto">
+                <button type="button" id="btnGuardar" class="btn btn-primary w-100">
+                    <i class="fas fa-save"></i> Guardar Registro
+                </button>
+            </div>
+            <br>
+            <div class="col-6 mx-auto">
+                <button type="button" id="btnCancelar" class="btn btn-danger w-100">
+                    <i class="fas fa-times"></i> Cancelar Registro
+                </button>
+            </div>
+        </form>
+        <br>
+
+        <form class="form-container" id="formularioEnviar">
+            <center><h5><b>Paso 3.</b> Envíe la Solicitud para Optar a una Plaza en el Contingente</h5></center>
+            <br>
+            <div class="col-6 mx-auto">
+                <button type="button" id="btnEnviar" class="btn btn-primary w-100">
+                    <i class="fas fa-paper-plane"></i> Enviar Solicitud
+                </button>
+            </div>
+            <br>
         </form>
     </div>
     <script src="<?= asset('./build/js/usuarios/index.js') ?>"></script>

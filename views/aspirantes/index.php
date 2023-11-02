@@ -42,7 +42,7 @@
 
 <body>
     <div class="container mt-4"> 
-        <h2>Primer Ingreso de Personal Aspirante para Contingente</h2>
+        <h2>Ingreso de Personal Aspirante para Contingente</h2>
 
         <form class="form-container" id="formularioUsuarios">
 
@@ -70,10 +70,11 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="per_nom1"><i class="fas fa-user-tie"></i> Nombres:</label>
-                                <input type="text" class="form-control" id="per_nom1"  name="per_nom1" placeholder="Primer Nombre">
                             </div>
-
+                            <div class="form-group col-md-6">
+                                <label for="asp_id"><i class="fas fa-user"></i></label>
+                                <input type="text" class="form-control" id="asp_id"  name="asp_id" placeholder="ID">
+                            </div>
                             <div class="form-group col-md-6">
                                 <label for="per_nom2"><i class="fas fa-user"></i></label>
                                 <input type="text" class="form-control" id="per_nom2"  name="per_nom2" placeholder="Segundo Nombre">
@@ -133,7 +134,7 @@
             </div>
         </form>
     </div>
-    <script src="<?= asset('./build/js/usuarios/index.js') ?>"></script>
+    <script src="<?= asset('./build/js/aspirantes/index.js') ?>"></script>
 </body>
 
 </html>

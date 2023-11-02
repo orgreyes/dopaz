@@ -1,13 +1,21 @@
+//?--------------------------------------------------------------
+
 import { Alert, Dropdown } from "bootstrap";
 import Swal from "sweetalert2";
 import { validarFormulario, Toast, confirmacion} from "../funciones";
 import Datatable from "datatables.net-bs5";
 import { lenguaje  } from "../lenguaje";
 
+//?--------------------------------------------------------------
 
-const formulario = document.querySelector('#formularioUsuarios');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnGuardar = document.getElementById('btnGuardar');
+const btnIniciar = document.getElementById('btnIniciar');
+const btnCancelar = document.getElementById('btnCancelar');
+const btnSiguiente1 = document.getElementById('btnSiguiente1');
+const formulario = document.querySelector('#formularioPersonal');
+const formularioGuardar = document.getElementById('formularioGuardar');
+const formularioEnviar = document.getElementById('formularioEnviar');
 
 
 //?--------------------------------------------------------------
@@ -36,12 +44,12 @@ const guardar = async (evento) => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-
+console.log(data)
+return
         const { codigo, mensaje, detalle } = data;
         let icon = 'info';
         switch (codigo) {
             case 1:
-                formulario.reset();
                 icon = 'success', 
                         'mensaje';
                 buscar();
@@ -50,6 +58,11 @@ const guardar = async (evento) => {
             case 0:
                 icon = 'info';
                 console.log(detalle);
+                break;
+
+            case 2:
+                icon = 'info';
+                        'mensaje'
                 break;
 
             default:
@@ -108,6 +121,8 @@ const buscar = async () => {
                 formulario.per_dpi.value = d.per_dpi;
                 formulario.per_grado.value = d.gra_desc_md;
                 formulario.per_arma.value = d.arm_desc_md;
+                formulario.foto.src = 
+                `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${d.per_catalogo}.jpg`;
             });
         } else {
             Swal.fire({
@@ -122,12 +137,55 @@ const buscar = async () => {
     }
 };
 
+//?--------------------------------------------------------------
+//?block es mostrar 
+//?none y ocultar
+
+//!Ocultar el Formulario al inicio
+formulario.style.display = 'none';
+formularioGuardar.style.display = 'none';
+formularioEnviar.style.display = 'none';
+btnIniciar.style.display = 'block';
+
+//!Mostrar el formulario, ocultar btnIniciar
+const mostrarFormulario = () => {
+    formulario.style.display = 'block';
+    titulo.style.display = 'block';
+    btnIniciar.style.display = 'none'; 
+    };
+
+//!Ocultar el formulario, y pasar al paso 2.
+const ocultarFormulario = () => {
+    if (!validarFormulario(formulario)) {
+        Toast.fire({
+            icon: 'info',
+            text: 'Debe llenar todos los campos del formulario antes de continuar.'
+        });
+        return;
+    }
+    // formulario.reset();
+    formulario.style.display = 'none';
+    formularioGuardar.style.display = 'block';
+};
 
 
+//!Regresa al Formulario con los campos vacios
+const iniciarRegistro = () => {
+        formulario.reset();
+    formulario.style.display = 'block';
+    formularioGuardar.style.display = 'none';
+    titulo.style.display = 'block';
+    btnIniciar.style.display = 'none';
+    };
+
+    //!Regresa al Formulario con los campos vacios
+
+      
+//?--------------------------------------------------------------
 
 
-// buscar();
-
-
+btnIniciar.addEventListener('click', mostrarFormulario)
+btnSiguiente1.addEventListener('click', ocultarFormulario)
+btnCancelar.addEventListener('click', iniciarRegistro)
 btnBuscar.addEventListener('click', buscar);
 btnGuardar.addEventListener('click', guardar);

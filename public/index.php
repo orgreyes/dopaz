@@ -48,6 +48,7 @@ $router->post('/API/destinos/guardar', [DestinoController::class,'guardarAPI']);
 $router->get('/usuarios', [UsuarioController::class,'index']);
 $router->get('/API/usuarios/buscar', [UsuarioController::class,'buscarAPI']);
 $router->post('/API/usuarios/guardar', [UsuarioController::class,'guardarAPI']);
+$router->post('/API/usuarios/enviar', [UsuarioController::class,'enviarAPI']);
 
 //!Rutas para Primer Ingreso del Personal
 $router->get('/aspirantes', [AspiranteController::class,'index']);

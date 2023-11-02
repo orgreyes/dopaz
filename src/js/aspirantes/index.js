@@ -42,7 +42,7 @@ const guardar = async (evento) => {
         switch (codigo) {
             case 1:
                 formulario.reset();
-                icon = 'success', 
+                icon = 'success',
                         'mensaje';
                 buscar();
                 break;
@@ -61,7 +61,7 @@ const guardar = async (evento) => {
         });
     } catch (error) {
         console.log(error);
-        
+
         }
 }
 
@@ -81,7 +81,7 @@ const buscar = async () => {
         return;
     }
 
-    const url = `API/usuarios/buscar?per_catalogo=${per_catalogo}`;
+    const url = `API/aspirantes/buscar?per_catalogo=${per_catalogo}`;
     const config = {
         method: 'GET'
     };
@@ -93,7 +93,7 @@ const buscar = async () => {
         if (data === null) {
             Toast.fire({
                 icon: 'info',
-                text: 'El Catálogo que ingresó es Incorrecto.'
+                text: 'El Catálogo que ingresó no se ha registrado.'
             });
             return;
         }

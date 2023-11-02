@@ -4,11 +4,13 @@ namespace Controllers;
 
 use Exception;
 use Model\Personal;
+use Model\Aspirante;
 use Model\Usuario;
 use Model\Grado;
 use Model\Arma;
 use Model\Puesto;
 use MVC\Router;
+
 
 class UsuarioController
 {
@@ -79,13 +81,24 @@ public static function buscarAPI()
 
 
 //!Funcion Guardar
- public static function guardarAPI(){
-     
+public static function guardarAPI(){
     try {
+        $cat = $_POST['per_catalogo'];
+      
         $personal = new Personal($_POST);
+   
         $resultado = $personal->crear();
 
-        if ($resultado['resultado'] == 1) {
+
+        $id_aspirante =$resultado['id'];
+        echo json_encode($id_aspirante);
+exit;
+        
+
+
+       // $ingresos = new Aspirante ();
+
+            if ($resultado['resultado'] == 1) {
             echo json_encode([
                 'mensaje' => 'Registro guardado correctamente',
                 'codigo' => 1
@@ -96,13 +109,38 @@ public static function buscarAPI()
                 'codigo' => 0
             ]);
         }
-        // echo json_encode($resultado);
     } catch (Exception $e) {
         echo json_encode([
             'detalle' => $e->getMessage(),
             'mensaje' => 'El Aspirante ya fue Inscrito',
-            'codigo' => 0
+            'codigo' => 2
         ]);
     }
 }
+
+        // public static function enviarAPI(){
+        //     try {
+        //         $aspirante = new Aspirante($_POST);
+        //         $resultado = $aspirante->crear();
+
+        //         if ($resultado['resultado'] == 1) {
+        //             echo json_encode([
+        //                 'mensaje' => 'Registro enviado correctamente',
+        //                 'codigo' => 1
+        //             ]);
+        //         } else {
+        //             echo json_encode([
+        //                 'mensaje' => 'Ocurrió un error al enviar',
+        //                 'codigo' => 0
+        //             ]);
+        //         }
+        //     } catch (Exception $e) {
+        //         echo json_encode([
+        //             'detalle' => $e->getMessage(),
+        //             'mensaje' => 'El Aspirante ya fue Inscrito',
+        //             'codigo' => 2
+        //         ]);
+        //     }
+        // }
+
 }
