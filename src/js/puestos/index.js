@@ -22,34 +22,38 @@ const tablaPuestosContainer = document.getElementById('tablaPuestosContainer');
 let contenedor = 1;
 
 const datatable = new Datatable('#tablaPuestos', {
-    language : lenguaje,
-    data : null,
-    columns : [
+    language: lenguaje,
+    data: null,
+    columns: [
         {
-            title : 'NO',
-            render: () => contenedor++ 
-            
+            title: 'NO',
+            render: () => contenedor++
         },
         {
-            title : 'PUESTOS',
+            title: 'PUESTOS',
             data: 'pue_nombre'
         },
         {
-            title : 'MODIFICAR DATOS',
-            data: 'pue_id',
-            searchable: false,
-            orderable: false,
-            render : (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}'data-nombre='${row["pue_nombre"]}'>Modificar</button>`
+            title: 'GRADO QUE DESEMPEÑA',
+            data: 'gra_desc_md' // Utiliza 'gra_desc_md' en lugar de 'pue_grado'
         },
         {
-            title : 'ELIMINAR',
+            title: 'MODIFICAR DATOS',
             data: 'pue_id',
             searchable: false,
             orderable: false,
-            render : (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}' data-nombre='${row["pue_nombre"]}'>Modificar</button>`
+        },
+        {
+            title: 'ELIMINAR',
+            data: 'pue_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
         }
     ]
-})
+});
+
 
 
 //?--------------------------------------------------------------

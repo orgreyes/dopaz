@@ -4,23 +4,40 @@ namespace Controllers;
 
 use Exception;
 use Model\Puesto;
+use Model\Grado;
 use MVC\Router;
 
 class PuestoController {
     public static function index(Router $router){
 
-        $puesto = Puesto::all();
+        // $puesto = Puesto::all();
+        $grados = static::buscarGrados();
 
-        $router->render('puestos/index', []);
+        $router->render('puestos/index', [
+            'grados' => $grados,
+        ]);
     }
-    
+
+    //!Funcion Select Puestos
+    public static function buscarGrados()
+    {
+        $sql = "SELECT * FROM grados";
+
+        try {
+            $grados = Grado::fetchArray($sql);
+            return $grados;
+        } catch (Exception $e) {
+            return [];
+        }
+    }
 
  //!Funcion Buscar
  public static function buscarAPI()
  {  
-     $sql = "SELECT pue_id, pue_nombre
-     FROM cont_puestos
-     WHERE pue_situacion = 1;";
+     $sql = "SELECT p.pue_id, p.pue_nombre, g.gra_desc_md
+     FROM cont_puestos p
+     INNER JOIN grados g ON p.pue_grado = g.gra_codigo
+     WHERE p.pue_situacion = 1";
 
      try {
 
