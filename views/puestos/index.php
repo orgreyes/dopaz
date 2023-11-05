@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Puestos</title>
-    <!-- Agrega la biblioteca de Bootstrap (CSS) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <!-- Agrega la biblioteca de Select2 (CSS) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css">
 </head>
 <body>
@@ -24,7 +22,7 @@
         </div>
       </div>
 
-      <div class="row mb-3 col-md-12">
+      <div class="row mb-3 col-md-18">
         <div class="col">
           <label for="pue_grado"><i class="fas fa-shield"></i> Seleccione El Grado al que Corresponde el Puesto</label>
           <select name="pue_grado" id="pue_grado" class="form-control">

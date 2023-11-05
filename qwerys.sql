@@ -71,14 +71,6 @@ where per_catalogo =--catalogo
 
 
 --//!BASE DE DATOS
--- Tabla Cont_Destino
-CREATE TABLE cont_destinos (
-    dest_id SERIAL PRIMARY KEY,
-    dest_nombre VARCHAR(200)NOT NULL,
-    dest_latitud DECIMAL(10, 6) NOT NULL,
-    dest_longitud DECIMAL(10, 6) NOT NULL,
-    dest_situacion SMALLINT
-);
 
 -- Tabla Cont_Evaluaciones
 CREATE TABLE cont_evaluaciones (
@@ -106,21 +98,39 @@ CREATE TABLE cont_aspirantes (
     asp_ape2 CHAR(15),
     asp_dpi CHAR(15),
     asp_genero CHAR(1),
-    asp_situacion SMALLINT
+    asp_situacion SMALLINT,
+    FOREIGN KEY (asp_catalogo) REFERENCES mper(per_catalogo)
 );
 
 -- Tabla Contingente
 CREATE TABLE contingentes (
     cont_id SERIAL PRIMARY KEY,
     cont_nombre CHAR(150),
-    cont_destino INT NOT NULL,
-    cont_fecha_pre DATETIME YEAR TO MINUTE NOT NULL,
-    cont_fecha_inicio DATETIME YEAR TO MINUTE NOT NULL,
-    cont_fecha_final DATETIME YEAR TO MINUTE NOT NULL,
-    cont_fecha_post DATETIME YEAR TO MINUTE NOT NULL,
-    cont_situacion SMALLINT,
-    FOREIGN KEY (cont_destino) REFERENCES cont_destinos(dest_id)
+    cont_fecha_pre DATE,
+    cont_fecha_inicio DATE,
+    cont_fecha_final DATE,
+    cont_fecha_post DATE,
+    cont_situacion SMALLINT
 );
+
+CREATE TABLE cont_misiones_contingente (
+    mis_id SERIAL PRIMARY KEY,
+    mis_nombre VARCHAR(200) NOT NULL,
+    mis_latitud DECIMAL(10, 6) NOT NULL,
+    mis_longitud DECIMAL(10, 6) NOT NULL,
+    mis_situacion SMALLINT
+);
+
+CREATE TABLE cont_asig_misiones (
+    asig_id  SERIAL PRIMARY KEY,
+    asig_contingente INT NOT NULL,
+    asig_mision INT NOT NULL,
+    asig_situacion SMALLINT,
+    FOREIGN KEY (asig_contingente) REFERENCES contingentes (cont_id),
+    FOREIGN KEY (asig_mision) REFERENCES cont_misiones_contingente (mis_id)
+);
+
+
 
 -- Tabla cont_ingresos
 CREATE TABLE cont_ingresos (
@@ -129,12 +139,11 @@ CREATE TABLE cont_ingresos (
     ing_contingente INT,
     ing_fecha_cont DATE,
     ing_aspirante INT,
-    ing_anio INT,
     ing_situacion SMALLINT,
     FOREIGN KEY (ing_contingente) REFERENCES contingentes(cont_id),
     FOREIGN KEY (ing_puesto) REFERENCES cont_puestos(pue_id),
     FOREIGN KEY (ing_aspirante) REFERENCES cont_aspirantes(asp_id),
-    UNIQUE (ing_aspirante, ing_anio)
+    UNIQUE (ing_aspirante,ing_fecha_cont)
 );
 
 
@@ -185,7 +194,8 @@ DROP TABLE cont_puestos
 DROP TABLE cont_aspirantes
 DROP TABLE cont_ingresos
 DROP TABLE cont_resultados
-DROP TABLE cont_destinos
+DROP TABLE cont_asig_misiones
+DROP TABLE cont_misiones_contingente
 DROP TABLE cont_plazas
 DROP TABLE cont_asig_plazas
 
@@ -204,4 +214,67 @@ INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situac
 VALUES ('huehuetenango', 15.320491580384575, -91.47435156855786, 1);
 INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
 VALUES ('jutiapa', 14.275063888696463, -89.88035314944871, 1);
+
+
+
+-- !Para Contingente, misiones y su asignacion.
+
+
+INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
+VALUES
+    ('CONTINGENTE 1', '2023-10-01 08:00', '2023-10-05 14:00', '2023-10-15 17:00', '2023-10-20 10:00', 1);
+    INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
+VALUES
+    ('CONTINGENTE 2', '2023-11-01 08:00', '2023-11-05 14:00', '2023-11-15 17:00', '2023-11-20 10:00', 1);
+    INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
+VALUES
+    ('CONTINGENTE 3', '2023-12-01 08:00', '2023-12-05 14:00', '2023-12-15 17:00', '2023-12-20 10:00', 1);
+    INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
+VALUES
+    ('CONTINGENTE 4', '2024-01-01 08:00', '2024-01-05 14:00', '2024-01-15 17:00', '2024-01-20 10:00', 1);
+    INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
+VALUES
+    ('CONTINGENTE 5', '2024-02-01 08:00', '2024-02-05 14:00', '2024-02-15 17:00', '2024-02-20 10:00', 1);
+
+-- Inserción de 5 registros en la tabla 'cont_misiones_contingente'
+INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)
+VALUES
+    ('Misión 1', -3.458, 27.987, 1);
+INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)
+VALUES
+    ('Misión 2', -4.201, 29.045, 1);
+INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)
+VALUES
+    ('Misión 3', -4.726, 30.049, 1);
+INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)
+VALUES
+    ('Misión 4', -5.305, 30.286, 1);
+INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)
+VALUES
+    ('Misión 5', -3.138, 27.701, 1);
+
+-- Inserción de 5 registros en la tabla 'cont_asig_misiones'
+INSERT INTO cont_asig_misiones (asig_contingente, asig_mision, asig_situacion)
+VALUES
+    (1, 1, 1);
+INSERT INTO cont_asig_misiones (asig_contingente, asig_mision, asig_situacion)
+VALUES
+    (1, 2, 1);
+INSERT INTO cont_asig_misiones (asig_contingente, asig_mision, asig_situacion)
+VALUES
+    (2, 3, 1);
+INSERT INTO cont_asig_misiones (asig_contingente, asig_mision, asig_situacion)
+VALUES
+    (2, 4, 1);
+INSERT INTO cont_asig_misiones (asig_contingente, asig_mision, asig_situacion)
+VALUES
+    (3, 5, 1);
+    
+    
+SELECT c.cont_id, c.cont_nombre, mc.mis_id, mc.mis_nombre, mc.mis_latitud, mc.mis_longitud
+FROM contingentes c
+JOIN cont_asig_misiones cam ON c.cont_id = cam.asig_contingente
+JOIN cont_misiones_contingente mc ON cam.asig_mision = mc.mis_id
+WHERE c.cont_nombre = 'CONTINGENTE 1';
+
 

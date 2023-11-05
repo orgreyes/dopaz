@@ -8,9 +8,9 @@ module.exports = {
     'js/inicio' : './src/js/inicio.js',
     'js/evaluaciones/index' : './src/js/evaluaciones/index.js',
     'js/puestos/index' : './src/js/puestos/index.js',
-    'js/destinos/index' : './src/js/destinos/index.js',
     'js/usuarios/index' : './src/js/usuarios/index.js',
     'js/aspirantes/index' : './src/js/aspirantes/index.js',
+    'js/contingentes/index' : './src/js/contingentes/index.js',
 
   },
   output: {

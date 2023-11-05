@@ -10,6 +10,7 @@ use Controllers\PuestoController;
 use Controllers\DestinoController;
 use Controllers\UsuarioController;
 use Controllers\AspiranteController;
+use Controllers\ContingenteController;
 
 
 $router = new Router();
@@ -36,6 +37,13 @@ $router->post('/API/puestos/modificar', [PuestoController::class,'modificarAPI']
 $router->post('/API/puestos/guardar', [PuestoController::class,'guardarAPI']);
 
 
+//!Rutas para Contingentes
+$router->get('/contingentes', [ContingenteController::class,'index']);
+$router->get('/API/contingentes/buscar', [ContingenteController::class,'buscarAPI']);
+$router->post('/API/contingentes/eliminar', [ContingenteController::class,'eliminarAPI']);
+$router->post('/API/contingentes/modificar', [ContingenteController::class,'modificarAPI']);
+$router->post('/API/contingentes/guardar', [ContingenteController::class,'guardarAPI']);
+
 //!Rutas para Destinos
 $router->get('/destinos', [DestinoController::class,'index']);
 $router->get('/API/destinos/buscar', [DestinoController::class,'buscarAPI']);
@@ -49,6 +57,7 @@ $router->get('/usuarios', [UsuarioController::class,'index']);
 $router->get('/API/usuarios/buscar', [UsuarioController::class,'buscarAPI']);
 $router->post('/API/usuarios/guardar', [UsuarioController::class,'guardarAPI']);
 $router->post('/API/usuarios/enviar', [UsuarioController::class,'enviarAPI']);
+
 
 // //!Rutas para Primer Ingreso del Personal
 // $router->get('/aspirantes', [AspiranteController::class,'index']);

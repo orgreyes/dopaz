@@ -23,7 +23,7 @@ const formularioGuardar = document.getElementById('formularioGuardar');
 const guardar = async (evento) => {
     evento.preventDefault();
 
-    if (!validarFormulario(formulario, ['asp_id'])) {
+    if (!validarFormulario(formulario, ['per_catalogo'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
@@ -31,7 +31,7 @@ const guardar = async (evento) => {
         return;
     }
     const body = new FormData(formulario);
-    body.delete('asp_id');
+    body.delete('per_catalogo');
     const url = 'API/usuarios/guardar';
     const headers = new Headers();
     headers.append("X-Requested-With", "fetch");

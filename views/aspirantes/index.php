@@ -53,9 +53,9 @@
                 <div class="col-md-9">
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="per_catalogo"><i class="fas fa-id-card"></i> Buscar Datos por Catalogo:</label>
+                            <label for="asp_catalogo"><i class="fas fa-id-card"></i> Buscar Datos por Catalogo:</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="per_catalogo" name="per_catalogo">
+                                <input type="number" class="form-control" id="asp_catalogo" name="asp_catalogo">
                                 <div class="input-group-append">
                                     <button type="button" id="btnBuscar" class="btn btn-outline-success">
                                         <i class="fas fa-search"></i> Buscar
@@ -109,7 +109,7 @@
 
                         <div class="row mb-3 col-md-7">
                         <div class="col">
-                            <label for="per_puesto"><i class="fas fa-shield"></i>Seleccione el Puesto solicitado</label>
+                            <label for="ing_puesto"><i class="fas fa-shield"></i>Seleccione el Puesto solicitado</label>
                             <select name="ing_puesto" id="ing_puesto" class="form-control">
                                 <option value="">SELECCIONE...</option>
                                 <?php foreach ($puestos as $puesto) : ?>

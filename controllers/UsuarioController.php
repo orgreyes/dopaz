@@ -16,12 +16,27 @@ class UsuarioController
 {
     public static function index(Router $router)
     {
+        $grados = static::buscarGrados();
         $puestos = static::buscarPuesto();
         $router->render('usuarios/index', [
             'puestos' => $puestos,
+            'grados' => $grados,
         ]);
     }
 
+
+//!Funcion Select Grados
+    public static function buscarGrados()
+    {
+        $sql = "SELECT * FROM grados";
+
+        try {
+            $grados = Grado::fetchArray($sql);
+            return $grados;
+        } catch (Exception $e) {
+            return [];
+        }
+    }
 //!Funcion Select Puestos
     public static function buscarPuesto()
     {
@@ -84,10 +99,8 @@ public static function buscarAPI()
 public static function guardarAPI(){
     try {
         
-   
         $puesto = $_POST['ing_puesto'];
         $fecha_hoy = date("d/m/Y");
-
       
         $aspirante = new Aspirante($_POST);
 
@@ -98,9 +111,9 @@ public static function guardarAPI(){
 
 $datos ['ing_aspirante'] = $id_aspirante;
 // $datos ['ing_contingente'];
- $datos ['ing_fecha_cont'] = $fecha_hoy;
+$datos ['ing_fecha_cont'] = $fecha_hoy;
 // $datos ['ing_anio'];
- $datos ['ing_puesto'] = $puesto;
+$datos ['ing_puesto'] = $puesto;
 
         $ingresos = new Ingreso ($datos);
         $result = $ingresos->guardar();
@@ -125,30 +138,5 @@ exit;
         ]);
     }
 }
-
-        // public static function enviarAPI(){
-        //     try {
-        //         $aspirante = new Aspirante($_POST);
-        //         $resultado = $aspirante->crear();
-
-        //         if ($resultado['resultado'] == 1) {
-        //             echo json_encode([
-        //                 'mensaje' => 'Registro enviado correctamente',
-        //                 'codigo' => 1
-        //             ]);
-        //         } else {
-        //             echo json_encode([
-        //                 'mensaje' => 'Ocurrió un error al enviar',
-        //                 'codigo' => 0
-        //             ]);
-        //         }
-        //     } catch (Exception $e) {
-        //         echo json_encode([
-        //             'detalle' => $e->getMessage(),
-        //             'mensaje' => 'El Aspirante ya fue Inscrito',
-        //             'codigo' => 2
-        //         ]);
-        //     }
-        // }
 
 }

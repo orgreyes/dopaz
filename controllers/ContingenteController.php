@@ -3,47 +3,36 @@
 namespace Controllers;
 
 use Exception;
-use Model\Puesto;
-use Model\Grado;
+use Model\Contingente;
 use MVC\Router;
 
-class PuestoController {
+class ContingenteController {
     public static function index(Router $router){
 
-        // $puesto = Puesto::all();
-        $grados = static::buscarGrados();
+        $contingentes = Contingente::all();
 
-        $router->render('puestos/index', [
-            'grados' => $grados,
-        ]);
+        $router->render('contingentes/index', []);
     }
-
-    //!Funcion Select Grados
-    public static function buscarGrados()
-    {
-        $sql = "SELECT * FROM grados";
-
-        try {
-            $grados = Grado::fetchArray($sql);
-            return $grados;
-        } catch (Exception $e) {
-            return [];
-        }
-    }
+    
 
  //!Funcion Buscar
  public static function buscarAPI()
- {  
-     $sql = "SELECT p.pue_id, p.pue_nombre, g.gra_desc_md
-     FROM cont_puestos p
-     INNER JOIN grados g ON p.pue_grado = g.gra_codigo
-     WHERE p.pue_situacion = 1";
+ {
+    $cont_nombre = $_GET['cont_nombre'] ?? '';
+
+    $sql = "SELECT * FROM contingentes WHERE cont_situacion = 1 ";
+    
+     $sql = "SELECT cont_id, cont_nombre, 
+                cont_fecha_pre, cont_fecha_inicio, 
+                cont_fecha_final, cont_fecha_post
+            FROM contingentes
+            WHERE cont_situacion = 1";
 
      try {
 
-         $puestos = Puesto::fetchArray($sql);
+         $contingentes = Contingente::fetchArray($sql);
 
-         echo json_encode($puestos);
+         echo json_encode($contingentes);
      } catch (Exception $e) {
          echo json_encode([
              'detalle' => $e->getMessage(),
@@ -53,16 +42,18 @@ class PuestoController {
      }
  }
 
-  //!Funcion Guardar
- public static function guardarAPI(){
-     
+//!Funcion Guardar
+public static function guardarAPI()
+{
     try {
-        $puesto = new Puesto($_POST);
-        $resultado = $puesto->crear();
+        $contingenteData = $_POST;
+
+        $contingente = new Contingente($contingenteData);
+        $resultado = $contingente->crear();
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([
-                'mensaje' => 'Puesto guardado correctamente',
+                'mensaje' => 'Registro guardado correctamente',
                 'codigo' => 1
             ]);
         } else {
@@ -71,7 +62,6 @@ class PuestoController {
                 'codigo' => 0
             ]);
         }
-        // echo json_encode($resultado);
     } catch (Exception $e) {
         echo json_encode([
             'detalle' => $e->getMessage(),
@@ -81,19 +71,20 @@ class PuestoController {
     }
 }
 
+
  
 
  //!Funcion Eliminar
  public static function eliminarAPI(){
      try{
-         $pue_id = $_POST['pue_id'];
-         $puesto = Puesto::find($pue_id);
-         $puesto->pue_situacion = 0;
-         $resultado = $puesto->actualizar();
+         $cont_id = $_POST['cont_id'];
+         $contingente = Contingente::find($cont_id);
+         $contingente->cont_situacion = 0;
+         $resultado = $contingente->actualizar();
 
          if($resultado['resultado'] == 1){
              echo json_encode([
-                 'mensaje' => 'Puesto Eliminado Correctamente',
+                 'mensaje' => 'Datos del Contingente Eliminada correctamente',
                  'codigo' => 1
              ]);
          }else{
@@ -116,23 +107,23 @@ class PuestoController {
 
  public static function modificarAPI() {
      try {
-         $puestoData = $_POST;
+         $contingenteData = $_POST;
  
          // Validar campos vacíos
-         foreach ($puestoData as $campo => $valor) {
-             if (empty($valor)) {
-                 echo json_encode([
-                     'mensaje' => 'Llene Todos Los Campos',
-                     'codigo' => 0
-                 ]);
-                 return;
-             }
-         }
+        //  foreach ($contingenteData as $campo => $valor) {
+        //      if (empty($valor)) {
+        //          echo json_encode([
+        //              'mensaje' => 'Llene Todos Los Campos',
+        //              'codigo' => 0
+        //          ]);
+        //          return;
+        //      }
+        //  }
 
-         $puestoData['pue_situacion'] = 1;
+         $contingenteData['cont_situacion'] = 1;
  
-         $puesto = new Puesto($puestoData);
-         $resultado = $puesto->actualizar();
+         $contingente = new Contingente($contingenteData);
+         $resultado = $contingente->actualizar();
  
          if ($resultado['resultado'] == 1) {
              echo json_encode([
