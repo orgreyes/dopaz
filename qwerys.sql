@@ -202,39 +202,25 @@ DROP TABLE cont_asig_plazas
 
 --!Datos
 
--- !Para Destinos
-
-INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
-VALUES ('Ciudad de Guatemala, Guatemala', 14.634915, -90.506882, 1);
-INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
-VALUES ('Tikal, Petén', 17.2221, -89.6237, 1);
-INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
-VALUES ('Cobán, Alta Verapaz', 15.512633921525016, -90.42345748659254, 1);
-INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
-VALUES ('huehuetenango', 15.320491580384575, -91.47435156855786, 1);
-INSERT INTO cont_destinos (dest_nombre, dest_latitud, dest_longitud, dest_situacion) 
-VALUES ('jutiapa', 14.275063888696463, -89.88035314944871, 1);
-
-
 
 -- !Para Contingente, misiones y su asignacion.
 
 
 INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
 VALUES
-    ('CONTINGENTE 1', '2023-10-01 08:00', '2023-10-05 14:00', '2023-10-15 17:00', '2023-10-20 10:00', 1);
+    ('CONTINGENTE 1', '2023-10-01', '2023-10-05', '2023-10-15', '2023-10-20', 1);
     INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
 VALUES
-    ('CONTINGENTE 2', '2023-11-01 08:00', '2023-11-05 14:00', '2023-11-15 17:00', '2023-11-20 10:00', 1);
+    ('CONTINGENTE 2', '2023-11-01', '2023-11-05', '2023-11-15', '2023-11-20', 1);
     INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
 VALUES
-    ('CONTINGENTE 3', '2023-12-01 08:00', '2023-12-05 14:00', '2023-12-15 17:00', '2023-12-20 10:00', 1);
+    ('CONTINGENTE 3', '2023-12-01', '2023-12-05', '2023-12-15', '2023-12-20', 1);
     INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
 VALUES
-    ('CONTINGENTE 4', '2024-01-01 08:00', '2024-01-05 14:00', '2024-01-15 17:00', '2024-01-20 10:00', 1);
+    ('CONTINGENTE 4', '2024-01-01', '2024-01-05', '2024-01-15', '2024-01-20', 1);
     INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
 VALUES
-    ('CONTINGENTE 5', '2024-02-01 08:00', '2024-02-05 14:00', '2024-02-15 17:00', '2024-02-20 10:00', 1);
+    ('CONTINGENTE 5', '2024-02-01', '2024-02-05', '2024-02-15', '2024-02-20', 1);
 
 -- Inserción de 5 registros en la tabla 'cont_misiones_contingente'
 INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)

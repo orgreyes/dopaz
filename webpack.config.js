@@ -11,6 +11,7 @@ module.exports = {
     'js/usuarios/index' : './src/js/usuarios/index.js',
     'js/aspirantes/index' : './src/js/aspirantes/index.js',
     'js/contingentes/index' : './src/js/contingentes/index.js',
+    'js/misiones/index' : './src/js/misiones/index.js',
 
   },
   output: {

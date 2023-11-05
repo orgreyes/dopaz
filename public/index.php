@@ -7,7 +7,7 @@ use MVC\Router;
 use Controllers\AppController;
 use Controllers\EvaluacionController;
 use Controllers\PuestoController;
-use Controllers\DestinoController;
+use Controllers\MisionController;
 use Controllers\UsuarioController;
 use Controllers\AspiranteController;
 use Controllers\ContingenteController;
@@ -44,12 +44,13 @@ $router->post('/API/contingentes/eliminar', [ContingenteController::class,'elimi
 $router->post('/API/contingentes/modificar', [ContingenteController::class,'modificarAPI']);
 $router->post('/API/contingentes/guardar', [ContingenteController::class,'guardarAPI']);
 
-//!Rutas para Destinos
-$router->get('/destinos', [DestinoController::class,'index']);
-$router->get('/API/destinos/buscar', [DestinoController::class,'buscarAPI']);
-$router->post('/API/destinos/eliminar', [DestinoController::class,'eliminarAPI']);
-$router->post('/API/destinos/modificar', [DestinoController::class,'modificarAPI']);
-$router->post('/API/destinos/guardar', [DestinoController::class,'guardarAPI']);
+//!Rutas para Misiones
+$router->get('/misiones', [MisionController::class,'index']);
+$router->get('/API/misiones/buscar', [MisionController::class,'buscarAPI']);
+$router->get('/API/misiones/buscarMapa', [MisionController::class,'buscarMapaAPI']);
+$router->post('/API/misiones/eliminar', [MisionController::class,'eliminarAPI']);
+$router->post('/API/misiones/modificar', [MisionController::class,'modificarAPI']);
+$router->post('/API/misiones/guardar', [MisionController::class,'guardarAPI']);
 
 
 //!Rutas para Primer Ingreso del Personal

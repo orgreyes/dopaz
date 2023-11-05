@@ -40,7 +40,7 @@
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/puestos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Puestos</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/destinos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Mapa</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/misiones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Mapa de Misiones</a>
                             </li>
                             <li>
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/usuarios"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Primer Ingreso de Personal</a>
