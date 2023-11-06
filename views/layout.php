@@ -43,6 +43,9 @@
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/misiones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Mapa de Misiones</a>
                             </li>
                             <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigmisiones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Asignacion de Misiones a Contingentes</a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/usuarios"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Primer Ingreso de Personal</a>
                             </li>
                             <li>

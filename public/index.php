@@ -11,6 +11,7 @@ use Controllers\MisionController;
 use Controllers\UsuarioController;
 use Controllers\AspiranteController;
 use Controllers\ContingenteController;
+use Controllers\AsigMisionController;
 
 
 $router = new Router();
@@ -52,6 +53,13 @@ $router->post('/API/misiones/eliminar', [MisionController::class,'eliminarAPI'])
 $router->post('/API/misiones/modificar', [MisionController::class,'modificarAPI']);
 $router->post('/API/misiones/guardar', [MisionController::class,'guardarAPI']);
 
+//!Rutas para Asignar Misiones a Contingentes
+$router->get('/asigmisiones', [AsigMisionController::class,'index']);
+$router->get('/API/asigmisiones/buscar', [AsigMisionController::class,'buscarAPI']);
+$router->get('/API/asigmisiones/buscarMisionesContingente', [AsigMisionController::class,'buscarMisionesContingenteAPI']);
+$router->post('/API/asigmisiones/eliminar', [AsigMisionController::class,'eliminarAPI']);
+$router->post('/API/asigmisiones/modificar', [AsigMisionController::class,'modificarAPI']);
+$router->post('/API/asigmisiones/guardar', [AsigMisionController::class,'guardarAPI']);
 
 //!Rutas para Primer Ingreso del Personal
 $router->get('/usuarios', [UsuarioController::class,'index']);
