@@ -4,16 +4,46 @@ namespace Controllers;
 
 use Exception;
 use Model\AsigMision;
+use Model\Contingente;
+use Model\Mision;
 use MVC\Router;
 
 class AsigMisionController {
     public static function index(Router $router){
-
+        $contingentes = static::buscaContingentes();
+        $misiones = static::buscarMisiones();
         $asigmisiones = AsigMision::all();
 
-        $router->render('asigmisiones/index', []);
+        $router->render('asigmisiones/index', [
+            'contingentes' => $contingentes,
+            'misiones' => $misiones,
+        ]);
     }
     
+//!Funcion Select Contingentes
+public static function buscaContingentes()
+{
+    $sql = "SELECT * FROM contingentes where cont_situacion = 1";
+
+    try {
+        $contingentes = Contingente::fetchArray($sql);
+        return $contingentes;
+    } catch (Exception $e) {
+        return [];
+    }
+}
+//!Funcion Select Misiones
+public static function buscarMisiones()
+{
+    $sql = "SELECT * FROM cont_misiones_contingente where mis_situacion = 1";
+
+    try {
+        $misiones = Mision::fetchArray($sql);
+        return $misiones;
+    } catch (Exception $e) {
+        return [];
+    }
+}
 
  //!Funcion Buscar
  public static function buscarAPI()
@@ -53,10 +83,10 @@ class AsigMisionController {
          }
  
          // Consulta SQL para obtener las misiones de un contingente específico.
-         $sql = "SELECT mc.mis_id, mc.mis_nombre
-                 FROM cont_asig_misiones cam
-                 JOIN cont_misiones_contingente mc ON cam.asig_mision = mc.mis_id
-                 WHERE cam.asig_contingente = $contingenteId";
+         $sql = "SELECT cam.asig_id, mc.mis_id, mc.mis_nombre
+         FROM cont_asig_misiones cam
+         JOIN cont_misiones_contingente mc ON cam.asig_mision = mc.mis_id
+         WHERE cam.asig_contingente = $contingenteId AND cam.asig_situacion = 1 ";
  
          // Ejecutar la consulta y obtener las misiones del contingente.
          $asigmisiones = AsigMision::fetchArray($sql);
@@ -77,10 +107,10 @@ class AsigMisionController {
 public static function guardarAPI()
 {
     try {
-        $contingenteData = $_POST;
+        $asigMisionData = $_POST;
 
-        $contingente = new Contingente($contingenteData);
-        $resultado = $contingente->crear();
+        $asigMision = new AsigMision($asigMisionData);
+        $resultado = $asigMision->crear();
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([
@@ -108,10 +138,10 @@ public static function guardarAPI()
  //!Funcion Eliminar
  public static function eliminarAPI(){
      try{
-         $cont_id = $_POST['cont_id'];
-         $contingente = Contingente::find($cont_id);
-         $contingente->cont_situacion = 0;
-         $resultado = $contingente->actualizar();
+         $asig_id = $_POST['asig_id'];
+         $asigMision = AsigMision::find($asig_id);
+         $asigMision->asig_situacion = 0;
+         $resultado = $asigMision->actualizar();
 
          if($resultado['resultado'] == 1){
              echo json_encode([

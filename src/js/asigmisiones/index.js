@@ -31,20 +31,6 @@ const datatable = new Datatable('#tablaAsigMisiones', {
             searchable: false,
             orderable: false,
             render: (data, type, row, meta) => `<button class="btn btn-info ver-misiones-btn" data-bs-toggle='modal' data-bs-target='#modalMisiones' data-id='${data}'>Ver Misiones</button>`
-        },
-        {
-            title: 'MODIFICAR DATOS',
-            data: 'cont_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}' data-nombreContingente='${row["asig_contingente"]}' data-nombreMision='${row["asig_mision"]}'>Modificar</button>`
-        },
-        {
-            title: 'ELIMINAR',
-            data: 'cont_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
         }
     ]
 });
@@ -67,6 +53,13 @@ let tablaMisiones = new Datatable('#tablaMisiones', {
             title: 'MISIONES ASIGNADAS',
             data: 'mis_nombre'
         },
+        {
+            title: 'ELIMINAR',
+            data: 'asig_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+        }
     ]
 });
 
@@ -84,6 +77,7 @@ $('#modalMisiones').on('hidden.bs.modal', function (e) {
 
 const buscarMisionesContingenteAPI = async (cont_id) => {
     const url = `API/asigmisiones/buscarMisionesContingente?cont_id=${cont_id}`;
+    console.log(url);
     const config = {
         method: 'GET'
     };
@@ -135,7 +129,7 @@ const buscar = async () => {
     }
 };
 
-// Función para guardar un registro
+//!Función para guardar un registro
 const guardar = async (evento) => {
     evento.preventDefault();
     if (!validarFormulario(formulario, ['asig_id'])) {
@@ -224,7 +218,7 @@ const eliminar = async e => {
             let icon='info'
             switch (codigo) {
                 case 1:
-                    buscar();
+                    buscarMisionesContingenteAPI();
                     Swal.fire({
                         icon: 'success',
                         title: 'Eliminado Exitosamente',
@@ -420,13 +414,7 @@ btnModificar.addEventListener('click', () => {
 
 
 //?--------------------------------------------------------------
-datatable.on('click','.btn-warning', traeDatos)
-datatable.on('click','.btn-warning', mostrarFormulario)
-datatable.on('click','.btn-warning', MostrarBtnForumulario)
-datatable.on('click','.btn-warning', mostrarBtns)
-datatable.on('click','.btn-warning', OcultarTodoForumulario)
-//?--------------------------------------------------------------
-datatable.on('click','.btn-danger', eliminar)
+tablaMisiones.on('click','.btn-danger', eliminar)
 //?--------------------------------------------------------------
 
 

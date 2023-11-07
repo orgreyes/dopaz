@@ -10,7 +10,42 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <!-- Bootstrap JS y Popper.js (asegúrate de cargar Popper.js antes de Bootstrap.js) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+ 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.1/umd/popper.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css">
+        <style>
+            img {
+                border: 2px solid #ccc;
+                max-width: 100%;
+                height: auto;
+            }
+
+            h2 {
+                text-align: center;
+                color: #333;
+            }
+
+            .form-container {
+                border: 1px solid #ccc;
+                padding: 20px;
+                background-color: #f9f9f9;
+            }
+
+            .form-container .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-container label {
+                font-weight: bold;
+            }
+
+            .form-container .name-input-group {
+                display: flex;
+            }
+        </style>
 </head>
 <body>
 
@@ -20,21 +55,34 @@
       <h1 class="text-center">Asignacion de Misiones a Contingentes</h1><br>
       <input type="hidden" name="asig_id" id="asig_id">
 
-      <!-- Nombre del Contingente -->
-      <div class="row mb-3">
-        <div class="col">
-          <label for="asig_contingente">Seleccion Contingente</label>
-          <input type="text" name="asig_contingente" id="asig_contingente" class="form-control">
+      <!--//!Nombre del Contingente -->
+      <div class="row mb-3 col-md-12">
+          <div class="col">
+              <label for="asig_contingente"><i  class="fas fa-globe"></i> Seleccione Un Contingente </label><br>
+              <select name="asig_contingente" id="asig_contingente" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+                  <option value="">SELECCIONE...</option>
+                  <?php foreach ($contingentes as $contingente) : ?>
+                  <option value="<?= $contingente['cont_id'] ?>">
+                      <?= $contingente['cont_nombre'] ?></option>
+                  <?php endforeach ?>
+              </select>
+          </div>
         </div>
-      </div>
+                            
+      <!-- //!Fecha de Inicio de Preparación -->
+      <div class="row mb-3 col-md-12">
+          <div class="col">
+              <label for="asig_mision"><i class="fas fa-flag"></i> Seleccione la Misión que se llevó a cabo en el Contingente Seleccionado</label><br>
+              <select name="asig_mision" id="asig_mision" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+                  <option value="">SELECCIONE...</option>
+                  <?php foreach ($misiones as $mision) : ?>
+                  <option value="<?= $mision['mis_id'] ?>">
+                      <?= $mision['mis_nombre'] ?></option>
+                  <?php endforeach ?>
+              </select>
+          </div>
+        </div>
 
-      <!-- Fecha de Inicio de Preparación -->
-      <div class="row mb-3">
-        <div class="col">
-          <label for="asig_mision">Seleccione la Misión que se llevó a cabo en el Contingente Seleccionado</label>
-          <input type="text" name="asig_mision" id="asig_mision" class="form-control">
-        </div>
-      </div>
 
       <div class="row mb-3">
         <div class="col-12">
@@ -84,28 +132,7 @@
             </div>
             <div class="modal-body container text-center">
                 <table id="tablaMisiones" class="table table-hover table-condensed table-bordered w-100">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>No.</th>
-                            <?php ?>
-                            <th>MISIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Aquí puedes agregar filas de datos si es necesario -->
-                        <?php
-                        $contadorMisiones = 0; // Inicializa el contador
-
-                        // Aquí puedes iterar a través de tus datos y generar las filas
-                        foreach ($tusDatos as $dato) {
-                            $contadorMisiones++; // Incrementa el contador en cada iteración
-                            echo "<tr>";
-                            echo "<td>$contadorMisiones</td>";
-                            echo "<td>{$dato['mis_nombre']}</td>";
-                            echo "</tr>";
-                        }
-                        ?>
-                    </tbody>
+                              <!-- Contenido de la tabla -->
                 </table>
             </div>
             <div class="modal-footer">
@@ -117,5 +144,14 @@
 
     
 <script src="<?= asset('./build/js/asigmisiones/index.js') ?>"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+<script>
+            $(document).ready(function () {
+                $('#asig_contingente').select2();
+                $('#asig_mision').select2();
+            });
+        </script>
 </body>
 </html>
