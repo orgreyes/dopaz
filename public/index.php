@@ -12,6 +12,7 @@ use Controllers\UsuarioController;
 use Controllers\AspiranteController;
 use Controllers\ContingenteController;
 use Controllers\AsigMisionController;
+use Controllers\IngresoController;
 
 
 $router = new Router();
@@ -67,6 +68,12 @@ $router->get('/API/usuarios/buscar', [UsuarioController::class,'buscarAPI']);
 $router->post('/API/usuarios/guardar', [UsuarioController::class,'guardarAPI']);
 $router->post('/API/usuarios/enviar', [UsuarioController::class,'enviarAPI']);
 
+//!Rutas para Personal de que busca optar por una plaza
+$router->get('/ingresos', [IngresoController::class,'index']);
+$router->get('/API/ingresos/buscar', [IngresoController::class,'buscarAPI']);
+$router->post('/API/ingresos/eliminar', [IngresoController::class,'eliminarAPI']);
+$router->post('/API/ingresos/modificar', [IngresoController::class,'modificarAPI']);
+$router->post('/API/ingresos/guardar', [IngresoController::class,'guardarAPI']);
 
 // //!Rutas para Primer Ingreso del Personal
 // $router->get('/aspirantes', [AspiranteController::class,'index']);

@@ -1,7 +1,10 @@
+//?--------------------------------------------------------------
+
 import Datatable from "datatables.net-bs5";
-import { lenguaje } from "../lenguaje";
-import { validarFormulario, Toast } from "../funciones";
+import { lenguaje } from "../lenguaje"
+import { validarFormulario, Toast } from "../funciones"
 import Swal from "sweetalert2";
+//?--------------------------------------------------------------
 
 const formulario = document.querySelector('form');
 const btnFormulario = document.getElementById('btnFormulario');
@@ -9,131 +12,83 @@ const btnModificar = document.getElementById('btnModificar');
 const btnGuardar = document.getElementById('btnGuardar');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnCancelar = document.getElementById('btnCancelar');
-const tablaAsigMisionesContainer = document.getElementById('tablaAsigMisionesContainer');
+const tablaEvaluacionContainer = document.getElementById('tablaEvaluacionContainer');
+
+
+//?--------------------------------------------------------------
+
 
 let contenedor = 1;
 
-const datatable = new Datatable('#tablaAsigMisiones', {
-    language: lenguaje,
-    data: null,
-    columns: [
+const datatable = new Datatable('#tablaEvaluacion', {
+    language : lenguaje,
+    data : null,
+    columns : [
         {
-            title: 'NO',
-            render: () => contenedor++
+            title : 'NO',
+            render: () => contenedor++ 
+            
         },
         {
-            title: 'asigmisiones',
-            data: 'cont_nombre'
+            title : 'EVALUACIONES',
+            data: 'eva_nombre'
         },
         {
-            title: 'MISIONES',
-            data: 'cont_id',
+            title : 'MODIFICAR DATOS',
+            data: 'eva_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-info ver-misiones-btn" data-bs-toggle='modal' data-bs-target='#modalMisiones' data-id='${data}'>Ver Misiones</button>`
-        }
-    ]
-});
-
-window.limpiar = () => {
-    tablaMisiones.clear();
-    contenedorr = 1;
-}
-
-let contenedorr = 1;
-let tablaMisiones = new Datatable('#tablaMisiones', {
-    language: lenguaje,
-    data: null,
-    columns: [
-        {
-            title: 'No.',
-            render: () => contenedorr++
+            render : (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}'data-nombre='${row["eva_nombre"]}'>Modificar</button>`
         },
         {
-            title: 'MISIONES ASIGNADAS',
-            data: 'mis_nombre'
-        },
-        {
-            title: 'ELIMINAR',
-            data: 'asig_id',
+            title : 'ELIMINAR',
+            data: 'eva_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+            render : (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
         }
     ]
-});
-
-// Agregar un manejador de eventos para los botones "Ver Misiones"
-$('#tablaAsigMisiones').on('click', '.ver-misiones-btn', function () {
-    const cont_id = parseInt($(this).data('id')); // Convertir a entero
-    buscarMisionesContingenteAPI(cont_id);
-});
-
-// Agregar un manejador de eventos para el cierre del modal
-$('#modalMisiones').on('hidden.bs.modal', function (e) {
-    // Restablecer el contador y limpiar la tabla de misiones cuando se cierra el modal
-    limpiar();
-});
-
-const buscarMisionesContingenteAPI = async (cont_id) => {
-    const url = `API/asigmisiones/buscarMisionesContingente?cont_id=${cont_id}`;
-    console.log(url);
-
-    const config = {
-        method: 'GET'
-    };
-    
-    try {
-        const respuesta = await fetch(url, config);
-        if (respuesta.ok) {
-            const data = await respuesta.json();
-            console.log(data);
-            tablaMisiones.clear().draw();
-            if (data) {
-                tablaMisiones.rows.add(data).draw();
-            }
-        } else {
-            console.error('Error en la solicitud: ' + respuesta.status);
-        }
-    } catch (error) {
-        console.error(error);
-    }
-};
+})
 
 
+//?--------------------------------------------------------------
 
-// Función para buscar registros
+//!Aca esta la funcion para buscar
 const buscar = async () => {
     contenedor = 1;
 
-    const url = `API/asigmisiones/buscar`;
+    const url = `API/evaluaciones/buscar`;
     const config = {
         method: 'GET'
-    };
+    }
 
     try {
-        const respuesta = await fetch(url, config);
+        const respuesta = await fetch(url, config)
         const data = await respuesta.json();
 
         console.log(data);
-        datatable.clear().draw();
+        datatable.clear().draw()
         if (data) {
             datatable.rows.add(data).draw();
         } else {
             Toast.fire({
                 title: 'No se encontraron registros',
                 icon: 'info'
-            });
+            })
         }
+
     } catch (error) {
         console.log(error);
     }
-};
+}
 
-//!Función para guardar un registro
+
+//?--------------------------------------------------------------
+
+// //!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
-    if (!validarFormulario(formulario, ['asig_id'])) {
+    if (!validarFormulario(formulario, ['eva_id'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
@@ -142,8 +97,8 @@ const guardar = async (evento) => {
     }
 
     const body = new FormData(formulario);
-    body.delete('asig_id');
-    const url = 'API/asigmisiones/guardar';
+    body.delete('eva_id');
+    const url = 'API/evaluaciones/guardar';
     const headers = new Headers();
     headers.append("X-Requested-With", "fetch");
     const config = {
@@ -160,7 +115,8 @@ const guardar = async (evento) => {
         switch (codigo) {
             case 1:
                 formulario.reset();
-                icon = 'success';
+                icon = 'success', 
+                        'mensaje';
                 buscar();
                 break;
 
@@ -178,10 +134,9 @@ const guardar = async (evento) => {
         });
     } catch (error) {
         console.log(error);
-    }
-};
-
-
+        
+        }
+}
 
 //?--------------------------------------------------------------
 
@@ -189,8 +144,8 @@ const guardar = async (evento) => {
 const eliminar = async e => {
     const result = await Swal.fire({
         icon: 'question',
-        title: 'Eliminar Datos de Contingente',
-        text: '¿Desea eliminar los Datos de este Contingente?',
+        title: 'Eliminar Evaluacion',
+        text: '¿Desea eliminar este Evaluacion?',
         showCancelButton: true,
         confirmButtonText: 'Eliminar',
         cancelButtonText: 'Cancelar'
@@ -202,9 +157,9 @@ const eliminar = async e => {
     
     if (result.isConfirmed) {
         const body = new FormData();
-        body.append('asig_id', id);
+        body.append('eva_id', id);
         
-        const url = `/dopaz/API/asigmisiones/eliminar`;
+        const url = `/dopaz/API/evaluaciones/eliminar`;
         const config = {
             method: 'POST',
             body,
@@ -219,7 +174,7 @@ const eliminar = async e => {
             let icon='info'
             switch (codigo) {
                 case 1:
-                    buscarMisionesContingenteAPI();
+                    buscar();
                     Swal.fire({
                         icon: 'success',
                         title: 'Eliminado Exitosamente',
@@ -245,11 +200,11 @@ const eliminar = async e => {
 
 //!Aca esta la funcion de modificar un registro
 const modificar = async () => {
-    const asig_id = formulario.asig_id.value;
+    const eva_id = formulario.eva_id.value;
     const body = new FormData(formulario);
-    body.append('asig_id', asig_id);
+    body.append('eva_id', eva_id);
 
-    const url = `/dopaz/API/asigmisiones/modificar`;
+    const url = `/dopaz/API/evaluaciones/modificar`;
     const config = {
         method: 'POST',
         body,
@@ -293,25 +248,28 @@ const modificar = async () => {
         console.log(error);
     }
 };
+
+
+
 //?--------------------------------------------------------------
 //?block es mostrar 
 //?none y ocultar
 
 //!Ocultar el Datatable al inicio
 formulario.style.display = 'block';
-tablaAsigMisionesContainer.style.display = 'none'; 
+tablaEvaluacionContainer.style.display = 'none'; 
 
 //!Mostrar el formulario, ocultar datatable
 const mostrarFormulario = () => {
     formulario.style.display = 'block';
-    tablaAsigMisionesContainer.style.display = 'none'; 
+    tablaEvaluacionContainer.style.display = 'none'; 
     };
 
 //!Ocultar el formulario, mostrar datatable
 const ocultarFormulario = () => {
     // formulario.reset();
     formulario.style.display = 'none';
-    tablaAsigMisionesContainer.style.display = 'block';
+    tablaEvaluacionContainer.style.display = 'block';
 };
 
 //?--------------------------------------------------------------
@@ -363,11 +321,12 @@ const mostrarBtns = () => {
 const traeDatos = (e) => {
     const button = e.target;
     const id = button.dataset.id;
-    const nombreContingente = button.dataset.nombreContingente;
+    const nombre = button.dataset.nombre;
+//?--------------------------------------------------------------
 
     //! Llenar el formulario con los datos obtenidos
-    formulario.asig_id.value = id;
-    formulario.asig_contingente.value = nombreContingente;
+    formulario.eva_id.value = id;
+    formulario.eva_nombre.value = nombre;
 };
 
 //?--------------------------------------------------------------
@@ -375,8 +334,12 @@ const traeDatos = (e) => {
 //!Aca esta la funcino de cancelar la accion de modificar un registro.
 const cancelarAccion = () => {
     formulario.reset();
-    document.getElementById('tablaAsigMisionesContainer').style.display = 'block'; 
+    document.getElementById('tablaEvaluacionContainer').style.display = 'block'; 
 };
+//?--------------------------------------------------------------
+
+
+
 
 
 //?--------------------------------------------------------------
@@ -411,12 +374,16 @@ btnModificar.addEventListener('click', () => {
     }, 1200);
 });
 
-
-
-
 //?--------------------------------------------------------------
-tablaMisiones.on('click','.btn-danger', eliminar)
+datatable.on('click','.btn-warning', traeDatos)
+datatable.on('click','.btn-warning', mostrarFormulario)
+datatable.on('click','.btn-warning', MostrarBtnForumulario)
+datatable.on('click','.btn-warning', mostrarBtns)
+datatable.on('click','.btn-warning', OcultarTodoForumulario)
 //?--------------------------------------------------------------
+datatable.on('click','.btn-danger', eliminar)
+//?--------------------------------------------------------------
+buscar();
 
 
 

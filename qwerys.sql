@@ -139,6 +139,7 @@ CREATE TABLE cont_ingresos (
     ing_contingente INT,
     ing_fecha_cont DATE,
     ing_aspirante INT,
+    ing_codigo CHAR(10) UNIQUE,
     ing_situacion SMALLINT,
     FOREIGN KEY (ing_contingente) REFERENCES contingentes(cont_id),
     FOREIGN KEY (ing_puesto) REFERENCES cont_puestos(pue_id),
@@ -264,3 +265,12 @@ JOIN cont_misiones_contingente mc ON cam.asig_mision = mc.mis_id
 WHERE c.cont_nombre = 'CONTINGENTE 1';
 
 
+SELECT 
+    asp.asp_nom1,
+    pue.pue_nombre,
+    cont.cont_nombre,
+    ci.ing_situacion
+FROM cont_ingresos ci
+JOIN cont_aspirantes asp ON ci.ing_aspirante = asp.asp_id
+JOIN cont_puestos pue ON ci.ing_puesto = pue.pue_id
+JOIN contingentes cont ON ci.ing_contingente = cont.cont_id;

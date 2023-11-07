@@ -18,11 +18,26 @@ const formularioGuardar = document.getElementById('formularioGuardar');
 
 
 //?--------------------------------------------------------------
+// //!Funcion para generar Codigos Aleatorios
+
+function generarCodigoAleatorio(longitud) {
+    const caracteres = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let codigo = '';
+
+    for (let i = 0; i < longitud; i++) {
+        const indiceAleatorio = Math.floor(Math.random() * caracteres.length);
+        codigo += caracteres.charAt(indiceAleatorio);
+    }
+
+    return codigo;
+}
+//?--------------------------------------------------------------
 
 // //!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
 
+    // Valida el formulario
     if (!validarFormulario(formulario, ['per_catalogo'])) {
         Toast.fire({
             icon: 'info',
@@ -30,27 +45,39 @@ const guardar = async (evento) => {
         });
         return;
     }
+
+    // Genera un código aleatorio
+    const codigoAleatorio = generarCodigoAleatorio(10); // Cambia la longitud según tus necesidades
+
+    // Construye el cuerpo de la solicitud
     const body = new FormData(formulario);
     body.delete('per_catalogo');
+    body.append('ing_codigo', codigoAleatorio);
+
+    // Define la URL del servicio
     const url = 'API/usuarios/guardar';
     const headers = new Headers();
-    headers.append("X-Requested-With", "fetch");
+    headers.append('X-Requested-With', 'fetch');
+
+    // Configura la solicitud
     const config = {
         method: 'POST',
-        body
+        body,
+        headers,
     };
 
     try {
+        // Realiza la solicitud
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-console.log(data)
-return
+
+        // Procesa la respuesta
         const { codigo, mensaje, detalle } = data;
         let icon = 'info';
         switch (codigo) {
             case 1:
-                icon = 'success', 
-                        'mensaje';
+                icon = 'success';
+                // Realiza las acciones necesarias en caso de éxito
                 buscar();
                 break;
 
@@ -61,21 +88,22 @@ return
 
             case 2:
                 icon = 'info';
-                        'mensaje'
+                // Realiza las acciones necesarias en caso de código 2
                 break;
 
             default:
                 break;
         }
+
+        // Muestra una notificación al usuario
         Toast.fire({
             icon,
             text: mensaje
         });
     } catch (error) {
         console.log(error);
-        
-        }
-}
+    }
+};
 
 
 

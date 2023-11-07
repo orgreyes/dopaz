@@ -118,11 +118,14 @@ public static function buscarAPI()
 //!Funcion Guardar
 public static function guardarAPI(){
     try {
-        
+        $codigo = $_POST['ing_codigo'];
+
+
         $puesto = $_POST['ing_puesto'];
         $contingente = $_POST['asig_contingente'];
         $fecha_hoy = date("d/m/Y");
-      
+
+
         $aspirante = new Aspirante($_POST);
         $resultado = $aspirante->crear();
 
@@ -131,6 +134,7 @@ public static function guardarAPI(){
 
 
 //!Aca se recibe los datos que se guardaran en otra tabla.
+        $datos ['ing_codigo'] = $codigo;
         $datos ['ing_aspirante'] = $id_aspirante;
         $datos ['ing_fecha_cont'] = $fecha_hoy;
         $datos ['ing_puesto'] = $puesto;
