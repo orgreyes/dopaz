@@ -154,13 +154,15 @@ const mostrarFormulario = () => {
 
 //!Ocultar el formulario, y pasar al paso 2.
 const ocultarFormulario = () => {
-    if (!validarFormulario(formulario)) {
+    if (!validarFormulario(formulario, ['asp_catalogo'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los campos del formulario antes de continuar.'
         });
         return;
     }
+    const body = new FormData(formulario);
+    body.delete('asp_catalogo');
     // formulario.reset();
     formulario.style.display = 'none';
     formularioGuardar.style.display = 'block';

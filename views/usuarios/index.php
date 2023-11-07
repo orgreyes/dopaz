@@ -82,22 +82,27 @@
 
                                 <div class="form-group col-md-6">
                                     <label for="asp_nom2"><i class="fas fa-user"></i></label>
-                                    <input type="text" class="form-control" id="asp_nom2"  name "asp_nom2" placeholder="Segundo Nombre">
+                                    <input type="text" class="form-control" id="asp_nom2"  name= "asp_nom2" placeholder="Segundo Nombre">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="asp_ape1"><i class="fas fa-user-tie"></i> Apellidos:</label>
-                                    <input type="text" class="form-control" id="asp_ape1"  name "asp_ape1" placeholder="Primer apellido">
+                                    <input type="text" class="form-control" id="asp_ape1"  name= "asp_ape1" placeholder="Primer apellido">
                                 </div>
                             <div class="form-group col-md-6">
                                 <label for="asp_ape2"><i class="fas fa-user"></i></label>
-                                <input type="text" class="form-control" id="asp_ape2"  name "asp_ape2" placeholder="Segundo apellido">
+                                <input type="text" class="form-control" id="asp_ape2"  name= "asp_ape2" placeholder="Segundo apellido">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="asp_genero"><i class="fas fa-venus-mars"></i>Genero:</label>
+                                <input type="text" class="form-control" id="asp_genero"  name= "asp_genero"  placeholder="Genero">
                             </div>
 
                             <!--//!------------------------->
-                            <div class="row mb-3 col-md-12">
+                            <div class="row mb-3 col-md-6">
                                 <div class="col">
                                     <label for="per_grado"><i class="fas fa-shield"></i> Seleccione Grado</label><br>
                                     <select name="per_grado" id="per_grado" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
@@ -110,20 +115,32 @@
                                 </div>
                             </div>
 
-                            
                             <div class="form-group col-md-6">
                                 <label for="per_arma"><i class="fas fa-crosshairs"></i>Arma:</label>
                                 <input type="text" class="form-control" id="per_arma"  name "per_arma" placeholder="Arma">
                             </div>
+                            
+                            <div class="row mb-3 col-md-6">
+                                <div class="col">
+                                    <label for="asig_contingente"><i  class="fas fa-globe"></i> Seleccione Un Contingente </label><br>
+                                    <select name="asig_contingente" id="asig_contingente" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+                                        <option value="">SELECCIONE...</option>
+                                        <?php foreach ($contingentes as $contingente) : ?>
+                                        <option value="<?= $contingente['cont_id'] ?>">
+                                            <?= $contingente['cont_nombre'] ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            
+                            
                             <!--//!------------------------->
 
-                            <div class="form-group col-md-6">
-                                <label for="asp_genero"><i class="fas fa-venus-mars"></i>Genero:</label>
-                                <input type="text" class="form-control" id="asp_genero"  name "asp_genero"  placeholder="Genero">
-                            </div>
+                            
                             <div class="form-group col-md-6">
                                 <label for="asp_dpi"><i class="fas fa-id-card"></i>DPI:</label>
-                                <input type="text" class="form-control" id="asp_dpi"  name "asp_dpi" placeholder="DPI">
+                                <input type="text" class="form-control" id="asp_dpi"  name= "asp_dpi" placeholder="DPI">
                             </div>
 
                             <div class="row mb-3 col-md-6">
@@ -175,6 +192,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
         <script>
             $(document).ready(function () {
+                $('#asig_contingente').select2();
                 $('#per_grado').select2();
                 $('#ing_puesto').select2();
             });
