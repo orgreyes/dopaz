@@ -43,15 +43,7 @@
         <div class="container mt-4">
             <h2 id="titulo">Formulario para personal que viaja por primera vez a Contingente</h2><br>
 
-            <div class="col-6 mx-auto">
-                <button type="button" id="btnIniciar" class="btn btn-primary w-100">
-                    <i class="fas fa-play-circle"></i> Iniciar el Registro de Personal nuevo
-                </button>
-            </div>
-
             <form class="form-container" id="formularioPersonal">
-                <h5><b>Paso 1.</b> Ingrese la Información Requerida del Aspirante</h5>
-                <br>
                 <div class="row">
                     <div class="col-md-3">
                         <img for="asp_catalogo" id="foto" src="./images/foto.jpg" alt="Fotografía">
@@ -117,7 +109,7 @@
 
                             <div class="form-group col-md-6">
                                 <label for="per_arma"><i class="fas fa-crosshairs"></i>Arma:</label>
-                                <input type="text" class="form-control" id="per_arma"  name "per_arma" placeholder="Arma">
+                                <input type="text" class="form-control" id="per_arma"  name="per_arma" placeholder="Arma">
                             </div>
                             
                             <div class="row mb-3 col-md-6">
@@ -156,9 +148,9 @@
                                 </div>
                             </div>
                             <br>
-                            <div class="col-6">
-                                <button type="button" id="btnSiguiente1" class="btn btn-primary w-100">
-                                    Siguiente <i class="fas fa-arrow-right"></i>
+                            <div class="col-6 mx-auto">
+                                <button type="button" id="btnGuardar" class="btn btn-primary w-100">
+                                    <i class="fas fa-save"></i> Guardar Registro
                                 </button>
                             </div>
 
@@ -169,34 +161,12 @@
             </form>
             <br>
 
-            <form class="form-container" id="formularioGuardar">
-                <center><h5><b>Paso 2.</b> Guarde la Información</h5></center>
-                <br>
-                <div class="col-6 mx-auto">
-                    <button type="button" id="btnGuardar" class="btn btn-primary w-100">
-                        <i class="fas fa-save"></i> Guardar Registro
-                    </button>
-                </div>
-                <br>
-                <div class="col-6 mx-auto">
-                    <button type="button" id="btnCancelar" class="btn btn-danger w-100">
-                        <i class="fas fa-times"></i> Cancelar Registro
-                    </button>
-                </div>
-            </form>
             <br>
         </div>
         <script src="<?= asset('./build/js/usuarios/index.js') ?>"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                $('#asig_contingente').select2();
-                $('#per_grado').select2();
-                $('#ing_puesto').select2();
-            });
-        </script>
     </body>
 
     </html>

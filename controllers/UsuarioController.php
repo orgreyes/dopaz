@@ -58,9 +58,19 @@ public static function buscaContingentes()
 //!Funcion Select Puestos
     public static function buscarPuesto()
     {
-        $sql = "SELECT * FROM cont_puestos
-         where pue_situacion = 1
-         ORDER BY pue_nombre ASC";
+        $grado = $_GET['pue_grado'];
+
+
+        $sql = "SELECT pue_id, pue_nombre
+        FROM cont_puestos 
+        WHERE pue_situacion = 1
+        ORDER BY pue_nombre ASC";
+
+// SELECT pue_id, pue_nombre
+// FROM cont_puestos 
+// WHERE pue_grado = $grado
+// AND pue_situacion = 1
+// ORDER BY pue_nombre ASC
 
         try {
             $puestos = Puesto::fetchArray($sql);
@@ -88,7 +98,7 @@ public static function buscarAPI()
                     WHEN per_sexo = 'F' THEN 'FEMENINO'
                     ELSE 'DESCONOCIDO'
                 END AS per_sexo,
-                grados.gra_desc_md,
+                grados.gra_codigo,
                 armas.arm_desc_md
             FROM mper
             INNER JOIN grados ON mper.per_grado = grados.gra_codigo
@@ -116,35 +126,43 @@ public static function buscarAPI()
 
 
 //!Funcion Guardar
-public static function guardarAPI(){
+public static function guardarAPI() {
     try {
         $codigo = $_POST['ing_codigo'];
-
-
         $puesto = $_POST['ing_puesto'];
         $contingente = $_POST['asig_contingente'];
         $fecha_hoy = date("d/m/Y");
-
-
+        
         $aspirante = new Aspirante($_POST);
         $resultado = $aspirante->crear();
-
-//!Aca se captura el id que se crea.
-        $id_aspirante =$resultado['id'];
-
-
-//!Aca se recibe los datos que se guardaran en otra tabla.
-        $datos ['ing_codigo'] = $codigo;
-        $datos ['ing_aspirante'] = $id_aspirante;
-        $datos ['ing_fecha_cont'] = $fecha_hoy;
-        $datos ['ing_puesto'] = $puesto;
-        $datos ['ing_contingente'] = $contingente;
-
-        $ingresos = new Ingreso ($datos);
+        
+        // ! Aca se captura el id que se crea.
+        $id_aspirante = $resultado['id'];
+        
+        // ! Aca se recibe los datos que se guardaran en otra tabla.
+        $datos['ing_codigo'] = $codigo;
+        $datos['ing_aspirante'] = $id_aspirante;
+        $datos['ing_fecha_cont'] = $fecha_hoy;
+        $datos['ing_puesto'] = $puesto;
+        $datos['ing_contingente'] = $contingente;
+        
+        $ingresos = new Ingreso($datos);
         $result = $ingresos->guardar();
-        echo json_encode($result);
 
+        // ! Solo envía una respuesta JSON al final
+        if ($result['resultado'] == 1) {
+            echo json_encode([
+                'mensaje' => 'Registro guardado correctamente',
+                'codigo' => 1
+            ]);
+        } else {
+            echo json_encode([
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
     } catch (Exception $e) {
+        // ! Si hay una excepción, envía una respuesta JSON de error
         echo json_encode([
             'detalle' => $e->getMessage(),
             'mensaje' => 'El Aspirante ya fue Inscrito',

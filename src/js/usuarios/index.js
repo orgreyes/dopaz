@@ -1,27 +1,20 @@
 //?--------------------------------------------------------------
 
-import { Alert, Dropdown } from "bootstrap";
 import Swal from "sweetalert2";
 import { validarFormulario, Toast, confirmacion} from "../funciones";
-import Datatable from "datatables.net-bs5";
-import { lenguaje  } from "../lenguaje";
+
 
 //?--------------------------------------------------------------
 
 const btnBuscar = document.getElementById('btnBuscar');
 const btnGuardar = document.getElementById('btnGuardar');
-const btnIniciar = document.getElementById('btnIniciar');
-const btnCancelar = document.getElementById('btnCancelar');
-const btnSiguiente1 = document.getElementById('btnSiguiente1');
 const formulario = document.querySelector('#formularioPersonal');
-const formularioGuardar = document.getElementById('formularioGuardar');
-
 
 //?--------------------------------------------------------------
 // //!Funcion para generar Codigos Aleatorios
 
 function generarCodigoAleatorio(longitud) {
-    const caracteres = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const caracteres = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%?';
     let codigo = '';
 
     for (let i = 0; i < longitud; i++) {
@@ -36,8 +29,6 @@ function generarCodigoAleatorio(longitud) {
 // //!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
-
-    // Valida el formulario
     if (!validarFormulario(formulario, ['per_catalogo'])) {
         Toast.fire({
             icon: 'info',
@@ -55,15 +46,12 @@ const guardar = async (evento) => {
     body.append('ing_codigo', codigoAleatorio);
 
     // Define la URL del servicio
-    const url = 'API/usuarios/guardar';
+    const url = '/dopaz/API/usuarios/guardar';
     const headers = new Headers();
     headers.append('X-Requested-With', 'fetch');
-
-    // Configura la solicitud
     const config = {
         method: 'POST',
-        body,
-        headers,
+        body
     };
 
     try {
@@ -77,29 +65,23 @@ const guardar = async (evento) => {
         switch (codigo) {
             case 1:
                 icon = 'success';
-                // Realiza las acciones necesarias en caso de éxito
+                        'mensaje';
+                formulario.reset();
                 buscar();
                 break;
 
             case 0:
-                icon = 'info';
+                icon = 'error';
                 console.log(detalle);
-                break;
-
-            case 2:
-                icon = 'info';
-                // Realiza las acciones necesarias en caso de código 2
                 break;
 
             default:
                 break;
         }
-
-        // Muestra una notificación al usuario
-        Toast.fire({
-            icon,
-            text: mensaje
-        });
+    Toast.fire({
+        icon,
+        text: mensaje
+    });
     } catch (error) {
         console.log(error);
     }
@@ -138,82 +120,54 @@ const buscar = async () => {
             return;
         }
 
-        if (Array.isArray(data)) {
-            data.forEach(d => {
-                formulario.asp_nom1.value = d.per_nom1;
-                formulario.asp_nom2.value = d.per_nom2;
-                formulario.asp_ape1.value = d.per_ape1;
-                formulario.asp_ape2.value = d.per_ape2;
-                formulario.asp_genero.value = d.per_sexo;
-                formulario.asp_dpi.value = d.per_dpi;
-                formulario.per_grado.value = d.gra_desc_md;
-                formulario.per_arma.value = d.arm_desc_md;
-                formulario.foto.src = `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${d.per_catalogo}.jpg`;
-                console.log(data)
-            });
+        if (Array.isArray(data) && data.length > 0) {
+            const d = data[0]; // Tomamos el primer elemento del array
+
+            formulario.asp_nom1.value = d.per_nom1;
+            formulario.asp_nom2.value = d.per_nom2;
+            formulario.asp_ape1.value = d.per_ape1;
+            formulario.asp_ape2.value = d.per_ape2;
+            formulario.asp_genero.value = d.per_sexo;
+            formulario.asp_dpi.value = d.per_dpi;
+            formulario.per_grado.value = d.gra_codigo;
+            formulario.per_arma.value = d.arm_desc_md;
+            formulario.foto.src = `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${d.per_catalogo}.jpg`;
+
+            // Buscar puestos con el grado obtenido
+            const url2 = `API/usuarios/buscarPuesto?pue_grado=${d.gra_codigo}`;
+            console.log(url2);
+
+            const respuesta2 = await fetch(url2);
+
+            if (!respuesta2.ok) {
+                console.error(`Error en la solicitud: ${respuesta2.status} ${respuesta2.statusText}`);
+                return;
+            }
+
+            try {
+                const puestosData = await respuesta2.json();
+
+                // Ahora puedes manejar los datos de puestosData como desees
+                console.log(puestosData);
+            } catch (error) {
+                console.error('Error al parsear la respuesta JSON:', error);
+            }
         } else {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Los datos de respuesta no son un array.'
+                text: 'Los datos de respuesta no son un array o están vacíos.'
             });
         }
     } catch (error) {
         // Manejo de errores
-        console.log(error);
+        console.log('Error en la solicitud:', error);
     }
 };
 
-//?--------------------------------------------------------------
-//?block es mostrar 
-//?none y ocultar
-
-//!Ocultar el Formulario al inicio
-formulario.style.display = 'none';
-formularioGuardar.style.display = 'none';
-btnIniciar.style.display = 'block';
-
-//!Mostrar el formulario, ocultar btnIniciar
-const mostrarFormulario = () => {
-    formulario.style.display = 'block';
-    titulo.style.display = 'block';
-    btnIniciar.style.display = 'none'; 
-    };
-
-//!Ocultar el formulario, y pasar al paso 2.
-const ocultarFormulario = () => {
-    if (!validarFormulario(formulario, ['asp_catalogo'])) {
-        Toast.fire({
-            icon: 'info',
-            text: 'Debe llenar todos los campos del formulario antes de continuar.'
-        });
-        return;
-    }
-    const body = new FormData(formulario);
-    body.delete('asp_catalogo');
-    // formulario.reset();
-    formulario.style.display = 'none';
-    formularioGuardar.style.display = 'block';
-};
 
 
-//!Regresa al Formulario con los campos vacios
-const iniciarRegistro = () => {
-        formulario.reset();
-    formulario.style.display = 'block';
-    formularioGuardar.style.display = 'none';
-    titulo.style.display = 'block';
-    btnIniciar.style.display = 'none';
-    };
-
-    //!Regresa al Formulario con los campos vacios
-
-      
-//?--------------------------------------------------------------
 
 
-btnIniciar.addEventListener('click', mostrarFormulario)
-btnSiguiente1.addEventListener('click', ocultarFormulario)
-btnCancelar.addEventListener('click', iniciarRegistro)
 btnBuscar.addEventListener('click', buscar);
 btnGuardar.addEventListener('click', guardar);

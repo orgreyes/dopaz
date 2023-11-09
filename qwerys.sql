@@ -96,7 +96,7 @@ CREATE TABLE cont_aspirantes (
     asp_nom2 CHAR(15),
     asp_ape1 CHAR(15),
     asp_ape2 CHAR(15),
-    asp_dpi CHAR(15),
+    asp_dpi CHAR(15) UNIQUE,
     asp_genero CHAR(1),
     asp_situacion SMALLINT,
     FOREIGN KEY (asp_catalogo) REFERENCES mper(per_catalogo)

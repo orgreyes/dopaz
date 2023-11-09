@@ -18,17 +18,22 @@ class IngresoController {
  //!Funcion Buscar
  public static function buscarAPI()
  {
-    $sql = "SELECT * FROM cont_evaluaciones WHERE eva_situacion = 1 ";
     
-     $sql = "SELECT eva_id, eva_nombre
-     FROM cont_evaluaciones
-     WHERE eva_situacion = 1;";
+     $sql = "SELECT 
+     ci.ing_codigo,
+     pue.pue_nombre,
+     cont.cont_nombre,
+     ci.ing_situacion
+ FROM cont_ingresos ci
+ JOIN cont_aspirantes asp ON ci.ing_aspirante = asp.asp_id
+ JOIN cont_puestos pue ON ci.ing_puesto = pue.pue_id
+ JOIN contingentes cont ON ci.ing_contingente = cont.cont_id";
 
      try {
 
-         $evaluaciones = Ingreso::fetchArray($sql);
+         $ingresos = Ingreso::fetchArray($sql);
 
-         echo json_encode($evaluaciones);
+         echo json_encode($ingresos);
      } catch (Exception $e) {
          echo json_encode([
              'detalle' => $e->getMessage(),

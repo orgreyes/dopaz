@@ -13,6 +13,7 @@ module.exports = {
     'js/contingentes/index' : './src/js/contingentes/index.js',
     'js/misiones/index' : './src/js/misiones/index.js',
     'js/asigmisiones/index' : './src/js/asigmisiones/index.js',
+    'js/ingresos/index' : './src/js/ingresos/index.js',
 
   },
   output: {

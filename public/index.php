@@ -65,6 +65,7 @@ $router->post('/API/asigmisiones/guardar', [AsigMisionController::class,'guardar
 //!Rutas para Primer Ingreso del Personal
 $router->get('/usuarios', [UsuarioController::class,'index']);
 $router->get('/API/usuarios/buscar', [UsuarioController::class,'buscarAPI']);
+$router->get('/API/usuarios/buscarPuesto', [UsuarioController::class,'buscarPuesto']);
 $router->post('/API/usuarios/guardar', [UsuarioController::class,'guardarAPI']);
 $router->post('/API/usuarios/enviar', [UsuarioController::class,'enviarAPI']);
 

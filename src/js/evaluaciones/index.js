@@ -121,7 +121,7 @@ const guardar = async (evento) => {
                 break;
 
             case 0:
-                icon = 'error';
+                icon = 'info';
                 console.log(detalle);
                 break;
 
