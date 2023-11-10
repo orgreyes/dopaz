@@ -14,6 +14,8 @@ module.exports = {
     'js/misiones/index' : './src/js/misiones/index.js',
     'js/asigmisiones/index' : './src/js/asigmisiones/index.js',
     'js/ingresos/index' : './src/js/ingresos/index.js',
+    'js/resultados/index' : './src/js/resultados/index.js',
+    'js/papelerias/index' : './src/js/papelerias/index.js',
 
   },
   output: {

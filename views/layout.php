@@ -33,11 +33,34 @@
                         </a>
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
-                            <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/evaluaciones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Evaluaciones</a>
-                            </li>
+                            
                             <li>
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/puestos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Puestos</a>
+                            </li>
+                           
+                            
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/usuarios"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Primer Ingreso de Personal</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/aspirantes"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Personal Aspirantes</a>
+                            </li>
+                            
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/resultados"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Personal actualmente optando por una plaza en un contingente.</a>
+                            </li>
+                            
+                        </ul>
+                    </div> 
+
+                    <div class="nav-item dropdown " >
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear me-2"></i>Contingentes
+                        </a>
+                        <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
+                            <!-- <h6 class="dropdown-header">Información</h6> -->
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/contingentes"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Contingentes</a>
                             </li>
                             <li>
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/misiones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Mapa de Misiones</a>
@@ -45,20 +68,40 @@
                             <li>
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/asigmisiones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Asignacion de Misiones a Contingentes</a>
                             </li>
+                        </ul>
+                    </div> 
+
+                    <div class="nav-item dropdown " >
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear me-2"></i>Evaluciones
+                        </a>
+                        <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
+                            <!-- <h6 class="dropdown-header">Información</h6> -->
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/usuarios"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Primer Ingreso de Personal</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/evaluaciones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Evaluaciones</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/aspirantes"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Personal Aspirantes</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/contingentes"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Contingentes</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/contingentes"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Personal actualmente optando por una plaza en un contingente.</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/resultados"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Seleccion de Personal</a>
                             </li>
                         </ul>
                     </div> 
+
+                    <div class="nav-item dropdown " >
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear me-2"></i>Papeleria
+                        </a>
+                        <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
+                            <!-- <h6 class="dropdown-header">Información</h6> -->
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/papelerias"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Creacion de Papelerias</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigpapelerias"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Papeleria Requerida Por Puesto</a>
+                            </li>
+                        </ul>
+                    </div> 
+
+                </ul> 
 
                 </ul> 
                 <div class="col-lg-1 d-grid mb-lg-0 mb-2">

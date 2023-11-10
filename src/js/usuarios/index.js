@@ -150,7 +150,6 @@ const buscar = async () => {
                 // Ahora puedes manejar los datos de puestosData como desees
                 console.log(puestosData);
             } catch (error) {
-                console.error('Error al parsear la respuesta JSON:', error);
             }
         } else {
             Swal.fire({

@@ -79,6 +79,21 @@ CREATE TABLE cont_evaluaciones (
     eva_situacion SMALLINT
 );
 
+CREATE TABLE cont_papeleria(
+    pap_id SERIAL PRIMARY KEY,
+    pap_nombre CHAR(50),
+    pap_situacion SMALLINT
+);
+
+CREATE TABLE cont_asig_papeleria(
+    asig_pap_id SERIAL PRIMARY KEY,
+    asig_pap_puesto INT,
+    asig_pap_papeleria INT,
+    asig_pap_situacion SMALLINT,
+    FOREIGN KEY (asig_pap_puesto) REFERENCES cont_puestos(pue_id),
+    FOREIGN KEY (asig_pap_papeleria) REFERENCES cont_papeleria(pap_id) 
+)
+
 -- Tabla Cont_Puestos
 CREATE TABLE cont_puestos (
     pue_id SERIAL PRIMARY KEY,
@@ -189,6 +204,8 @@ CREATE TABLE cont_resultados (
 
 
 DROP TABLE contingentes
+DROP TABLE cont_papeleria
+DROP TABLE cont_asig_papeleria
 DROP TABLE cont_aprovados
 DROP TABLE cont_evaluaciones
 DROP TABLE cont_puestos
@@ -274,3 +291,28 @@ FROM cont_ingresos ci
 JOIN cont_aspirantes asp ON ci.ing_aspirante = asp.asp_id
 JOIN cont_puestos pue ON ci.ing_puesto = pue.pue_id
 JOIN contingentes cont ON ci.ing_contingente = cont.cont_id;
+
+
+
+
+
+SELECT 
+    cont_aspirantes.asp_id AS ID_Aspirante,
+    asp_nom1 || ' ' || asp_nom2 || ' ' || asp_ape1 || ' ' || asp_ape2 AS Nombre_Aspirante,
+    cont_evaluaciones.eva_id AS ID_Evaluacion,
+    eva_nombre AS Evaluacion_Asignada,
+    res_nota AS Nota
+FROM 
+    cont_aspirantes, cont_ingresos, cont_resultados, cont_evaluaciones
+WHERE 
+    cont_aspirantes.asp_id = cont_ingresos.ing_aspirante AND
+    cont_ingresos.ing_id = cont_resultados.res_aspirante AND
+    cont_resultados.res_evaluacion = cont_evaluaciones.eva_id AND
+    YEAR(cont_ingresos.ing_fecha_cont) = YEAR(CURRENT)
+ORDER BY 
+    Nombre_Aspirante ASC;
+
+
+
+
+

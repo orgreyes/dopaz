@@ -13,6 +13,8 @@ use Controllers\AspiranteController;
 use Controllers\ContingenteController;
 use Controllers\AsigMisionController;
 use Controllers\IngresoController;
+use Controllers\ResultadoController;
+use Controllers\PapeleriaController;
 
 
 $router = new Router();
@@ -30,6 +32,12 @@ $router->post('/API/evaluaciones/eliminar', [EvaluacionController::class,'elimin
 $router->post('/API/evaluaciones/modificar', [EvaluacionController::class,'modificarAPI']);
 $router->post('/API/evaluaciones/guardar', [EvaluacionController::class,'guardarAPI']);
 
+//!Rutas para Papeleria
+$router->get('/papelerias', [PapeleriaController::class,'index']);
+$router->get('/API/papelerias/buscar', [PapeleriaController::class,'buscarAPI']);
+$router->post('/API/papelerias/eliminar', [PapeleriaController::class,'eliminarAPI']);
+$router->post('/API/papelerias/modificar', [PapeleriaController::class,'modificarAPI']);
+$router->post('/API/papelerias/guardar', [PapeleriaController::class,'guardarAPI']);
 
 //!Rutas para Puestos
 $router->get('/puestos', [PuestoController::class,'index']);
@@ -75,6 +83,15 @@ $router->get('/API/ingresos/buscar', [IngresoController::class,'buscarAPI']);
 $router->post('/API/ingresos/eliminar', [IngresoController::class,'eliminarAPI']);
 $router->post('/API/ingresos/modificar', [IngresoController::class,'modificarAPI']);
 $router->post('/API/ingresos/guardar', [IngresoController::class,'guardarAPI']);
+
+
+//!Rutas para Asignar Resultados
+$router->get('/resultados', [ResultadoController::class,'index']);
+$router->get('/API/resultados/buscar', [ResultadoController::class,'buscarAPI']);
+$router->get('/API/resultados/buscarEvaluaciones', [ResultadoController::class,'buscarEvaluacionesAPI']);
+$router->post('/API/resultados/eliminar', [ResultadoController::class,'eliminarAPI']);
+$router->post('/API/resultados/modificar', [ResultadoController::class,'modificarAPI']);
+$router->post('/API/resultados/guardar', [ResultadoController::class,'guardarAPI']);
 
 // //!Rutas para Primer Ingreso del Personal
 // $router->get('/aspirantes', [AspiranteController::class,'index']);
