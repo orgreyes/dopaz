@@ -15,6 +15,7 @@ use Controllers\AsigMisionController;
 use Controllers\IngresoController;
 use Controllers\ResultadoController;
 use Controllers\PapeleriaController;
+use Controllers\AsigPapeleriaController;
 
 
 $router = new Router();
@@ -69,6 +70,14 @@ $router->get('/API/asigmisiones/buscarMisionesContingente', [AsigMisionControlle
 $router->post('/API/asigmisiones/eliminar', [AsigMisionController::class,'eliminarAPI']);
 $router->post('/API/asigmisiones/modificar', [AsigMisionController::class,'modificarAPI']);
 $router->post('/API/asigmisiones/guardar', [AsigMisionController::class,'guardarAPI']);
+
+//!Rutas para Asignar Papereria requerida a Puestos
+$router->get('/asigpapelerias', [AsigPapeleriaController::class,'index']);
+$router->get('/API/asigpapelerias/buscar', [AsigPapeleriaController::class,'buscarAPI']);
+$router->get('/API/asigpapelerias/buscarPapeleriaPuesto', [AsigPapeleriaController::class,'buscarPapeleriaPuestoAPI']);
+$router->post('/API/asigpapelerias/eliminar', [AsigPapeleriaController::class,'eliminarAPI']);
+$router->post('/API/asigpapelerias/modificar', [AsigPapeleriaController::class,'modificarAPI']);
+$router->post('/API/asigpapelerias/guardar', [AsigPapeleriaController::class,'guardarAPI']);
 
 //!Rutas para Primer Ingreso del Personal
 $router->get('/usuarios', [UsuarioController::class,'index']);
