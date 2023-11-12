@@ -12,7 +12,7 @@ const btnModificar = document.getElementById('btnModificar');
 const btnGuardar = document.getElementById('btnGuardar');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnCancelar = document.getElementById('btnCancelar');
-const tablaPapeleriaContainer = document.getElementById('tablaPapeleriaContainer');
+const tablaRequisitosContainer = document.getElementById('tablaRequisitosContainer');
 
 
 //?--------------------------------------------------------------
@@ -20,7 +20,7 @@ const tablaPapeleriaContainer = document.getElementById('tablaPapeleriaContainer
 
 let contenedor = 1;
 
-const datatable = new Datatable('#tablaPapeleria', {
+const datatable = new Datatable('#tablaRequisitos', {
     language : lenguaje,
     data : null,
     columns : [
@@ -30,19 +30,19 @@ const datatable = new Datatable('#tablaPapeleria', {
             
         },
         {
-            title : 'TIPO DE PAPELERIA REGISTRADA',
-            data: 'pap_nombre'
+            title : 'REQUISITOS REGISTRADOS',
+            data: 'req_nombre'
         },
         {
             title : 'MODIFICAR DATOS',
-            data: 'pap_id',
+            data: 'req_id',
             searchable: false,
             orderable: false,
-            render : (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}'data-nombre='${row["pap_nombre"]}'>Modificar</button>`
+            render : (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}'data-nombre='${row["req_nombre"]}'>Modificar</button>`
         },
         {
             title : 'ELIMINAR',
-            data: 'pap_id',
+            data: 'req_id',
             searchable: false,
             orderable: false,
             render : (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
@@ -57,7 +57,7 @@ const datatable = new Datatable('#tablaPapeleria', {
 const buscar = async () => {
     contenedor = 1;
 
-    const url = `API/papelerias/buscar`;
+    const url = `API/requisitos/buscar`;
     const config = {
         method: 'GET'
     }
@@ -88,7 +88,7 @@ const buscar = async () => {
 // //!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
-    if (!validarFormulario(formulario, ['pap_id'])) {
+    if (!validarFormulario(formulario, ['req_id'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
@@ -97,8 +97,8 @@ const guardar = async (evento) => {
     }
 
     const body = new FormData(formulario);
-    body.delete('pap_id');
-    const url = 'API/papelerias/guardar';
+    body.delete('req_id');
+    const url = 'API/requisitos/guardar';
     const headers = new Headers();
     headers.append("X-Requested-With", "fetch");
     const config = {
@@ -144,8 +144,8 @@ const guardar = async (evento) => {
 const eliminar = async e => {
     const result = await Swal.fire({
         icon: 'question',
-        title: 'Eliminar papluacion',
-        text: '¿Desea eliminar este papluacion?',
+        title: 'Eliminar Requisito',
+        text: '¿Desea eliminar este requisito?',
         showCancelButton: true,
         confirmButtonText: 'Eliminar',
         cancelButtonText: 'Cancelar'
@@ -157,9 +157,9 @@ const eliminar = async e => {
     
     if (result.isConfirmed) {
         const body = new FormData();
-        body.append('pap_id', id);
+        body.append('req_id', id);
         
-        const url = `/dopaz/API/papelerias/eliminar`;
+        const url = `/dopaz/API/requisitos/eliminar`;
         const config = {
             method: 'POST',
             body,
@@ -200,11 +200,11 @@ const eliminar = async e => {
 
 //!Aca esta la funcion de modificar un registro
 const modificar = async () => {
-    const pap_id = formulario.pap_id.value;
+    const req_id = formulario.req_id.value;
     const body = new FormData(formulario);
-    body.append('pap_id', pap_id);
+    body.append('req_id', req_id);
 
-    const url = `/dopaz/API/papelerias/modificar`;
+    const url = `/dopaz/API/requisitos/modificar`;
     const config = {
         method: 'POST',
         body,
@@ -257,19 +257,19 @@ const modificar = async () => {
 
 //!Ocultar el Datatable al inicio
 formulario.style.display = 'block';
-tablaPapeleriaContainer.style.display = 'none'; 
+tablaRequisitosContainer.style.display = 'none'; 
 
 //!Mostrar el formulario, ocultar datatable
 const mostrarFormulario = () => {
     formulario.style.display = 'block';
-    tablaPapeleriaContainer.style.display = 'none'; 
+    tablaRequisitosContainer.style.display = 'none'; 
     };
 
 //!Ocultar el formulario, mostrar datatable
 const ocultarFormulario = () => {
     // formulario.reset();
     formulario.style.display = 'none';
-    tablaPapeleriaContainer.style.display = 'block';
+    tablaRequisitosContainer.style.display = 'block';
 };
 
 //?--------------------------------------------------------------
@@ -325,8 +325,8 @@ const traeDatos = (e) => {
 //?--------------------------------------------------------------
 
     //! Llenar el formulario con los datos obtenidos
-    formulario.pap_id.value = id;
-    formulario.pap_nombre.value = nombre;
+    formulario.req_id.value = id;
+    formulario.req_nombre.value = nombre;
 };
 
 //?--------------------------------------------------------------
@@ -334,7 +334,7 @@ const traeDatos = (e) => {
 //!Aca esta la funcino de cancelar la accion de modificar un registro.
 const cancelarAccion = () => {
     formulario.reset();
-    document.getElementById('tablaPapeleriaContainer').style.display = 'block'; 
+    document.getElementById('tablaRequisitosContainer').style.display = 'block'; 
 };
 //?--------------------------------------------------------------
 

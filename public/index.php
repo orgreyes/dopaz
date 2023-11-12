@@ -14,8 +14,8 @@ use Controllers\ContingenteController;
 use Controllers\AsigMisionController;
 use Controllers\IngresoController;
 use Controllers\ResultadoController;
-use Controllers\PapeleriaController;
-use Controllers\AsigPapeleriaController;
+use Controllers\RequisitoController;
+use Controllers\AsigRequisitoController;
 
 
 $router = new Router();
@@ -33,12 +33,12 @@ $router->post('/API/evaluaciones/eliminar', [EvaluacionController::class,'elimin
 $router->post('/API/evaluaciones/modificar', [EvaluacionController::class,'modificarAPI']);
 $router->post('/API/evaluaciones/guardar', [EvaluacionController::class,'guardarAPI']);
 
-//!Rutas para Papeleria
-$router->get('/papelerias', [PapeleriaController::class,'index']);
-$router->get('/API/papelerias/buscar', [PapeleriaController::class,'buscarAPI']);
-$router->post('/API/papelerias/eliminar', [PapeleriaController::class,'eliminarAPI']);
-$router->post('/API/papelerias/modificar', [PapeleriaController::class,'modificarAPI']);
-$router->post('/API/papelerias/guardar', [PapeleriaController::class,'guardarAPI']);
+//!Rutas para Requisitos
+$router->get('/requisitos', [RequisitoController::class,'index']);
+$router->get('/API/requisitos/buscar', [RequisitoController::class,'buscarAPI']);
+$router->post('/API/requisitos/eliminar', [RequisitoController::class,'eliminarAPI']);
+$router->post('/API/requisitos/modificar', [RequisitoController::class,'modificarAPI']);
+$router->post('/API/requisitos/guardar', [RequisitoController::class,'guardarAPI']);
 
 //!Rutas para Puestos
 $router->get('/puestos', [PuestoController::class,'index']);
@@ -71,13 +71,13 @@ $router->post('/API/asigmisiones/eliminar', [AsigMisionController::class,'elimin
 $router->post('/API/asigmisiones/modificar', [AsigMisionController::class,'modificarAPI']);
 $router->post('/API/asigmisiones/guardar', [AsigMisionController::class,'guardarAPI']);
 
-//!Rutas para Asignar Papereria requerida a Puestos
-$router->get('/asigpapelerias', [AsigPapeleriaController::class,'index']);
-$router->get('/API/asigpapelerias/buscar', [AsigPapeleriaController::class,'buscarAPI']);
-$router->get('/API/asigpapelerias/buscarPapeleriaPuesto', [AsigPapeleriaController::class,'buscarPapeleriaPuestoAPI']);
-$router->post('/API/asigpapelerias/eliminar', [AsigPapeleriaController::class,'eliminarAPI']);
-$router->post('/API/asigpapelerias/modificar', [AsigPapeleriaController::class,'modificarAPI']);
-$router->post('/API/asigpapelerias/guardar', [AsigPapeleriaController::class,'guardarAPI']);
+//!Rutas para Asignar Requisitos a cada Puestos
+$router->get('/asigrequisitos', [AsigRequisitoController::class,'index']);
+$router->get('/API/asigrequisitos/buscar', [AsigRequisitoController::class,'buscarAPI']);
+$router->get('/API/asigrequisitos/buscarRequisitoPuesto', [AsigRequisitoController::class,'buscarRequisitoPuestoAPI']);
+$router->post('/API/asigrequisitos/eliminar', [AsigRequisitoController::class,'eliminarAPI']);
+$router->post('/API/asigrequisitos/modificar', [AsigRequisitoController::class,'modificarAPI']);
+$router->post('/API/asigrequisitos/guardar', [AsigRequisitoController::class,'guardarAPI']);
 
 //!Rutas para Primer Ingreso del Personal
 $router->get('/usuarios', [UsuarioController::class,'index']);

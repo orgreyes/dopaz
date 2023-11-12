@@ -3,38 +3,38 @@
 namespace Controllers;
 
 use Exception;
-use Model\Papeleria;
+use Model\Requisito;
 use MVC\Router;
 
-class PapeleriaController {
+class RequisitoController {
     public static function index(Router $router){
 
-        $papelerias = Papeleria::all();
+        $requisitos = Requisito::all();
 
-        $router->render('papelerias/index', []);
+        $router->render('requisitos/index', []);
     }
     
 
  //!Funcion Buscar
  public static function buscarAPI()
  {
-    $pap_nombre = $_GET['pap_nombre'] ?? '';
+    $req_nombre = $_GET['req_nombre'] ?? '';
 
-    if ($pap_nombre != '') {           
-        $sql .= " AND lower(pap_nombre) LIKE '%$pap_nombre%' ";
+    if ($req_nombre != '') {           
+        $sql .= " AND lower(req_nombre) LIKE '%$req_nombre%' ";
     }
 
-    $sql = "SELECT * FROM cont_papeleria WHERE pap_situacion = 1 ";
+    $sql = "SELECT * FROM cont_requisitos WHERE req_situacion = 1 ";
     
-     $sql = "SELECT pap_id, pap_nombre
-     FROM cont_papeleria
-     WHERE pap_situacion = 1;";
+     $sql = "SELECT req_id, req_nombre
+     FROM cont_requisitos
+     WHERE req_situacion = 1;";
 
      try {
 
-         $papelerias = Papeleria::fetchArray($sql);
+         $requisitos = Requisito::fetchArray($sql);
 
-         echo json_encode($papelerias);
+         echo json_encode($requisitos);
      } catch (Exception $e) {
          echo json_encode([
              'detalle' => $e->getMessage(),
@@ -48,8 +48,8 @@ class PapeleriaController {
  public static function guardarAPI(){
      
     try {
-        $papeleria = new Papeleria($_POST);
-        $resultado = $papeleria->crear();
+        $requisitos = new Requisito($_POST);
+        $resultado = $requisitos->crear();
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([
@@ -77,14 +77,14 @@ class PapeleriaController {
  //!Funcion Eliminar
  public static function eliminarAPI(){
      try{
-         $pap_id = $_POST['pap_id'];
-         $papeleria = Papeleria::find($pap_id);
-         $papeleria->pap_situacion = 0;
-         $resultado = $papeleria->actualizar();
+         $req_id = $_POST['req_id'];
+         $requisito = Requisito::find($req_id);
+         $requisito->req_situacion = 0;
+         $resultado = $requisito->actualizar();
 
          if($resultado['resultado'] == 1){
              echo json_encode([
-                 'mensaje' => 'Papeleria Eliminada correctamente',
+                 'mensaje' => 'Requisito Eliminada correctamente',
                  'codigo' => 1
              ]);
          }else{
@@ -107,10 +107,10 @@ class PapeleriaController {
 
  public static function modificarAPI() {
      try {
-         $papeleriaData = $_POST;
+         $requisitoData = $_POST;
  
          // Validar campos vacíos
-         foreach ($papeleriaData as $campo => $valor) {
+         foreach ($requisitoData as $campo => $valor) {
              if (empty($valor)) {
                  echo json_encode([
                      'mensaje' => 'Llene Todos Los Campos',
@@ -120,10 +120,10 @@ class PapeleriaController {
              }
          }
 
-         $papeleriaData['pap_situacion'] = 1;
+         $requisitoData['req_situacion'] = 1;
  
-         $papeleria = new Papeleria($papeleriaData);
-         $resultado = $papeleria->actualizar();
+         $requisito = new Requisito($requisitoData);
+         $resultado = $requisito->actualizar();
  
          if ($resultado['resultado'] == 1) {
              echo json_encode([

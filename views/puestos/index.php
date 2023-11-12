@@ -79,9 +79,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
 <script>
   // Inicializa Select2 en el elemento select con el id "pue_grado"
-  $(document).ready(function () {
-    $('#pue_grado').select2();
-  });
+
 </script>
 </body>
 </html>

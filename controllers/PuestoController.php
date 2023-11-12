@@ -21,7 +21,8 @@ class PuestoController {
     //!Funcion Select Grados
     public static function buscarGrados()
     {
-        $sql = "SELECT * FROM grados";
+        $sql = "SELECT * FROM grados 
+                ORDER BY gra_desc_lg ASC";
 
         try {
             $grados = Grado::fetchArray($sql);
@@ -37,7 +38,8 @@ class PuestoController {
      $sql = "SELECT p.pue_id, p.pue_nombre, g.gra_desc_md
      FROM cont_puestos p
      INNER JOIN grados g ON p.pue_grado = g.gra_codigo
-     WHERE p.pue_situacion = 1";
+     WHERE p.pue_situacion = 1
+     ORDER BY pue_nombre ASC";
 
      try {
 

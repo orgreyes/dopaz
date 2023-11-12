@@ -3,20 +3,20 @@
 namespace Controllers;
 
 use Exception;
-use Model\AsigPapeleria;
+use Model\AsigRequisito;
 use Model\Puesto;
-use Model\Papeleria;
+use Model\Requisito;
 use MVC\Router;
 
-class AsigPapeleriaController {
+class AsigRequisitoController {
     public static function index(Router $router){
         $puestos = static::buscarPuestos();
-        $papelerias = static::buscarPapeleria();
-        $asigpapelerias = AsigPapeleria::all();
+        $requisitos = static::buscarRequisito();
+        $asigrequisitos = AsigRequisito::all();
 
-        $router->render('asigpapelerias/index', [
+        $router->render('asigrequisitos/index', [
             'puestos' => $puestos,
-            'papelerias' => $papelerias,
+            'requisitos' => $requisitos,
         ]);
     }
     
@@ -32,14 +32,14 @@ public static function buscarPuestos()
         return [];
     }
 }
-//!Funcion Select Papelria
-public static function buscarPapeleria()
+//!Funcion Select requisitoelria
+public static function buscarRequisito()
 {
-    $sql = "SELECT * FROM cont_papeleria where pap_situacion = 1";
+    $sql = "SELECT * FROM cont_requisitos where req_situacion = 1";
 
     try {
-        $papelerias = Papeleria::fetchArray($sql);
-        return $papelerias;
+        $requisitos = Requisito::fetchArray($sql);
+        return $requisitos;
     } catch (Exception $e) {
         return [];
     }
@@ -69,7 +69,7 @@ public static function buscarPapeleria()
  }
 
 
- public static function buscarPapeleriaPuestoAPI()
+ public static function buscarRequisitoPuestoAPI()
  {
      $puestoId = $_GET['pue_id'];
      
@@ -83,27 +83,29 @@ public static function buscarPapeleria()
          }
  
          $sql = "SELECT 
-                        pue.pue_id AS puesto_id,
-                        pue.pue_nombre AS puesto_nombre,
-                        pap.pap_id AS papeleria_id,
-                        pap.pap_nombre AS papeleria_nombre
-                    FROM 
-                        cont_papeleria pap
-                    JOIN 
-                        cont_asig_papeleria asig_pap ON pap.pap_id = asig_pap.asig_pap_papeleria
-                    JOIN 
-                        cont_puestos pue ON asig_pap.asig_pap_puesto = pue.pue_id
-                    WHERE 
-                        pue.pue_id = $puestoId";
+         pue.pue_id AS puesto_id,
+         pue.pue_nombre AS puesto_nombre,
+         req.req_id AS requisito_id,
+         req.req_nombre AS requisito_nombre,
+         asig_req.asig_req_id
+     FROM 
+     cont_requisitos req
+     JOIN 
+         cont_asig_requisitos asig_req ON req.req_id = asig_req.asig_req_requisito
+     JOIN 
+         cont_puestos pue ON asig_req.asig_req_puesto = pue.pue_id
+     WHERE 
+         pue.pue_id = 2 AND asig_req.asig_req_situacion = 1
+         ORDER BY requisito_nombre ASC";
  
          // Ejecutar la consulta y obtener las misiones del contingente.
-         $asigpapeleria = AsigPapeleria::fetchArray($sql);
+         $asigrequisitos = AsigRequisito::fetchArray($sql);
  
-         echo json_encode($asigpapeleria);
+         echo json_encode($asigrequisitos);
      } catch (Exception $e) {
          echo json_encode([
              'detalle' => $e->getMessage(),
-             'mensaje' => 'Ocurrió un error al obtener las papeleria del puesto',
+             'mensaje' => 'Ocurrió un error al obtener los Requisitos del puesto',
              'codigo' => 0
          ]);
      }
@@ -115,10 +117,10 @@ public static function buscarPapeleria()
 public static function guardarAPI()
 {
     try {
-        $asigMisionData = $_POST;
+        $asigRequisitoData = $_POST;
 
-        $asigMision = new AsigPapeleria($asigMisionData);
-        $resultado = $asigMision->crear();
+        $asigRequisito = new AsigRequisito($asigRequisitoData);
+        $resultado = $asigRequisito->crear();
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([
@@ -146,14 +148,14 @@ public static function guardarAPI()
  //!Funcion Eliminar
  public static function eliminarAPI(){
      try{
-         $asig_id = $_POST['asig_id'];
-         $asigMision = AsigPapeleria::find($asig_id);
-         $asigMision->asig_situacion = 0;
-         $resultado = $asigMision->actualizar();
+         $asig_req_id = $_POST['asig_req_id'];
+         $asigRequisito = AsigRequisito::find($asig_req_id);
+         $asigRequisito->asig_req_situacion = 0;
+         $resultado = $asigRequisito->actualizar();
 
          if($resultado['resultado'] == 1){
              echo json_encode([
-                 'mensaje' => 'Datos del Contingente Eliminada correctamente',
+                 'mensaje' => 'Requisito Removido correctamente',
                  'codigo' => 1
              ]);
          }else{
@@ -191,7 +193,7 @@ public static function guardarAPI()
 
          $contingenteData['cont_situacion'] = 1;
  
-         $contingente = new AsigPapeleria($contingenteData);
+         $contingente = new AsigRequisito($contingenteData);
          $resultado = $contingente->actualizar();
  
          if ($resultado['resultado'] == 1) {

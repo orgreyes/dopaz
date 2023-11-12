@@ -52,14 +52,14 @@
 <div class="container">
   <div class="row justify-content-center">
     <form class="col-lg-8 border bg-light p-3">
-      <h1 class="text-center">Asignacion de Papeleria Requerida por Puesto</h1><br>
-      <input type="hidden" name="asig_pap_id" id="asig_pap_id">
+      <h1 class="text-center">Asignacion de Requisitos por Puesto</h1><br>
+      <input type="hidden" name="asig_req_id" id="asig_req_id">
 
-      <!--//!Nombre del Contingente -->
+      <!--//!Nombre del Puesto -->
       <div class="row mb-3 col-md-12">
           <div class="col">
-              <label for="asig_pap_puesto"><i  class="fas fa-globe"></i> Seleccione Un Puesto </label><br>
-              <select name="asig_pap_puesto" id="asig_pap_puesto" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+              <label for="asig_req_puesto"><i  class="fas fa-globe"></i> Seleccione Un Puesto </label><br>
+              <select name="asig_req_puesto" id="asig_req_puesto" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
                   <option value="">SELECCIONE...</option>
                   <?php foreach ($puestos as $puesto) : ?>
                   <option value="<?= $puesto['pue_id'] ?>">
@@ -69,15 +69,15 @@
           </div>
         </div>
                             
-      <!-- //!Fecha de Inicio de Preparación -->
+      <!-- //!Seleccion de Requisitos -->
       <div class="row mb-3 col-md-12">
           <div class="col">
-              <label for="asig_pap_papeleria"><i class="fas fa-flag"></i> Seleccione la Papeleria Requiere el Puesto Seleccionado</label><br>
-              <select name="asig_pap_papeleria" id="asig_pap_papeleria" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+              <label for="asig_req_requisito"><i class="fas fa-flag"></i> Seleccione el Requisito que Desea Asignar al Puesto Seleccionado</label><br>
+              <select name="asig_req_requisito" id="asig_req_requisito" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
                   <option value="">SELECCIONE...</option>
-                  <?php foreach ($papelerias as $papeleria) : ?>
-                  <option value="<?= $papeleria['pap_id'] ?>">
-                      <?= $papeleria['pap_nombre'] ?></option>
+                  <?php foreach ($requisitos as $requisito) : ?>
+                  <option value="<?= $requisito['req_id'] ?>">
+                      <?= $requisito['req_nombre'] ?></option>
                   <?php endforeach ?>
               </select>
           </div>
@@ -99,7 +99,7 @@
 
     <div style="margin-top:30px; margin-left:32%" class="row mb-3">
       <div class="col-8">
-        <button type="button" id="btnFormulario" class="btn btn-info w-100">Agregar Papelerias a Puestos</button>
+        <button type="button" id="btnFormulario" class="btn btn-info w-100">Agregar Requisito</button>
       </div>
       <div style="margin-top:8px;" class="col-8">
         <button type="button" id="btnBuscar" class="btn btn-info w-100">Ver Lista de Puestos</button>
@@ -108,7 +108,7 @@
 
   </div>
 
-  <div id="tablaPapeleriaContainer" class="container mt-1">
+  <div id="tablaRequisitosContainer" class="container mt-1">
     <div class="row justify-content-center mt-4">
       <div class="col-12 p-4 shadow">
         <div class="text-center">
@@ -123,15 +123,15 @@
 </div>
 
 <!-- //!Modal -->
-<div class="modal fade" id="modalPapeleria" tabindex="-1" role="dialog" aria-labelledby="modalPapeleriaLabel" aria-hidden="true">
+<div class="modal fade" id="modalRequisito" tabindex="-1" role="dialog" aria-labelledby="modalRequisitoLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header ">
-                <h5 class="modal-title " id="modalPapeleriaLabel">Papeleria Que se Necesita Para este Puesto</h5>
+                <h5 class="modal-title " id="modalRequisitoLabel">Requisitos Para este Puesto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body container text-center">
-                <table id="tablaPapelerias" class="table table-hover table-condensed table-bordered w-100">
+                <table id="tablaRequisitos" class="table table-hover table-condensed table-bordered w-100">
                               <!-- Contenido de la tabla -->
                 </table>
             </div>
@@ -143,7 +143,7 @@
 </div>
 
     
-<script src="<?= asset('./build/js/asigpapelerias/index.js') ?>"></script>
+<script src="<?= asset('./build/js/asigrequisitos/index.js') ?>"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>

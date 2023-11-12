@@ -217,7 +217,7 @@ const eliminar = async e => {
             let icon='info'
             switch (codigo) {
                 case 1:
-                    buscarMisionesContingenteAPI();
+                    buscar();
                     Swal.fire({
                         icon: 'success',
                         title: 'Eliminado Exitosamente',

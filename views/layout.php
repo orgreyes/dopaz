@@ -88,15 +88,15 @@
 
                     <div class="nav-item dropdown " >
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Papeleria
+                            <i class="bi bi-gear me-2"></i>Requisitos
                         </a>
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/papelerias"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Creacion de Papelerias</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigrequisitos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Asignacion de Requisitos Por Puesto</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigpapelerias"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Papeleria Requerida Por Puesto</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/requisitos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Creacion de Requisitos</a>
                             </li>
                         </ul>
                     </div> 
