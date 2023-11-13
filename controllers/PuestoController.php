@@ -56,9 +56,10 @@ class PuestoController {
  }
 
   //!Funcion Guardar
- public static function guardarAPI(){
-     
+ public static function guardarAPI(){ 
+
     try {
+        $codigo = $_POST['pue_id'];
         $puesto = new Puesto($_POST);
         $resultado = $puesto->crear();
 

@@ -69,7 +69,7 @@ const guardar = async (evento) => {
 
 //?--------------------------------------------------------------
 
-// //!Funcion Buscar
+//!Funcion Buscar
 const buscar = async () => {
     const per_catalogo = formulario.per_catalogo.value;
 

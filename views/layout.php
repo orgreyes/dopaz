@@ -49,6 +49,10 @@
                             <li>
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/resultados"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Personal actualmente optando por una plaza en un contingente.</a>
                             </li>
+
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/ingresos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Aprovar Requisitos</a>
+                            </li>
                             
                         </ul>
                     </div> 

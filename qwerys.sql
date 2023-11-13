@@ -89,6 +89,9 @@ CREATE TABLE cont_asig_requisitos(
     asig_req_id SERIAL PRIMARY KEY,
     asig_req_puesto INT,
     asig_req_requisito INT,
+    -- asig_req_aprovada SMALLINT,
+    -- asig_req_ingreso INT,
+    asig_req_puesto INT,
     asig_req_situacion SMALLINT,
     FOREIGN KEY (asig_req_puesto) REFERENCES cont_puestos(pue_id),
     FOREIGN KEY (asig_req_requisito) REFERENCES cont_requisitos(req_id) 
@@ -157,7 +160,7 @@ CREATE TABLE cont_ingresos (
     ing_codigo CHAR(10) UNIQUE,
     ing_situacion SMALLINT,
     FOREIGN KEY (ing_contingente) REFERENCES contingentes(cont_id),
-    FOREIGN KEY (ing_puesto) REFERENCES cont_puestos(pue_id),
+    FOREIGN KEY (ing_puesto) REFERENCES cont_asig_requisitos(asig_req_puesto),
     FOREIGN KEY (ing_aspirante) REFERENCES cont_aspirantes(asp_id),
     UNIQUE (ing_aspirante,ing_fecha_cont)
 );
@@ -219,100 +222,5 @@ DROP TABLE cont_asig_plazas
 
 
 --!Datos
-
-
--- !Para Contingente, misiones y su asignacion.
-
-
-INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
-VALUES
-    ('CONTINGENTE 1', '2023-10-01', '2023-10-05', '2023-10-15', '2023-10-20', 1);
-    INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
-VALUES
-    ('CONTINGENTE 2', '2023-11-01', '2023-11-05', '2023-11-15', '2023-11-20', 1);
-    INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
-VALUES
-    ('CONTINGENTE 3', '2023-12-01', '2023-12-05', '2023-12-15', '2023-12-20', 1);
-    INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
-VALUES
-    ('CONTINGENTE 4', '2024-01-01', '2024-01-05', '2024-01-15', '2024-01-20', 1);
-    INSERT INTO contingentes (cont_nombre, cont_fecha_pre, cont_fecha_inicio, cont_fecha_final, cont_fecha_post, cont_situacion)
-VALUES
-    ('CONTINGENTE 5', '2024-02-01', '2024-02-05', '2024-02-15', '2024-02-20', 1);
-
--- Inserción de 5 registros en la tabla 'cont_misiones_contingente'
-INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)
-VALUES
-    ('Misión 1', -3.458, 27.987, 1);
-INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)
-VALUES
-    ('Misión 2', -4.201, 29.045, 1);
-INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)
-VALUES
-    ('Misión 3', -4.726, 30.049, 1);
-INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)
-VALUES
-    ('Misión 4', -5.305, 30.286, 1);
-INSERT INTO cont_misiones_contingente (mis_nombre, mis_latitud, mis_longitud, mis_situacion)
-VALUES
-    ('Misión 5', -3.138, 27.701, 1);
-
--- Inserción de 5 registros en la tabla 'cont_asig_misiones'
-INSERT INTO cont_asig_misiones (asig_contingente, asig_mision, asig_situacion)
-VALUES
-    (1, 1, 1);
-INSERT INTO cont_asig_misiones (asig_contingente, asig_mision, asig_situacion)
-VALUES
-    (1, 2, 1);
-INSERT INTO cont_asig_misiones (asig_contingente, asig_mision, asig_situacion)
-VALUES
-    (2, 3, 1);
-INSERT INTO cont_asig_misiones (asig_contingente, asig_mision, asig_situacion)
-VALUES
-    (2, 4, 1);
-INSERT INTO cont_asig_misiones (asig_contingente, asig_mision, asig_situacion)
-VALUES
-    (3, 5, 1);
-    
-    
-SELECT c.cont_id, c.cont_nombre, mc.mis_id, mc.mis_nombre, mc.mis_latitud, mc.mis_longitud
-FROM contingentes c
-JOIN cont_asig_misiones cam ON c.cont_id = cam.asig_contingente
-JOIN cont_misiones_contingente mc ON cam.asig_mision = mc.mis_id
-WHERE c.cont_nombre = 'CONTINGENTE 1';
-
-
-SELECT 
-    asp.asp_nom1,
-    pue.pue_nombre,
-    cont.cont_nombre,
-    ci.ing_situacion
-FROM cont_ingresos ci
-JOIN cont_aspirantes asp ON ci.ing_aspirante = asp.asp_id
-JOIN cont_puestos pue ON ci.ing_puesto = pue.pue_id
-JOIN contingentes cont ON ci.ing_contingente = cont.cont_id;
-
-
-
-
-
-SELECT 
-    cont_aspirantes.asp_id AS ID_Aspirante,
-    asp_nom1 || ' ' || asp_nom2 || ' ' || asp_ape1 || ' ' || asp_ape2 AS Nombre_Aspirante,
-    cont_evaluaciones.eva_id AS ID_Evaluacion,
-    eva_nombre AS Evaluacion_Asignada,
-    res_nota AS Nota
-FROM 
-    cont_aspirantes, cont_ingresos, cont_resultados, cont_evaluaciones
-WHERE 
-    cont_aspirantes.asp_id = cont_ingresos.ing_aspirante AND
-    cont_ingresos.ing_id = cont_resultados.res_aspirante AND
-    cont_resultados.res_evaluacion = cont_evaluaciones.eva_id AND
-    YEAR(cont_ingresos.ing_fecha_cont) = YEAR(CURRENT)
-ORDER BY 
-    Nombre_Aspirante ASC;
-
-
-
 
 

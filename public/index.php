@@ -89,9 +89,8 @@ $router->post('/API/usuarios/enviar', [UsuarioController::class,'enviarAPI']);
 //!Rutas para Personal de que busca optar por una plaza
 $router->get('/ingresos', [IngresoController::class,'index']);
 $router->get('/API/ingresos/buscar', [IngresoController::class,'buscarAPI']);
-$router->post('/API/ingresos/eliminar', [IngresoController::class,'eliminarAPI']);
+$router->get('/API/ingresos/buscarRequisitoPuesto', [IngresoController::class,'buscarRequisitoPuestoAPI']);
 $router->post('/API/ingresos/modificar', [IngresoController::class,'modificarAPI']);
-$router->post('/API/ingresos/guardar', [IngresoController::class,'guardarAPI']);
 
 
 //!Rutas para Asignar Resultados

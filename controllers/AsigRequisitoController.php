@@ -95,7 +95,7 @@ public static function buscarRequisito()
      JOIN 
          cont_puestos pue ON asig_req.asig_req_puesto = pue.pue_id
      WHERE 
-         pue.pue_id = 2 AND asig_req.asig_req_situacion = 1
+         pue.pue_id = $puestoId AND asig_req.asig_req_situacion = 1
          ORDER BY requisito_nombre ASC";
  
          // Ejecutar la consulta y obtener las misiones del contingente.
