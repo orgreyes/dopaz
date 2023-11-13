@@ -89,9 +89,6 @@ CREATE TABLE cont_asig_requisitos(
     asig_req_id SERIAL PRIMARY KEY,
     asig_req_puesto INT,
     asig_req_requisito INT,
-    -- asig_req_aprovada SMALLINT,
-    -- asig_req_ingreso INT,
-    asig_req_puesto INT,
     asig_req_situacion SMALLINT,
     FOREIGN KEY (asig_req_puesto) REFERENCES cont_puestos(pue_id),
     FOREIGN KEY (asig_req_requisito) REFERENCES cont_requisitos(req_id) 
@@ -101,11 +98,17 @@ CREATE TABLE cont_asig_requisitos(
 CREATE TABLE cont_puestos (
     pue_id SERIAL PRIMARY KEY,
     pue_nombre CHAR(150),
-    pue_grado SMALLINT,
-    pue_situacion SMALLINT,
-    FOREIGN KEY (pue_grado) REFERENCES grados (gra_codigo)
+    pue_situacion SMALLINT
 );
 
+CREATE TABLE asig_grado_puesto (
+    asig_grado_id SERIAL PRIMARY KEY,
+    asig_grado SMALLINT,
+    asig_puesto INT,
+    asig_grado_situacion SMALLINT,
+    FOREIGN KEY (asig_grado) REFERENCES grados (gra_codigo),
+    FOREIGN KEY (asig_puesto) REFERENCES cont_puestos (pue_id)
+);
 -- Tabla cont_aspirantes
 CREATE TABLE cont_aspirantes (
     asp_id SERIAL PRIMARY KEY,
@@ -160,11 +163,18 @@ CREATE TABLE cont_ingresos (
     ing_codigo CHAR(10) UNIQUE,
     ing_situacion SMALLINT,
     FOREIGN KEY (ing_contingente) REFERENCES contingentes(cont_id),
-    FOREIGN KEY (ing_puesto) REFERENCES cont_asig_requisitos(asig_req_puesto),
+    FOREIGN KEY (ing_puesto) REFERENCES cont_puestos(pue_id),
     FOREIGN KEY (ing_aspirante) REFERENCES cont_aspirantes(asp_id),
     UNIQUE (ing_aspirante,ing_fecha_cont)
 );
 
+CREATE TABLE cont_req_aprovado (
+    apro_id SERIAL PRIMARY KEY,
+    apro_ingreso INT,
+    apro_requisito INT,
+    apro_situacion SMALLINT,
+    FOREIGN KEY (apro_ingreso) REFERENCES cont_ingresos(ing_id)
+)
 
 -- Tabla cont_aprovados
 CREATE TABLE cont_aprovados (
@@ -206,9 +216,11 @@ CREATE TABLE cont_resultados (
 );
 
 
+DROP TABLE asig_grado_puesto
 DROP TABLE contingentes
 DROP TABLE cont_requisitos
 DROP TABLE cont_asig_requisitos
+DROP TABLE cont_req_aprovado
 DROP TABLE cont_aprovados
 DROP TABLE cont_evaluaciones
 DROP TABLE cont_puestos

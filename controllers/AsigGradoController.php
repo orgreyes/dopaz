@@ -7,17 +7,43 @@ use Model\Puesto;
 use Model\Grado;
 use MVC\Router;
 
-class PuestoController {
+class AsigGradoController {
     public static function index(Router $router){
 
         // $puesto = Puesto::all();
         $grados = static::buscarGrados();
+        $puestos = static::buscarPuesto();
 
-        $router->render('puestos/index', [
+        $router->render('asiggrados/index', [
             'grados' => $grados,
+            'puestos' => $puestos,
         ]);
     }
 
+    //!Funcion Select Puestos
+    public static function buscarPuesto()
+    {
+        $grado = $_GET['pue_grado'];
+
+
+        $sql = "SELECT pue_id, pue_nombre
+        FROM cont_puestos 
+        WHERE pue_situacion = 1
+        ORDER BY pue_nombre ASC";
+
+// SELECT pue_id, pue_nombre
+// FROM cont_puestos 
+// WHERE pue_grado = $grado
+// AND pue_situacion = 1
+// ORDER BY pue_nombre ASC
+
+        try {
+            $puestos = Puesto::fetchArray($sql);
+            return $puestos;
+        } catch (Exception $e) {
+            return [];
+        }
+    }
     //!Funcion Select Grados
     public static function buscarGrados()
     {
@@ -35,8 +61,10 @@ class PuestoController {
  //!Funcion Buscar
  public static function buscarAPI()
  {  
-     $sql = "SELECT * FROM cont_puestos
-     WHERE pue_situacion = 1
+     $sql = "SELECT p.pue_id, p.pue_nombre, g.gra_desc_md
+     FROM cont_puestos p
+     INNER JOIN grados g ON p.pue_grado = g.gra_codigo
+     WHERE p.pue_situacion = 1
      ORDER BY pue_nombre ASC";
 
      try {

@@ -17,6 +17,7 @@ module.exports = {
     'js/resultados/index' : './src/js/resultados/index.js',
     'js/requisitos/index' : './src/js/requisitos/index.js',
     'js/asigrequisitos/index' : './src/js/asigrequisitos/index.js',
+    'js/asiggrados/index' : './src/js/asiggrados/index.js',
 
   },
   output: {

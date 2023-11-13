@@ -7,6 +7,7 @@ use MVC\Router;
 use Controllers\AppController;
 use Controllers\EvaluacionController;
 use Controllers\PuestoController;
+use Controllers\AsigGradoController;
 use Controllers\MisionController;
 use Controllers\UsuarioController;
 use Controllers\AspiranteController;
@@ -47,6 +48,13 @@ $router->post('/API/puestos/eliminar', [PuestoController::class,'eliminarAPI']);
 $router->post('/API/puestos/modificar', [PuestoController::class,'modificarAPI']);
 $router->post('/API/puestos/guardar', [PuestoController::class,'guardarAPI']);
 
+
+//!Rutas para Asignar Grados A los Puestos
+$router->get('/asiggrados', [AsigGradoController::class,'index']);
+$router->get('/API/asiggrados/buscar', [AsigGradoController::class,'buscarAPI']);
+$router->post('/API/asiggrados/eliminar', [AsigGradoController::class,'eliminarAPI']);
+$router->post('/API/asiggrados/modificar', [AsigGradoController::class,'modificarAPI']);
+$router->post('/API/asiggrados/guardar', [AsigGradoController::class,'guardarAPI']);
 
 //!Rutas para Contingentes
 $router->get('/contingentes', [ContingenteController::class,'index']);
@@ -100,6 +108,7 @@ $router->get('/API/resultados/buscarEvaluaciones', [ResultadoController::class,'
 $router->post('/API/resultados/eliminar', [ResultadoController::class,'eliminarAPI']);
 $router->post('/API/resultados/modificar', [ResultadoController::class,'modificarAPI']);
 $router->post('/API/resultados/guardar', [ResultadoController::class,'guardarAPI']);
+
 
 // //!Rutas para Primer Ingreso del Personal
 // $router->get('/aspirantes', [AspiranteController::class,'index']);

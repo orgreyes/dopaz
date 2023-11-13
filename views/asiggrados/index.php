@@ -14,11 +14,30 @@
       <h1 class="text-center">Ingreso de Puestos</h1><br>
       <input type="hidden" name="pue_id" id="pue_id">
 
-      <!-- Nombre del Puesto -->
-      <div class="row mb-3">
+                            <!-- //!Nombre del Puesto -->
+                            <div class="row mb-3 col-md-12">
+                                <div class="col">
+                                    <label for="ing_puesto"><i class="fas fa-shield"></i> Seleccione Puesto a Desempeñar</label><br>
+                                    <select name="ing_puesto" id="ing_puesto" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+                                        <option value="">SELECCIONE...</option>
+                                        <?php foreach ($puestos as $puesto) : ?>
+                                        <option value="<?= $puesto['pue_id'] ?>">
+                                            <?= $puesto['pue_nombre'] ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+                            </div>
+
+      <div class="row mb-3 col-md-18">
         <div class="col">
-          <label for="pue_nombre">Nombre del Puesto</label>
-          <input type="text" name="pue_nombre" id="pue_nombre" class="form-control">
+          <label for="pue_grado"><i class="fas fa-shield"></i> Seleccione El Grado al que Corresponde el Puesto</label>
+          <select name="pue_grado" id="pue_grado" class="form-control">
+            <option value="">SELECCIONE...</option>
+            <?php foreach ($grados as $grado) : ?>
+              <option value="<?= $grado['gra_codigo'] ?>">
+                <?= $grado['gra_desc_md'] ?></option>
+            <?php endforeach ?>
+          </select>
         </div>
       </div>
 

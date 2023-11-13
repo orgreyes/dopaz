@@ -34,6 +34,10 @@ const datatable = new Datatable('#tablaPuestos', {
             data: 'pue_nombre'
         },
         {
+            title: 'GRADO QUE DESEMPEÑA',
+            data: 'gra_desc_md' // Utiliza 'gra_desc_md' en lugar de 'pue_grado'
+        },
+        {
             title: 'MODIFICAR DATOS',
             data: 'pue_id',
             searchable: false,

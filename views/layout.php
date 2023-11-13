@@ -33,10 +33,6 @@
                         </a>
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
-                            
-                            <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/puestos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Puestos</a>
-                            </li>
                            
                             
                             <li>
@@ -54,6 +50,21 @@
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/ingresos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Aprovar Requisitos</a>
                             </li>
                             
+                        </ul>
+                    </div> 
+
+                    <div class="nav-item dropdown " >
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear me-2"></i>Puestos
+                        </a>
+                        <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
+                            <!-- <h6 class="dropdown-header">Información</h6> -->
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/puestos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Puestos</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/asiggrados"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>asignacion de grados los puestos</a>
+                            </li>
                         </ul>
                     </div> 
 
