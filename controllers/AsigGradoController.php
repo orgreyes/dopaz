@@ -4,6 +4,7 @@ namespace Controllers;
 
 use Exception;
 use Model\Puesto;
+use Model\AsigGrado;
 use Model\Grado;
 use MVC\Router;
 
@@ -31,12 +32,6 @@ class AsigGradoController {
         WHERE pue_situacion = 1
         ORDER BY pue_nombre ASC";
 
-// SELECT pue_id, pue_nombre
-// FROM cont_puestos 
-// WHERE pue_grado = $grado
-// AND pue_situacion = 1
-// ORDER BY pue_nombre ASC
-
         try {
             $puestos = Puesto::fetchArray($sql);
             return $puestos;
@@ -61,10 +56,9 @@ class AsigGradoController {
  //!Funcion Buscar
  public static function buscarAPI()
  {  
-     $sql = "SELECT p.pue_id, p.pue_nombre, g.gra_desc_md
-     FROM cont_puestos p
-     INNER JOIN grados g ON p.pue_grado = g.gra_codigo
-     WHERE p.pue_situacion = 1
+     $sql = "SELECT pue_id, pue_nombre
+     FROM cont_puestos 
+     WHERE pue_situacion = 1
      ORDER BY pue_nombre ASC";
 
      try {
@@ -81,17 +75,60 @@ class AsigGradoController {
      }
  }
 
+ 
+ public static function buscarGradosPuestosAPI()
+ {
+     $puestoId = $_GET['pue_id'];
+     
+     try {
+         if ($puestoId === null) {
+             echo json_encode([
+                 'mensaje' => 'Falta el ID del contingente',
+                 'codigo' => 0
+             ]);
+             return;
+         }
+ 
+         // Consulta SQL para obtener las misiones de un contingente específico.
+         $sql = "SELECT
+                    pue.pue_id,
+                    pue.pue_nombre,
+                    gra.gra_desc_lg
+                FROM
+                    cont_puestos pue
+                JOIN
+                    asig_grado_puesto agp ON pue.pue_id = agp.asig_puesto
+                JOIN
+                    grados gra ON agp.asig_grado = gra.gra_codigo
+                WHERE
+                    pue.pue_id = $puestoId
+                    AND pue.pue_situacion = 1
+                    AND agp.asig_grado_situacion = 1";
+ 
+         // Ejecutar la consulta y obtener las misiones del contingente.
+         $asiggrado = AsigGrado::fetchArray($sql);
+ 
+         echo json_encode($asiggrado);
+     } catch (Exception $e) {
+         echo json_encode([
+             'detalle' => $e->getMessage(),
+             'mensaje' => 'Ocurrió un error al obtener las misiones del contingente',
+             'codigo' => 0
+         ]);
+     }
+ }
+
   //!Funcion Guardar
  public static function guardarAPI(){ 
 
     try {
         $codigo = $_POST['pue_id'];
-        $puesto = new Puesto($_POST);
-        $resultado = $puesto->crear();
+        $grado = new AsigGrado($_POST);
+        $resultado = $grado->crear();
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([
-                'mensaje' => 'Puesto guardado correctamente',
+                'mensaje' => 'Grado Asignado correctamente',
                 'codigo' => 1
             ]);
         } else {
@@ -116,13 +153,13 @@ class AsigGradoController {
  public static function eliminarAPI(){
      try{
          $pue_id = $_POST['pue_id'];
-         $puesto = Puesto::find($pue_id);
-         $puesto->pue_situacion = 0;
-         $resultado = $puesto->actualizar();
+         $asigGrado = AsigGrado::find($pue_id);
+         $asigGrado->asig_grado_situacion = 0;
+         $resultado = $asigGrado->actualizar();
 
          if($resultado['resultado'] == 1){
              echo json_encode([
-                 'mensaje' => 'Puesto Eliminado Correctamente',
+                 'mensaje' => 'Grado Removido Correctamente',
                  'codigo' => 1
              ]);
          }else{

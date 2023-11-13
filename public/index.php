@@ -52,6 +52,7 @@ $router->post('/API/puestos/guardar', [PuestoController::class,'guardarAPI']);
 //!Rutas para Asignar Grados A los Puestos
 $router->get('/asiggrados', [AsigGradoController::class,'index']);
 $router->get('/API/asiggrados/buscar', [AsigGradoController::class,'buscarAPI']);
+$router->get('/API/asiggrados/buscarGradosPuestos', [AsigGradoController::class,'buscarGradosPuestosAPI']);
 $router->post('/API/asiggrados/eliminar', [AsigGradoController::class,'eliminarAPI']);
 $router->post('/API/asiggrados/modificar', [AsigGradoController::class,'modificarAPI']);
 $router->post('/API/asiggrados/guardar', [AsigGradoController::class,'guardarAPI']);

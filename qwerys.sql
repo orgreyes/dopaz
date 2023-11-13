@@ -103,8 +103,8 @@ CREATE TABLE cont_puestos (
 
 CREATE TABLE asig_grado_puesto (
     asig_grado_id SERIAL PRIMARY KEY,
-    asig_grado SMALLINT,
     asig_puesto INT,
+    asig_grado SMALLINT,
     asig_grado_situacion SMALLINT,
     FOREIGN KEY (asig_grado) REFERENCES grados (gra_codigo),
     FOREIGN KEY (asig_puesto) REFERENCES cont_puestos (pue_id)

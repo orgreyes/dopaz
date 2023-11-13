@@ -13,15 +13,16 @@ const btnModificar = document.getElementById('btnModificar');
 const btnGuardar = document.getElementById('btnGuardar');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnCancelar = document.getElementById('btnCancelar');
-const tablaPuestosContainer = document.getElementById('tablaPuestosContainer');
+const tablaAsigGradosContainer = document.getElementById('tablaAsigGradosContainer');
 
 
 //?--------------------------------------------------------------
 
 
 let contenedor = 1;
+let contenedorr = 1;
 
-const datatable = new Datatable('#tablaPuestos', {
+const datatable = new Datatable('#tablaAsigGrados', {
     language: lenguaje,
     data: null,
     columns: [
@@ -34,27 +35,77 @@ const datatable = new Datatable('#tablaPuestos', {
             data: 'pue_nombre'
         },
         {
-            title: 'GRADO QUE DESEMPEÑA',
-            data: 'gra_desc_md' // Utiliza 'gra_desc_md' en lugar de 'pue_grado'
-        },
-        {
-            title: 'MODIFICAR DATOS',
+            title: 'GRADOS QUE DESEMPEÑA CADA PUESTO',
             data: 'pue_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}' data-nombre='${row["pue_nombre"]}'>Modificar</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-info ver-grados-btn" data-bs-toggle='modal' data-bs-target='#modalGrados' data-id='${data}'>Ver Grados</button>`
         },
-        {
-            title: 'ELIMINAR',
-            data: 'pue_id',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
-        }
     ]
 });
 
 
+
+let tablaGrados = new Datatable('#tablaGrados', {
+    language: lenguaje,
+    data: null,
+    columns: [
+        {
+            title: 'No.',
+            render: () => contenedorr++
+        },
+        {
+            title: 'GRADOS ASIGNADAS',
+            data: 'gra_desc_lg'
+        },
+        {
+            title: 'REMOVER GRADO ASIGNADO PARA ESTE PUESTO',
+            data: 'pue_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Remover Grado</button>`
+        }
+    ]
+});
+
+// Agregar un manejador de eventos para los botones "Ver grados"
+$('#tablaAsigGrados').on('click', '.ver-grados-btn', function () {
+    const pue_id = parseInt($(this).data('id')); // Convertir a entero
+    buscarGradosPuestosAPI(pue_id);
+});
+
+// Agregar un manejador de eventos para el cierre del modal
+$('#modalGrados').on('hidden.bs.modal', function (e) {
+    // Restablecer el contador y limpiar la tabla de grados cuando se cierra el modal
+    limpiar();
+});
+
+const buscarGradosPuestosAPI = async (pue_id) => {
+    contenedor = 1;
+    contenedorr = 1;
+    const url = `/dopaz/API/asiggrados/buscarGradosPuestos?pue_id=${pue_id}`;
+    console.log(url);
+
+    const config = {
+        method: 'GET'
+    };
+    
+    try {
+        const respuesta = await fetch(url, config);
+        if (respuesta.ok) {
+            const data = await respuesta.json();
+            console.log(data);
+            tablaGrados.clear().draw();
+            if (data) {
+                tablaGrados.rows.add(data).draw();
+            }
+        } else {
+            console.error('Error en la solicitud: ' + respuesta.status);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
 
 //?--------------------------------------------------------------
 
@@ -62,7 +113,7 @@ const datatable = new Datatable('#tablaPuestos', {
 const buscar = async () => {
     contenedor = 1;
 
-    const url = `API/puestos/buscar`;
+    const url = `API/asiggrados/buscar`;
     const config = {
         method: 'GET'
     }
@@ -103,7 +154,7 @@ const guardar = async (evento) => {
 
     const body = new FormData(formulario);
     body.delete('pue_id');
-    const url = 'API/puestos/guardar';
+    const url = 'API/asiggrados/guardar';
     const headers = new Headers();
     headers.append("X-Requested-With", "fetch");
     const config = {
@@ -149,10 +200,10 @@ const guardar = async (evento) => {
 const eliminar = async e => {
     const result = await Swal.fire({
         icon: 'question',
-        title: 'Eliminar Puesto',
-        text: '¿Desea eliminar este Puesto?',
+        title: 'Remover Grado',
+        text: '¿Desea Remover este Grado?',
         showCancelButton: true,
-        confirmButtonText: 'Eliminar',
+        confirmButtonText: 'Remover',
         cancelButtonText: 'Cancelar'
     });
     
@@ -164,7 +215,7 @@ const eliminar = async e => {
         const body = new FormData();
         body.append('pue_id', id);
         
-        const url = `/dopaz/API/puestos/eliminar`;
+        const url = `API/asiggrados/eliminar`;
         const config = {
             method: 'POST',
             body,
@@ -182,7 +233,7 @@ const eliminar = async e => {
                     buscar();
                     Swal.fire({
                         icon: 'success',
-                        title: 'Eliminado Exitosamente',
+                        title: 'Removido Exitosamente',
                         text: mensaje,
                         confirmButtonText: 'OK'
                     });
@@ -209,7 +260,7 @@ const modificar = async () => {
     const body = new FormData(formulario);
     body.append('pue_id', pue_id);
 
-    const url = `/dopaz/API/puestos/modificar`;
+    const url = `/dopaz/API/asiggrados/modificar`;
     const config = {
         method: 'POST',
         body,
@@ -262,19 +313,19 @@ const modificar = async () => {
 
 //!Ocultar el Datatable al inicio
 formulario.style.display = 'block';
-tablaPuestosContainer.style.display = 'none'; 
+tablaAsigGradosContainer.style.display = 'none'; 
 
 //!Mostrar el formulario, ocultar datatable
 const mostrarFormulario = () => {
     formulario.style.display = 'block';
-    tablaPuestosContainer.style.display = 'none'; 
+    tablaAsigGradosContainer.style.display = 'none'; 
     };
 
 //!Ocultar el formulario, mostrar datatable
 const ocultarFormulario = () => {
     // formulario.reset();
     formulario.style.display = 'none';
-    tablaPuestosContainer.style.display = 'block';
+    tablaAsigGradosContainer.style.display = 'block';
 };
 
 //?--------------------------------------------------------------
@@ -339,7 +390,7 @@ const traeDatos = (e) => {
 //!Aca esta la funcino de cancelar la accion de modificar un registro.
 const cancelarAccion = () => {
     formulario.reset();
-    document.getElementById('tablaPuestosContainer').style.display = 'block'; 
+    document.getElementById('tablaAsigGradosContainer').style.display = 'block'; 
 };
 //?--------------------------------------------------------------
 
@@ -386,8 +437,9 @@ datatable.on('click','.btn-warning', MostrarBtnForumulario)
 datatable.on('click','.btn-warning', mostrarBtns)
 datatable.on('click','.btn-warning', OcultarTodoForumulario)
 //?--------------------------------------------------------------
-datatable.on('click','.btn-danger', eliminar)
+tablaGrados.on('click','.btn-danger', eliminar)
 //?--------------------------------------------------------------
+
 buscar();
 
 
