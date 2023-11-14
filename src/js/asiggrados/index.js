@@ -60,7 +60,7 @@ let tablaGrados = new Datatable('#tablaGrados', {
         },
         {
             title: 'REMOVER GRADO ASIGNADO PARA ESTE PUESTO',
-            data: 'pue_id',
+            data: 'asig_grado_id',
             searchable: false,
             orderable: false,
             render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Remover Grado</button>`
@@ -68,11 +68,13 @@ let tablaGrados = new Datatable('#tablaGrados', {
     ]
 });
 
-// Agregar un manejador de eventos para los botones "Ver grados"
+let pue_id;
+
 $('#tablaAsigGrados').on('click', '.ver-grados-btn', function () {
-    const pue_id = parseInt($(this).data('id')); // Convertir a entero
+    pue_id = parseInt($(this).data('id'));
     buscarGradosPuestosAPI(pue_id);
 });
+
 
 // Agregar un manejador de eventos para el cierre del modal
 $('#modalGrados').on('hidden.bs.modal', function (e) {
@@ -213,7 +215,7 @@ const eliminar = async e => {
     
     if (result.isConfirmed) {
         const body = new FormData();
-        body.append('pue_id', id);
+        body.append('asig_grado_id', id);
         
         const url = `API/asiggrados/eliminar`;
         const config = {
@@ -230,7 +232,7 @@ const eliminar = async e => {
             let icon='info'
             switch (codigo) {
                 case 1:
-                    buscar();
+                    buscarGradosPuestosAPI(pue_id);
                     Swal.fire({
                         icon: 'success',
                         title: 'Removido Exitosamente',
@@ -440,7 +442,6 @@ datatable.on('click','.btn-warning', OcultarTodoForumulario)
 tablaGrados.on('click','.btn-danger', eliminar)
 //?--------------------------------------------------------------
 
-buscar();
 
 
 

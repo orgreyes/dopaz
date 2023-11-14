@@ -67,11 +67,13 @@ let tablaRequisitos = new Datatable('#tablaRequisitos', {
     ]
 });
 
-// Agregar un manejador de eventos para los botones "Ver Misiones"
+
+let pue_id;
 $('#tablaPuestos').on('click', '.ver-requisitos-btn', function () {
-    const pue_id = parseInt($(this).data('id')); // Convertir a entero
+    pue_id = parseInt($(this).data('id'));
     buscarRequisitoPuestoAPI(pue_id);
 });
+
 
 // Agregar un manejador de eventos para el cierre del modal
 $('#modalRequisito').on('hidden.bs.modal', function (e) {
@@ -199,68 +201,59 @@ const guardar = async (evento) => {
 //?--------------------------------------------------------------
 
 // //!Funcion Eliminar
-const eliminar = async (e) => {
+const eliminar = async e => {
     const result = await Swal.fire({
         icon: 'question',
         title: 'Remover Requisito',
-        text: '¿Desea Remover este Requisito Para este Puesto?',
+        text: '¿Desea Remover este Requisito?',
         showCancelButton: true,
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Remover',
+        cancelButtonText: 'Cancelar'
     });
-
+    
     const button = e.target;
-    const id = button.dataset.id;
-
+    const id = button.dataset.id
+    // alert(id);
+    
     if (result.isConfirmed) {
         const body = new FormData();
         body.append('asig_req_id', id);
-
-        const urlEliminar = `/dopaz/API/asigrequisitos/eliminar`; // Renombrar la variable
+        
+        const url = `API/asigrequisitos/eliminar`;
         const config = {
             method: 'POST',
             body,
         };
-
+        
         try {
-            const respuesta = await fetch(urlEliminar, config);
-
-            // Verificar si la solicitud fue exitosa
-            if (!respuesta.ok) {
-                throw new Error('Error en la solicitud: ' + respuesta.status);
-            }
-
+            const respuesta = await fetch(url, config);
             const data = await respuesta.json();
             console.log(data);
             const { codigo, mensaje, detalle } = data;
 
-            let icon = 'info';
+            let icon='info'
             switch (codigo) {
                 case 1:
+                    buscarRequisitoPuestoAPI(pue_id);
                     Swal.fire({
                         icon: 'success',
-                        title: 'Eliminado Exitosamente',
+                        title: 'Removido Exitosamente',
                         text: mensaje,
-                        confirmButtonText: 'OK',
+                        confirmButtonText: 'OK'
                     });
-
-                    // Volvemos a buscar los requisitos después de eliminar
-                    const urlBuscar = `API/asigrequisitos/buscarRequisitoPuesto?pue_id=${pue_id}`;
-                    console.log(urlBuscar);
-                    buscarRequisitoPuestoAPI(urlBuscar);
                     break;
-                case 0:
-                    console.log(detalle);
-                    break;
+                    case 0:
+                        console.log(detalle);
+                        break;
                 default:
                     break;
             }
+
         } catch (error) {
             console.log(error);
         }
     }
 };
-
 
 
 //?--------------------------------------------------------------

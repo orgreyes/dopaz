@@ -59,9 +59,11 @@ let tablaMisiones = new Datatable('#tablaMisiones', {
     ]
 });
 
-// Agregar un manejador de eventos para los botones "Ver Misiones"
+
+let cont_id;
+
 $('#tablaAsigMisiones').on('click', '.ver-misiones-btn', function () {
-    const cont_id = parseInt($(this).data('id')); // Convertir a entero
+    cont_id = parseInt($(this).data('id'));
     buscarMisionesContingenteAPI(cont_id);
 });
 
@@ -217,7 +219,7 @@ const eliminar = async e => {
             let icon='info'
             switch (codigo) {
                 case 1:
-                    buscar();
+                    buscarMisionesContingenteAPI(cont_id);
                     Swal.fire({
                         icon: 'success',
                         title: 'Eliminado Exitosamente',

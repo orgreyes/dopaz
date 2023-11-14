@@ -65,7 +65,9 @@ class IngresoController {
                     ar.asig_req_id,
                     r.req_nombre,
                     p.pue_nombre,
+                    ca.apro_id,
                     ca.apro_situacion,
+                    ci.ing_puesto,
                     ci.ing_id AS ing_id
                 FROM 
                     cont_asig_requisitos ar
@@ -113,7 +115,7 @@ public static function guardarAPI() {
         // ! Solo envía una respuesta JSON al final
         if ($result['resultado'] == 1) {
             echo json_encode([
-                'mensaje' => 'Registro guardado correctamente',
+                'mensaje' => 'Requisito Provado',
                 'codigo' => 1
             ]);
         } else {
@@ -126,10 +128,86 @@ public static function guardarAPI() {
         // ! Si hay una excepción, envía una respuesta JSON de error
         echo json_encode([
             'detalle' => $e->getMessage(),
-            'mensaje' => 'El Aspirante ya fue Inscrito',
+            'mensaje' => 'El Requisito ya fue Aprovado',
             'codigo' => 2
         ]);
     }
 }
 
+
+ //!Funcion desaprovar
+ public static function desaprovarAPI()
+ {
+     $apro_id = $_POST['apro_id'];
+     try {
+         $requisito = RequisitoAprovado::find($apro_id);
+ 
+         // Verificar si la evaluación existe
+         if ($requisito) {
+             $requisito->apro_situacion = 0;
+             $resultado = $requisito->actualizar();
+ 
+             if ($resultado['resultado'] == 1) {
+                 echo json_encode([
+                     'mensaje' => 'Requisito Desaprovado correctamente',
+                     'codigo' => 1
+                 ]);
+             } else {
+                 echo json_encode([
+                     'mensaje' => 'Ocurrió un error al actualizar el Requisito',
+                     'codigo' => 0
+                 ]);
+             }
+         } else {
+             echo json_encode([
+                 'mensaje' => 'No se encontró el Requisito con el ID proporcionado',
+                 'codigo' => 0
+             ]);
+         }
+     } catch (Exception $e) {
+         echo json_encode([
+             'detalle' => $e->getMessage(),
+             'mensaje' => 'Ocurrió un error',
+             'codigo' => 0
+         ]);
+     }
+ }
+ 
+ //!Funcion reaprovar
+ public static function aprovarAPI()
+ {
+     $apro_id = $_POST['apro_id'];
+     try {
+         $requisito = RequisitoAprovado::find($apro_id);
+ 
+         // Verificar si la evaluación existe
+         if ($requisito) {
+             $requisito->apro_situacion = 1;
+             $resultado = $requisito->actualizar();
+ 
+             if ($resultado['resultado'] == 1) {
+                 echo json_encode([
+                     'mensaje' => 'Requisito Aprovado correctamente',
+                     'codigo' => 1
+                 ]);
+             } else {
+                 echo json_encode([
+                     'mensaje' => 'Ocurrió un error al aprovar el requisito',
+                     'codigo' => 0
+                 ]);
+             }
+         } else {
+             echo json_encode([
+                 'mensaje' => 'No se encontró el requisito con el ID proporcionado',
+                 'codigo' => 0
+             ]);
+         }
+     } catch (Exception $e) {
+         echo json_encode([
+             'detalle' => $e->getMessage(),
+             'mensaje' => 'Ocurrió un error',
+             'codigo' => 0
+         ]);
+     }
+ }
 }

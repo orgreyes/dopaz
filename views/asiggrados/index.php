@@ -48,6 +48,14 @@
             .form-container .name-input-group {
                 display: flex;
             }
+            #tablaAsigGradosContainer {
+                max-width: 600px; /* ajusta este valor según tus necesidades */
+                margin: 0 auto; /* para centrar el contenedor */
+            }
+
+            #tablaAsigGrados {
+                width: 100%; /* para ocupar todo el ancho del contenedor */
+            }
         </style>
 </head>
 <body>

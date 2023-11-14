@@ -105,7 +105,11 @@ const datatableRequisitos = new Datatable('#tablaRequisitos', {
                     if (data === null || data === "") {
                         return '<span style="color: red;">NO APROBADO</span>';
                     } else if (data === "1") {
+                        // Si está aprobado, muestra el botón de "Desaprobar Requisito"
                         return '<span style="color: green;">APROBADO</span>';
+                    } else if (data === "0") {
+                        // Si apro_situacion es 0, muestra "NO APROBADO"
+                        return '<span style="color: red;">NO APROBADO</span>';
                     } else {
                         return '<span style="color: orange;">PENDIENTE</span>';
                     }
@@ -113,18 +117,27 @@ const datatableRequisitos = new Datatable('#tablaRequisitos', {
                 return data;
             },
         },
-        
-        
         {
-            title: 'APRUEBA REQUISITO?',
+            title: 'APROBAR REQUISITO',
             data: 'ing_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row) => `<button class="btn btn-success btn-aprobar-requisito" data-ing-id='${data}' data-asig-req-id='${row.asig_req_id}'>Aprobar Requisito</button>`
+            render: (data, type, row) => {
+                if (type === 'display') {
+                    if (row.apro_situacion === "1") {
+                        return `<button class="btn btn-danger btn-desaprobar-requisito" data-id="${row.apro_id}" data-ing-id="${data}" data-asig-req-id="${row.asig_req_id}">Desaprobar Requisito</button>`;
+                    } else if(row.apro_situacion === "0"){
+                        return `<button class="btn btn-success btn-reaprobar-requisito" data-id="${row.apro_id}">Aprobar Requisito</button>`;
+                    } else {
+                        return `<button class="btn btn-success btn-aprobar-requisito" data-ing-id="${data}" data-asig-req-id="${row.asig_req_id}">Aprobar Requisito</button>`;
+                    }
+                }
+                return data;
+            }
         }
-        
     ]
 });
+
 
 // Agregar manejador de eventos para los botones "Ver Misiones"
 $('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
@@ -142,9 +155,9 @@ $('#modalRequisito').on('hidden.bs.modal', function (e) {
 $('.dataTable').on('click', '.btn-aprobar-requisito', function () {
     const asig_req_id = $(this).data('asig-req-id');
     const ing_id = $(this).data('ing-id');
-
     // Llamar a la función guardarAPI con los datos capturados
     guardarAPI(ing_id, asig_req_id);
+    buscarRequisitoPuestoAPI(ing_puesto_global, ing_id_global);
 });
 
 // Función para buscar requisitos por puesto
@@ -204,6 +217,125 @@ const buscar = async () => {
         console.log(error);
     }
 };
+//?------------------------
+let ing_puesto_global;
+let ing_id_global;
+$('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
+    ing_puesto_global = parseInt($(this).data('ingpuesto'));
+    ing_id_global = parseInt($(this).data('ingid'));
+});
+//?------------------------
+
+
+//!Funcion desaprovar
+const desaprobar = async e => {
+    const result = await Swal.fire({
+        icon: 'question',
+        title: 'Desaprovar Requisito',
+        text: '¿Desea Desaprovar este Requisito?',
+        showCancelButton: true,
+        confirmButtonText: 'Desaprovar',
+        cancelButtonText: 'Cancelar'
+    });
+    
+    const button = e.target;
+    const id = button.dataset.id;
+
+    if (result.isConfirmed) {
+        const body = new FormData();
+        body.append('apro_id', id);
+        
+        const url = `/dopaz/API/ingresos/desaprovar`;
+        const config = {
+            method: 'POST',
+            body,
+        };
+        
+        try {
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            console.log(data);
+            const { codigo, mensaje, detalle } = data;
+
+            let icon='info'
+            switch (codigo) {
+                case 1:
+                    buscarRequisitoPuestoAPI(ing_puesto_global, ing_id_global);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Desaprovado Exitosamente',
+                        text: mensaje,
+                        confirmButtonText: 'OK'
+                    });
+                    break;
+                case 0:
+                    console.log(detalle);
+                    break;
+                default:
+                    break;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+};
+
+
+//!Funcion aprovar
+const aprovar = async e => {
+    const result = await Swal.fire({
+        icon: 'question',
+        title: 'Aprovar Requisito',
+        text: '¿Desea Aprovar este Requisito?',
+        showCancelButton: true,
+        confirmButtonText: 'Aprovar',
+        cancelButtonText: 'Cancelar'
+    });
+    
+    const button = e.target;
+    const id = button.dataset.id;
+
+    if (result.isConfirmed) {
+        const body = new FormData();
+        body.append('apro_id', id);
+        
+        const url = `/dopaz/API/ingresos/aprovar`;
+        const config = {
+            method: 'POST',
+            body,
+        };
+        
+        try {
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            console.log(data);
+            const { codigo, mensaje, detalle } = data;
+
+            let icon='info'
+            switch (codigo) {
+                case 1:
+                    buscarRequisitoPuestoAPI(ing_puesto_global, ing_id_global);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Aprobado Exitosamente',
+                        text: mensaje,
+                        confirmButtonText: 'OK'
+                    });
+                    break;
+                case 0:
+                    console.log(detalle);
+                    break;
+                default:
+                    break;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+};
+
+datatableRequisitos.on('click','.btn-desaprobar-requisito', desaprobar)
+datatableRequisitos.on('click','.btn-reaprobar-requisito', aprovar)
 
 // Inicializar búsqueda al cargar la página
 buscar();

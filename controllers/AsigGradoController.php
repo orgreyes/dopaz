@@ -93,7 +93,8 @@ class AsigGradoController {
          $sql = "SELECT
                     pue.pue_id,
                     pue.pue_nombre,
-                    gra.gra_desc_lg
+                    gra.gra_desc_lg,
+                    agp.asig_grado_id
                 FROM
                     cont_puestos pue
                 JOIN
@@ -112,7 +113,7 @@ class AsigGradoController {
      } catch (Exception $e) {
          echo json_encode([
              'detalle' => $e->getMessage(),
-             'mensaje' => 'Ocurrió un error al obtener las misiones del contingente',
+             'mensaje' => 'Ocurrió un error al obtener las Grados de este puesto',
              'codigo' => 0
          ]);
      }
@@ -152,8 +153,8 @@ class AsigGradoController {
  //!Funcion Eliminar
  public static function eliminarAPI(){
      try{
-         $pue_id = $_POST['pue_id'];
-         $asigGrado = AsigGrado::find($pue_id);
+         $asig_grado_id = $_POST['asig_grado_id'];
+         $asigGrado = AsigGrado::find($asig_grado_id);
          $asigGrado->asig_grado_situacion = 0;
          $resultado = $asigGrado->actualizar();
 

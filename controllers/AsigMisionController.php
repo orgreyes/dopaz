@@ -95,7 +95,7 @@ public static function buscarMisiones()
      } catch (Exception $e) {
          echo json_encode([
              'detalle' => $e->getMessage(),
-             'mensaje' => 'Ocurrió un error al obtener las misiones del contingente',
+             'mensaje' => 'Ocurrió un error al obtener las Grados de este puesto',
              'codigo' => 0
          ]);
      }
