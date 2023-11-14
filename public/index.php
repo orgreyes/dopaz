@@ -99,6 +99,7 @@ $router->post('/API/usuarios/enviar', [UsuarioController::class,'enviarAPI']);
 $router->get('/ingresos', [IngresoController::class,'index']);
 $router->get('/API/ingresos/buscar', [IngresoController::class,'buscarAPI']);
 $router->get('/API/ingresos/buscarRequisitoPuesto', [IngresoController::class,'buscarRequisitoPuestoAPI']);
+$router->get('/API/ingresos/guardar', [IngresoController::class,'guardarAPI']);
 $router->post('/API/ingresos/modificar', [IngresoController::class,'modificarAPI']);
 
 

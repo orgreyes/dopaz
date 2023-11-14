@@ -5,6 +5,7 @@ namespace Controllers;
 use Exception;
 use Model\Ingreso;
 use Model\AsigRequisito;
+use Model\RequisitoAprovado;
 use MVC\Router;
 
 class IngresoController {
@@ -49,6 +50,7 @@ class IngresoController {
  public static function buscarRequisitoPuestoAPI()
  {
      $puestoId = $_GET['ing_puesto'];
+     $ingId = $_GET['ing_id'];
      
      try {
          if ($puestoId === null) {
@@ -62,17 +64,23 @@ class IngresoController {
          $sql = "SELECT 
                     ar.asig_req_id,
                     r.req_nombre,
-                    ar.asig_req_aprovada,
-                    p.pue_nombre
+                    p.pue_nombre,
+                    ca.apro_situacion,
+                    ci.ing_id AS ing_id
                 FROM 
                     cont_asig_requisitos ar
                 JOIN
                     cont_requisitos r ON ar.asig_req_requisito = r.req_id
                 JOIN
                     cont_puestos p ON ar.asig_req_puesto = p.pue_id
+                JOIN
+                    cont_ingresos ci ON ar.asig_req_puesto = ci.ing_puesto
+                LEFT JOIN
+                    cont_req_aprovado ca ON ar.asig_req_id = ca.apro_requisito AND ci.ing_id = ca.apro_ingreso
                 WHERE
                     ar.asig_req_puesto = $puestoId
-                    AND ar.asig_req_situacion = 1";
+                    AND ar.asig_req_situacion = 1
+                    AND ci.ing_id = $ingId";
  
          // Ejecutar la consulta y obtener las misiones del contingente.
          $asigrequisitos = AsigRequisito::fetchArray($sql);
@@ -87,32 +95,40 @@ class IngresoController {
      }
  }
  
- //!Funcion Modificar
+ //!Funcion Guardar
+public static function guardarAPI() {
+    try {
+        $Id_Ingreso = $_GET['ing_id'];
+        $Id_Requisito = $_GET['asig_req_id'];
 
-  public static function modificarAPI(){
-    try{
-        $asig_req_id = $_POST['asig_req_id'];
-        $requisito = AsigRequisito::find($asig_req_id);
-        $requisito->asig_req_aprovada = 2;
-        $resultado = $requisito->actualizar();
+        
+        
+        // ! Aca se recibe los datos que se guardaran en otra tabla.
+        $datos['apro_ingreso'] = $Id_Ingreso;
+        $datos['apro_requisito'] = $Id_Requisito;
+        
+        $Requisito_Aprovado = new RequisitoAprovado($datos);
+        $result = $Requisito_Aprovado->guardar();
 
-        if($resultado['resultado'] == 1){
+        // ! Solo envía una respuesta JSON al final
+        if ($result['resultado'] == 1) {
             echo json_encode([
-                'mensaje' => 'Requisito Aprovado correctamente',
+                'mensaje' => 'Registro guardado correctamente',
                 'codigo' => 1
             ]);
-        }else{
+        } else {
             echo json_encode([
-                'mensaje' => 'Ocurrio un error',
+                'mensaje' => 'Ocurrió un error',
                 'codigo' => 0
             ]);
         }
-    }catch(Exception $e){
+    } catch (Exception $e) {
+        // ! Si hay una excepción, envía una respuesta JSON de error
         echo json_encode([
             'detalle' => $e->getMessage(),
-            'mensaje'=> 'Ocurrio un Error',
-            'codigo' => 0
-    ]);
+            'mensaje' => 'El Aspirante ya fue Inscrito',
+            'codigo' => 2
+        ]);
     }
 }
 

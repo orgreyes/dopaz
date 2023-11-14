@@ -1,60 +1,89 @@
-//?--------------------------------------------------------------
-
 import Datatable from "datatables.net-bs5";
-import { lenguaje } from "../lenguaje"
-import { validarFormulario, Toast } from "../funciones"
+import { lenguaje } from "../lenguaje";
+import { Toast } from "../funciones";
 import Swal from "sweetalert2";
-//?--------------------------------------------------------------
 
-//?--------------------------------------------------------------
-
-
+// Declaración de variables
 let contenedor = 1;
 let contenedorr = 1;
 
-const datatable = new Datatable('#tablaIngesos', {
-    language : lenguaje,
-    data : null,
-    columns : [
+//!Función Guardar
+const guardarAPI = async (ing_id, asig_req_id) => {
+    const url = `API/ingresos/guardar?ing_id=${ing_id}&asig_req_id=${asig_req_id}`;
+    console.log(url);
+
+    const config = {
+        method: 'GET', // Cambiado de POST a GET
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        // Procesa la respuesta según tus necesidades
+        const { codigo, mensaje, detalle } = data;
+        let icon = 'info';
+        switch (codigo) {
+            case 1:
+                icon = 'success';
+                datatableRequisitos.clear().draw(); // Limpiar la tabla después de guardar
+                break;
+
+            case 0:
+                icon = 'error';
+                console.log(detalle);
+                break;
+
+            default:
+                break;
+        }
+
+        Toast.fire({
+            icon,
+            text: mensaje
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+// !Tabla de ingresos
+const datatableIngresos = new Datatable('#tablaIngesos', {
+    language: lenguaje,
+    data: null,
+    columns: [
         {
-            title : 'NO',
-            render: () => contenedor++ 
-            
+            title: 'NO',
+            render: () => contenedor++
         },
-        // {
-        //     title : 'ingresos',
-        //     data: 'ing_codigo'
-        // },
         {
-            title : 'PUESTO SOLICITANTE',
+            title: 'PUESTO SOLICITANTE',
             data: 'pue_nombre'
         },
         {
-            title : 'CONTINGENTE A PARTICIPAR',
+            title: 'CONTINGENTE A PARTICIPAR',
             data: 'cont_nombre'
         },
-        // {
-        //     title : 'NOTA INGLES',
-        //     data: ''
-        // },
         {
-            title : 'REQUISITOS',
-            data: 'ing_id',
+            title: 'REQUISITOS',
+            data: 'ing_puesto',
             searchable: false,
             orderable: false,
-            render : (data, type, row, meta) => `<button class="btn btn-info ver-requisitos-btn" data-bs-toggle='modal' data-bs-target='#modalRequisito' data-id='${data}'data-nombre='${row["eva_nombre"]}'>Validar Requisitos</button>`
+            render: (data, type, row) => `<button class="btn btn-info ver-requisitos-btn" data-bs-toggle='modal' data-bs-target='#modalRequisito' data-ingpuesto='${data}' data-ingid='${row["ing_id"]}' data-nombre='${row["eva_nombre"]}'>Validar Requisitos</button>`
         },
         {
-            title : 'ELIMINAR',
+            title: 'ELIMINAR',
             data: 'asig_req_id',
             searchable: false,
             orderable: false,
-            render : (data, type, row, meta) => `<button class="btn btn-success" data-id='${data}'>Aprovar Plaza</button>`
+            render: (data) => `<button class="btn btn-success btn-aprobar-requisito" data-asig-req-id='${data}'>Aprobar Plaza</button>`
         }
     ]
-})
+});
 
-let tablaRequisitos = new Datatable('#tablaRequisitos', {
+// !Tabla de requisitos
+const datatableRequisitos = new Datatable('#tablaRequisitos', {
     language: lenguaje,
     data: null,
     columns: [
@@ -67,65 +96,77 @@ let tablaRequisitos = new Datatable('#tablaRequisitos', {
             data: 'req_nombre'
         },
         {
-            title: 'APROBACIÓN DE REQUISITO',
-            data: 'asig_req_aprovada',
+            title: 'REQUISITOS',
+            data: 'apro_situacion',
+            searchable: false,
+            orderable: false,
             render: (data, type, row) => {
-                const aprovada = parseInt(data, 10); // Convierte a número
-        
                 if (type === 'display') {
-                    if (isNaN(aprovada) || aprovada === 0) {
-                        return '<span style="color: orange;">PENDIENTE</span>';
-                    } else if (aprovada === 1) {
+                    if (data === null || data === "") {
                         return '<span style="color: red;">NO APROBADO</span>';
-                    } else if (aprovada === 2) {
-                        return '<span style="color: blue;">APROBADO</span>';
+                    } else if (data === "1") {
+                        return '<span style="color: green;">APROBADO</span>';
+                    } else {
+                        return '<span style="color: orange;">PENDIENTE</span>';
                     }
                 }
                 return data;
             },
         },
         
+        
         {
             title: 'APRUEBA REQUISITO?',
-            data: 'asig_req_id',
+            data: 'ing_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-success" data-id='${data}'>Aprobar Requisito</button>`
+            render: (data, type, row) => `<button class="btn btn-success btn-aprobar-requisito" data-ing-id='${data}' data-asig-req-id='${row.asig_req_id}'>Aprobar Requisito</button>`
         }
+        
     ]
 });
 
-
-// Agregar un manejador de eventos para los botones "Ver Misiones"
+// Agregar manejador de eventos para los botones "Ver Misiones"
 $('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
-    const ing_puesto = parseInt($(this).data('id')); // Convertir a entero
-    buscarRequisitoPuestoAPI(ing_puesto);
+    const ing_puesto = parseInt($(this).data('ingpuesto'));
+    const ing_id = parseInt($(this).data('ingid'));
+    buscarRequisitoPuestoAPI(ing_puesto, ing_id);
 });
-// Agregar un manejador de eventos para el cierre del modal
+
+// Agregar manejador de eventos para el cierre del modal
 $('#modalRequisito').on('hidden.bs.modal', function (e) {
-    // Restablecer el contador y limpiar la tabla de misiones cuando se cierra el modal
     limpiar();
 });
 
-const buscarRequisitoPuestoAPI = async (ing_puesto) => {
-        // Reiniciar los contadores
-        contenedor = 1;
-        contenedorr = 1;
-    const url = `/dopaz/API/ingresos/buscarRequisitoPuesto?ing_puesto=${ing_puesto}`;
+// Agregar manejador de eventos para los botones de aprobación de requisitos
+$('.dataTable').on('click', '.btn-aprobar-requisito', function () {
+    const asig_req_id = $(this).data('asig-req-id');
+    const ing_id = $(this).data('ing-id');
+
+    // Llamar a la función guardarAPI con los datos capturados
+    guardarAPI(ing_id, asig_req_id);
+});
+
+// Función para buscar requisitos por puesto
+const buscarRequisitoPuestoAPI = async (ing_puesto, ing_id) => {
+    contenedor = 1;
+    contenedorr = 1;
+
+    const url = `API/ingresos/buscarRequisitoPuesto?ing_puesto=${ing_puesto}&ing_id=${ing_id}`;
     console.log(url);
 
     const config = {
         method: 'GET'
     };
-    
+
     try {
         const respuesta = await fetch(url, config);
         if (respuesta.ok) {
             const data = await respuesta.json();
             console.log(data);
-            tablaRequisitos.clear().draw();
+            datatableRequisitos.clear().draw();
             if (data) {
-                tablaRequisitos.rows.add(data).draw();
+                datatableRequisitos.rows.add(data).draw();
             }
         } else {
             console.error('Error en la solicitud: ' + respuesta.status);
@@ -135,98 +176,34 @@ const buscarRequisitoPuestoAPI = async (ing_puesto) => {
     }
 };
 
-//?--------------------------------------------------------------
-
-//!Aca esta la funcion para buscar
+// Función para buscar ingresos
 const buscar = async () => {
     contenedor = 1;
 
     const url = `API/ingresos/buscar`;
     const config = {
         method: 'GET'
-    }
+    };
 
     try {
-        const respuesta = await fetch(url, config)
+        const respuesta = await fetch(url, config);
         const data = await respuesta.json();
 
         console.log(data);
-        datatable.clear().draw()
+        datatableIngresos.clear().draw();
         if (data) {
-            datatable.rows.add(data).draw();
+            datatableIngresos.rows.add(data).draw();
         } else {
             Toast.fire({
                 title: 'No se encontraron registros',
                 icon: 'info'
-            })
+            });
         }
 
     } catch (error) {
         console.log(error);
     }
-}
-
-
-
-//!Aca esta la funcion de modificar un registro
-const modificar = async e => {
-    const result = await Swal.fire({
-        icon: 'question',
-        title: 'Aprovar Requisito',
-        text: '¿Desea Aprovar este Requisito?',
-        showCancelButton: true,
-        confirmButtonText: 'Aprovar',
-        cancelButtonText: 'Cancelar'
-    });
-    
-    const button = e.target;
-    const id = button.dataset.id
-    // alert(id);
-    
-    if (result.isConfirmed) {
-        const body = new FormData();
-        body.append('asig_req_id', id);
-        
-        const url = `API/ingresos/modificar`;
-        const config = {
-            method: 'POST',
-            body,
-        };
-        
-        try {
-            const respuesta = await fetch(url, config);
-            const data = await respuesta.json();
-            console.log(data);
-            const { codigo, mensaje, detalle } = data;
-
-            let icon='info'
-            switch (codigo) {
-                case 1:
-                    buscar();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Aprovado Exitosamente',
-                        text: mensaje,
-                        confirmButtonText: 'OK'
-                    });
-                    break;
-                    case 0:
-                        console.log(detalle);
-                        break;
-                default:
-                    break;
-            }
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
 };
 
-//?--------------------------------------------------------------
-tablaRequisitos.on('click','.btn-success', modificar)
+// Inicializar búsqueda al cargar la página
 buscar();
-
-
-
-
