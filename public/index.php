@@ -92,7 +92,7 @@ $router->post('/API/asigrequisitos/guardar', [AsigRequisitoController::class,'gu
 //!Rutas para Asignar Evaluaciones a cada Puesto
 $router->get('/asigevaluaciones', [AsigEvaluacionController::class,'index']);
 $router->get('/API/asigevaluaciones/buscar', [AsigEvaluacionController::class,'buscarAPI']);
-$router->get('/API/asigevaluaciones/buscarRequisitoPuesto', [AsigEvaluacionController::class,'buscarRequisitoPuestoAPI']);
+$router->get('/API/asigevaluaciones/buscarEvaluacionPuesto', [AsigEvaluacionController::class,'buscarEvaluacionPuestoAPI']);
 $router->post('/API/asigevaluaciones/eliminar', [AsigEvaluacionController::class,'eliminarAPI']);
 $router->post('/API/asigevaluaciones/modificar', [AsigEvaluacionController::class,'modificarAPI']);
 $router->post('/API/asigevaluaciones/guardar', [AsigEvaluacionController::class,'guardarAPI']);
