@@ -66,6 +66,13 @@ const datatableIngresos = new Datatable('#tablaIngesos', {
             data: 'cont_nombre'
         },
         {
+            title: 'EVALUACIONES',
+            data: 'id_aspirante',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row) => `<button class="btn btn-info ver-requisitos-btn" data-bs-toggle='modal' data-bs-target='#modalRequisito' data-ingpuesto='${data}' data-ingid='${row["ing_id"]}' data-nombre='${row["eva_nombre"]}'>Revisar Notas</button>`
+        },
+        {
             title: 'REQUISITOS',
             data: 'ing_puesto',
             searchable: false,

@@ -36,12 +36,10 @@
                            
                             
                             
-                            <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/aspirantes"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Personal Aspirantes</a>
-                            </li>
+                            
 
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/ingresos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Personal actualmente optando por una plaza en un contingente</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/ingresos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Seleccion de Personal</a>
                             </li>
                             
                         </ul>
@@ -55,10 +53,10 @@
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/usuarios2"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Personal Que Viaja Por Segunda Vez a Contingente</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/aspirantes"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Personal Que Viaja Por Segunda Vez a Contingente</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/usuarios"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Personal Que Viaja Por Primera Vez a Contingente</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/usuarios"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Personal nuevo</a>
                             </li>
                         </ul>
                     </div> 

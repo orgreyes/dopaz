@@ -34,17 +34,22 @@ public static function buscarEvaluaciones()
  public static function buscarAPI()
  {
     $sql = "SELECT DISTINCT
-                cont_aspirantes.asp_id AS ID_Aspirante,
-                asp_nom1 || ' ' || asp_nom2 || ' ' || asp_ape1 || ' ' || asp_ape2 AS Nombre_Aspirante
-            FROM 
-                cont_aspirantes
-            JOIN
-                cont_ingresos ON cont_aspirantes.asp_id = cont_ingresos.ing_aspirante
-            LEFT JOIN
-                cont_resultados ON cont_ingresos.ing_id = cont_resultados.res_aspirante
-            WHERE   YEAR(cont_ingresos.ing_fecha_cont) = YEAR(CURRENT)
-            ORDER BY 
-                Nombre_Aspirante ASC";
+                    cont_aspirantes.asp_id AS ID_Aspirante,
+                    asp_nom1 || ' ' || asp_nom2 || ' ' || asp_ape1 || ' ' || asp_ape2 AS Nombre_Aspirante,
+                    cont_puestos.pue_id AS Puesto_ID
+                FROM 
+                    cont_aspirantes
+                JOIN
+                    cont_ingresos ON cont_aspirantes.asp_id = cont_ingresos.ing_aspirante
+                JOIN
+                    cont_puestos ON cont_ingresos.ing_puesto = cont_puestos.pue_id
+                LEFT JOIN
+                    cont_resultados ON cont_ingresos.ing_id = cont_resultados.res_aspirante
+                WHERE   
+                    YEAR(cont_ingresos.ing_fecha_cont) = YEAR(CURRENT)
+                ORDER BY 
+                    Nombre_Aspirante ASC;
+";
     
 
      try {
@@ -64,6 +69,7 @@ public static function buscarEvaluaciones()
  public static function buscarEvaluacionesAPI()
  {
      $id_aspirante = $_GET['id_aspirante'];
+     $id_puesto = $_GET['ing_puesto'];
      
      try {
          if ($id_aspirante === null) {
@@ -76,24 +82,22 @@ public static function buscarEvaluaciones()
  
          // Consulta SQL para obtener las misiones de un contingente específico.
          $sql = "SELECT 
-         cont_aspirantes.asp_id AS ID_Aspirante,
-         asp_nom1 || ' ' || asp_nom2 || ' ' || asp_ape1 || ' ' || asp_ape2 AS Nombre_Aspirante,
-         cont_evaluaciones.eva_id AS ID_Evaluacion,
-         eva_nombre AS Evaluacion_Asignada,
-         res_nota AS Nota
-     FROM 
-         cont_aspirantes
-     JOIN
-         cont_ingresos ON cont_aspirantes.asp_id = cont_ingresos.ing_aspirante
-     LEFT JOIN
-         cont_resultados ON cont_ingresos.ing_id = cont_resultados.res_aspirante
-     JOIN
-         cont_evaluaciones ON cont_resultados.res_evaluacion = cont_evaluaciones.eva_id
-     WHERE 
-         cont_aspirantes.asp_id = $id_aspirante
-         AND YEAR(cont_ingresos.ing_fecha_cont) = YEAR(CURRENT)
-     ORDER BY 
-         Nombre_Aspirante ASC; ";
+                        cont_evaluaciones.eva_id AS ID_Evaluacion,
+                        cont_evaluaciones.eva_nombre AS Nombre_Evaluacion
+                    FROM 
+                        cont_evaluaciones
+                    JOIN 
+                        cont_asig_evaluaciones ON cont_evaluaciones.eva_id = cont_asig_evaluaciones.asig_eva_nombre
+                    JOIN 
+                        cont_puestos ON cont_asig_evaluaciones.asig_eva_puesto = cont_puestos.pue_id
+                    JOIN 
+                        cont_ingresos ON cont_puestos.pue_id = cont_ingresos.ing_puesto
+                    WHERE 
+                        cont_asig_evaluaciones.asig_eva_situacion = 1 
+                        AND cont_puestos.pue_id = $id_puesto 
+                        AND cont_ingresos.ing_id = $id_aspirante 
+                    ORDER BY 
+                        Nombre_Evaluacion ASC";
  
          // Ejecutar la consulta y obtener las misiones del contingente.
          $asig_evaluacion = Resultado::fetchArray($sql);

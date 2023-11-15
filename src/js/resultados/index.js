@@ -1,51 +1,81 @@
-//?--------------------------------------------------------------
-import { Dropdown } from "bootstrap";
 import Datatable from "datatables.net-bs5";
-import { lenguaje } from "../lenguaje"
-import { validarFormulario, Toast } from "../funciones"
+import { lenguaje } from "../lenguaje";
+import { Toast } from "../funciones";
 import Swal from "sweetalert2";
-//?--------------------------------------------------------------
 
-const formulario = document.querySelector('form');
-const btnFormulario = document.getElementById('btnFormulario');
-const btnModificar = document.getElementById('btnModificar');
-const btnGuardar = document.getElementById('btnGuardar');
-const btnBuscar = document.getElementById('btnBuscar');
-const btnCancelar = document.getElementById('btnCancelar');
+const btnCancelar = document.getElementById('btnCerrarIngresoNota');
 const btnCerrar = document.getElementById('btnCerrar');
-const tablaAspirantesContainer = document.getElementById('tablaAspirantesContainer');
 
-
-//?--------------------------------------------------------------
+// Declaración de variables
 let contenedor = 1;
 let contenedorr = 1;
 
-const datatable = new Datatable('#tablaAspirantes', {
-    language : lenguaje,
-    data : null,
-    columns : [
+//!Función Guardar
+const guardarAPI = async (id_aspirante, asig_req_id) => {
+    const url = `API/resultados/guardar?id_aspirante=${id_aspirante}&asig_req_id=${asig_req_id}`;
+    console.log(url);
+
+    const config = {
+        method: 'GET', // Cambiado de POST a GET
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        // Procesa la respuesta según tus necesidades
+        const { codigo, mensaje, detalle } = data;
+        let icon = 'info';
+        switch (codigo) {
+            case 1:
+                icon = 'success';
+                datatableRequisitos.clear().draw(); // Limpiar la tabla después de guardar
+                break;
+
+            case 0:
+                icon = 'error';
+                console.log(detalle);
+                break;
+
+            default:
+                break;
+        }
+
+        Toast.fire({
+            icon,
+            text: mensaje
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+// !Tabla de Ingresos
+const datatableIngresos = new Datatable('#tablaIngesos', {
+    language: lenguaje,
+    data: null,
+    columns: [
         {
-            title : 'NO',
-            render: () => contenedor++ 
-            
+            title: 'NO',
+            render: () => contenedor++
         },
         {
-            title : 'PUESTOS',
-            data: 'pue_nombre'
+            title: 'PUESTO SOLICITANTE',
+            data: 'nombre_aspirante'
         },
         {
-            title : 'VER REQUISITOS',
-            data: 'id_aspirante',
+            title: 'EVALUACIONES',
+            data: 'puesto_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-info ver-requisitos-btn" data-bs-toggle='modal' data-bs-target='#modalRequisito' data-id='${data}'>Ver Requisitos Necesarios para este Puesto</button>`
-        }
+            render: (data, type, row) => `<button class="btn btn-info ver-notas-btn" data-bs-toggle='modal' data-bs-target='#modalRequisito' data-puesto_id='${data}' data-id_aspirante='${row["id_aspirante"]}'>Evaluaciones a Calificar</button>`
+        },
     ]
-})
+});
 
-//?--------------------------------------------------------------
-
-let tablaRequisitos = new Datatable('#tablaRequisitos', {
+// !Tabla de requisitos
+const datatableRequisitos = new Datatable('#tablaRequisitos', {
     language: lenguaje,
     data: null,
     columns: [
@@ -55,51 +85,57 @@ let tablaRequisitos = new Datatable('#tablaRequisitos', {
         },
         {
             title: 'REQUISITOS ASIGNADOS PARA EL PUESTO',
-            data: 'id_aspirante'
+            data: 'nombre_evaluacion'
         },
         {
-            title: 'ELIMINAR',
-            data: 'nombre_aspirante',
+            title: 'EVALUACIONES',
+            data: 'id_evaluacion',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Remover Requisito</button>`
-        }
+            render: (data, type, row) => `<button class="btn btn-info ver-notas-btn" data-bs-toggle='modal' data-bs-target='#modalNota' data-puesto_id='${data}' data-id_aspirante='${row["id_aspirante"]}'>Ingreso de Notas</button>`
+        },
     ]
 });
 
-
-let pue_id;
-$('#tablaAspirantes').on('click', '.ver-requisitos-btn', function () {
-    pue_id = parseInt($(this).data('id'));
-    buscarRequisitoPuestoAPI(pue_id);
+let ing_puesto;
+let id_aspirante;
+// Agregar manejador de eventos para los botones "Ver Misiones"
+$('#tablaIngesos').on('click', '.ver-notas-btn', function () {
+    ing_puesto = parseInt($(this).data('puesto_id'));
+    id_aspirante = parseInt($(this).data('id_aspirante'));
+    buscarRequisitoPuestoAPI(ing_puesto, id_aspirante);
 });
 
 
-// Agregar un manejador de eventos para el cierre del modal
-$('#modalRequisito').on('hidden.bs.modal', function (e) {
-    // Restablecer el contador y limpiar la tabla de misiones cuando se cierra el modal
-    limpiar();
+// Agregar manejador de eventos para los botones de aprobación de requisitos
+$('.dataTable').on('click', '.btn-aprobar-requisito', function () {
+    const asig_req_id = $(this).data('asig-req-id');
+    const id_aspirante = $(this).data('ing-id');
+    // Llamar a la función guardarAPI con los datos capturados
+    guardarAPI(id_aspirante, asig_req_id);
+    buscarRequisitoPuestoAPI(ing_puesto_global, id_aspirante_global);
 });
 
-const buscarRequisitoPuestoAPI = async (pue_id) => {
-        // Reiniciar los contadores
-        contenedor = 1;
-        contenedorr = 1;
-    const url = `API/resultados/buscarRequisitoPuesto?pue_id=${pue_id}`;
+// Función para buscar requisitos por puesto
+const buscarRequisitoPuestoAPI = async (ing_puesto, id_aspirante) => {
+    contenedor = 1;
+    contenedorr = 1;
+
+    const url = `API/resultados/buscarEvaluaciones?ing_puesto=${ing_puesto}&id_aspirante=${id_aspirante}`;
     console.log(url);
 
     const config = {
         method: 'GET'
     };
-    
+
     try {
         const respuesta = await fetch(url, config);
         if (respuesta.ok) {
             const data = await respuesta.json();
             console.log(data);
-            tablaRequisitos.clear().draw();
+            datatableRequisitos.clear().draw();
             if (data) {
-                tablaRequisitos.rows.add(data).draw();
+                datatableRequisitos.rows.add(data).draw();
             }
         } else {
             console.error('Error en la solicitud: ' + respuesta.status);
@@ -109,117 +145,63 @@ const buscarRequisitoPuestoAPI = async (pue_id) => {
     }
 };
 
-
-//?--------------------------------------------------------------
-//!Aca esta la funcion para buscar
+//!Función para buscar resultados
 const buscar = async () => {
-
     contenedor = 1;
-    contenedorr = 1;
 
     const url = `API/resultados/buscar`;
     const config = {
         method: 'GET'
-    }
-
-    try {
-        const respuesta = await fetch(url, config)
-        const data = await respuesta.json();
-
-        console.log(data);
-        datatable.clear().draw()
-        if (data) {
-            datatable.rows.add(data).draw();
-        } else {
-            Toast.fire({
-                title: 'No se encontraron registros',
-                icon: 'info'
-            })
-        }
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-
-//?--------------------------------------------------------------
-
-// //!Funcion Guardar
-const guardar = async (evento) => {
-    evento.preventDefault();
-    if (!validarFormulario(formulario, ['asig_req_id'])) {
-        Toast.fire({
-            icon: 'info',
-            text: 'Debe llenar todos los datos'
-        });
-        return;
-    }
-
-    const body = new FormData(formulario);
-    body.delete('asig_req_id');
-    const url = 'API/resultados/guardar';
-    const headers = new Headers();
-    headers.append("X-Requested-With", "fetch");
-    const config = {
-        method: 'POST',
-        body
     };
 
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
 
-        const { codigo, mensaje, detalle } = data;
-        let icon = 'info';
-        switch (codigo) {
-            case 1:
-                formulario.reset();
-                icon = 'success', 
-                        'mensaje';
-                buscar();
-                break;
-
-            case 0:
-                icon = 'info';
-                console.log(detalle);
-                break;
-
-            default:
-                break;
+        console.log(data);
+        datatableIngresos.clear().draw();
+        if (data) {
+            datatableIngresos.rows.add(data).draw();
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info'
+            });
         }
-        Toast.fire({
-            icon,
-            text: mensaje
-        });
+
     } catch (error) {
         console.log(error);
-        
-        }
-}
+    }
+};
+//?------------------------
+let ing_puesto_global;
+let id_aspirante_global;
+$('#tablaIngesos').on('click', '.ver-notas-btn', function () {
+    ing_puesto_global = parseInt($(this).data('puesto_id'));
+    id_aspirante_global = parseInt($(this).data('id_aspirante'));
+});
+//?------------------------
 
-//?--------------------------------------------------------------
 
-// //!Funcion Eliminar
-const eliminar = async e => {
+//!Funcion desaprovar
+const desaprobar = async e => {
     const result = await Swal.fire({
         icon: 'question',
-        title: 'Remover Requisito',
-        text: '¿Desea Remover este Requisito?',
+        title: 'Desaprovar Requisito',
+        text: '¿Desea Desaprovar este Requisito?',
         showCancelButton: true,
-        confirmButtonText: 'Remover',
+        confirmButtonText: 'Desaprovar',
         cancelButtonText: 'Cancelar'
     });
     
     const button = e.target;
-    const id = button.dataset.id
-    // alert(id);
-    
+    const id = button.dataset.id;
+
     if (result.isConfirmed) {
         const body = new FormData();
-        body.append('asig_req_id', id);
+        body.append('apro_id', id);
         
-        const url = `API/resultados/eliminar`;
+        const url = `/dopaz/API/resultados/desaprovar`;
         const config = {
             method: 'POST',
             body,
@@ -234,21 +216,20 @@ const eliminar = async e => {
             let icon='info'
             switch (codigo) {
                 case 1:
-                    buscarRequisitoPuestoAPI(pue_id);
+                    buscarRequisitoPuestoAPI(ing_puesto_global, id_aspirante_global);
                     Swal.fire({
                         icon: 'success',
-                        title: 'Removido Exitosamente',
+                        title: 'Desaprovado Exitosamente',
                         text: mensaje,
                         confirmButtonText: 'OK'
                     });
                     break;
-                    case 0:
-                        console.log(detalle);
-                        break;
+                case 0:
+                    console.log(detalle);
+                    break;
                 default:
                     break;
             }
-
         } catch (error) {
             console.log(error);
         }
@@ -256,144 +237,116 @@ const eliminar = async e => {
 };
 
 
-//?--------------------------------------------------------------
-//?block es mostrar 
-//?none y ocultar
-
-//!Ocultar el Datatable al inicio
-formulario.style.display = 'block';
-tablaAspirantesContainer.style.display = 'none'; 
-
-//!Mostrar el formulario, ocultar datatable
-const mostrarFormulario = () => {
-    formulario.style.display = 'block';
-    tablaAspirantesContainer.style.display = 'none'; 
-    };
-
-//!Ocultar el formulario, mostrar datatable
-const ocultarFormulario = () => {
-    // formulario.reset();
-    formulario.style.display = 'none';
-    tablaAspirantesContainer.style.display = 'block';
-};
-
-//?--------------------------------------------------------------
-
-//!Ocultar el btnFormulario, mostrar btnBuscar al Inicio
-btnFormulario.style.display = 'none';
-btnBuscar.style.display = 'block';
-
-//!Mostrar el btnFormulario, Ocultar btnBuscar
-const ocultarBtnForumulario = () => {
-    btnFormulario.style.display = 'block';
-    btnBuscar.style.display = 'none';
-};
-
-//!Mostrar el btnFormulario, Ocultar btnBuscar
-const MostrarBtnForumulario = () => {
-    btnFormulario.style.display = 'none';
-    btnBuscar.style.display = 'block';
-};
-
-//!Mostrar el btnFormulario, Ocultar btnBuscar
-const OcultarTodoForumulario = () => {
-    btnFormulario.style.display = 'none';
-    btnBuscar.style.display = 'none';
-};
-//?--------------------------------------------------------------
-
-//!Mostrar el btnGuardar, Ocultar los btnModificar y btnCancelar al Inicio
-btnGuardar.style.display = 'block';
-btnModificar.style.display = 'none';
-btnCancelar.style.display = 'none';
-
-//!Mostrar el btnGuardar, Ocultar los btnModificar y btnCancelar 
-const ocultarBtns = () => {
-    btnGuardar.style.display = 'block';
-    btnModificar.style.display = 'none';
-    btnCancelar.style.display = 'none';
-};
-
-//!Mostrar el btnFormulario, Ocultar btnBuscar
-const mostrarBtns = () => {
-    btnGuardar.style.display = 'none';
-    btnModificar.style.display = 'block';
-    btnCancelar.style.display = 'block';
-};
-//?--------------------------------------------------------------
-
-//!Para colocar los datos sobre el formulario
-const traeDatos = (e) => {
+//!Funcion aprovar
+const aprovar = async e => {
+    const result = await Swal.fire({
+        icon: 'question',
+        title: 'Aprovar Requisito',
+        text: '¿Desea Aprovar este Requisito?',
+        showCancelButton: true,
+        confirmButtonText: 'Aprovar',
+        cancelButtonText: 'Cancelar'
+    });
+    
     const button = e.target;
     const id = button.dataset.id;
-    const nombre = button.dataset.nombre;
-//?--------------------------------------------------------------
 
-    //! Llenar el formulario con los datos obtenidos
-    formulario.asig_req_id.value = id;
-    formulario.req_nombre.value = nombre;
+    if (result.isConfirmed) {
+        const body = new FormData();
+        body.append('apro_id', id);
+        
+        const url = `/dopaz/API/resultados/aprovar`;
+        const config = {
+            method: 'POST',
+            body,
+        };
+        
+        try {
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            console.log(data);
+            const { codigo, mensaje, detalle } = data;
+
+            let icon='info'
+            switch (codigo) {
+                case 1:
+                    buscarRequisitoPuestoAPI(ing_puesto_global, id_aspirante_global);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Aprobado Exitosamente',
+                        text: mensaje,
+                        confirmButtonText: 'OK'
+                    });
+                    break;
+                case 0:
+                    console.log(detalle);
+                    break;
+                default:
+                    break;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 };
 
-//?--------------------------------------------------------------
+datatableRequisitos.on('click','.btn-desaprobar-requisito', desaprobar)
+datatableRequisitos.on('click','.btn-reaprobar-requisito', aprovar)
 
-//!Aca esta la funcino de cancelar la accion de modificar un registro.
-const cancelarAccion = () => {
-    formulario.reset();
-    document.getElementById('tablaAspirantesContainer').style.display = 'block'; 
+
+
+//!---------------Modals Anidados Funcionales----------------!//
+//?----------------------------------------------------------------------------------------------
+let backdrop = null; // Variable global para almacenar el fondo oscuro
+const Abrir_Modal = () => {
+    // Obtén el modal mediante su id
+    const modal = document.getElementById('modalRequisito');
+
+    // Si ya existe un fondo oscuro, no hagas nada
+    if (backdrop) {
+        return;
+    }
+
+    // Agrega la clase 'show' al modal y quita la clase 'hide'
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+
+    // Asegúrate de que el modal sea visible cambiando su estilo
+    modal.style.display = 'block';
+
+    // Agrega la clase 'modal-open' al body para atenuar el fondo
+    document.body.classList.add('modal-open');
+
+    // Agrega el estilo al fondo oscuro (modal-backdrop)
+    backdrop = document.createElement('div');
+    backdrop.classList.add('modal-backdrop');
+    backdrop.style.opacity = '0.5'; // Ajusta la opacidad según tus necesidades
+    document.body.appendChild(backdrop);
 };
-//?--------------------------------------------------------------
+
+const Cerrar_Modal = () => {
+    const modal = document.getElementById('modalRequisito');
+
+    // Quita la clase 'show' y agrega la clase 'hide' al modal
+    modal.classList.remove('show');
+    modal.classList.add('hide');
+
+    // Asegúrate de que el modal no sea visible cambiando su estilo
+    modal.style.display = 'none';
+
+    // Quita la clase 'modal-open' del body para quitar la atenuación del fondo
+    document.body.classList.remove('modal-open');
+
+    // Elimina el fondo oscuro si existe
+    if (backdrop) {
+        document.body.removeChild(backdrop);
+        backdrop = null; // Restablece la variable a null para que se pueda volver a crear
+    }
+};
+btnCancelar.addEventListener('click', Abrir_Modal);
+btnCerrar.addEventListener('click', Cerrar_Modal);
+//?----------------------------------------------------------------------------------------------
 
 
 
-
-
-//?--------------------------------------------------------------
-btnBuscar.addEventListener('click', buscar)
-btnBuscar.addEventListener('click', ocultarFormulario)
-btnBuscar.addEventListener('click', ocultarBtnForumulario)
-btnBuscar.addEventListener('click', ocultarBtns)
-//?--------------------------------------------------------------
-btnGuardar.addEventListener('click', guardar)
-//?--------------------------------------------------------------
-btnFormulario.addEventListener('click', mostrarFormulario)
-btnFormulario.addEventListener('click', MostrarBtnForumulario)
-//?--------------------------------------------------------------
-btnCancelar.addEventListener('click', ocultarFormulario);
-btnCancelar.addEventListener('click', cancelarAccion);
-btnCancelar.addEventListener('click', ocultarBtnForumulario);
-btnCancelar.addEventListener('click', ocultarBtns);
-//?--------------------------------------------------------------
-btnModificar.addEventListener('click', () => {
-    setTimeout(() => {
-        btnGuardar.style.display = 'block';
-        btnModificar.style.display = 'none';
-        btnCancelar.style.display = 'none';
-    }, 1600);
-});
-
-btnModificar.addEventListener('click', () => {
-    setTimeout(() => {
-        btnFormulario.style.display = 'block';
-        btnBuscar.style.display = 'none';
-    }, 1200);
-});
-
-//?--------------------------------------------------------------
-datatable.on('click','.btn-warning', traeDatos)
-datatable.on('click','.btn-warning', mostrarFormulario)
-datatable.on('click','.btn-warning', MostrarBtnForumulario)
-datatable.on('click','.btn-warning', mostrarBtns)
-datatable.on('click','.btn-warning', OcultarTodoForumulario)
-//?--------------------------------------------------------------
-tablaRequisitos.on('click','.btn-danger', eliminar)
-//?--------------------------------------------------------------
-
-btnCerrar.addEventListener('click', function () {
-    // Limpiar la tabla y redibujarla
-    tablaRequisitos.clear().draw();
-});
 buscar();
-
-
-
-
