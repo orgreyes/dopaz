@@ -17,6 +17,7 @@ use Controllers\IngresoController;
 use Controllers\ResultadoController;
 use Controllers\RequisitoController;
 use Controllers\AsigRequisitoController;
+use Controllers\AsigEvaluacionController;
 
 
 $router = new Router();
@@ -87,6 +88,14 @@ $router->get('/API/asigrequisitos/buscarRequisitoPuesto', [AsigRequisitoControll
 $router->post('/API/asigrequisitos/eliminar', [AsigRequisitoController::class,'eliminarAPI']);
 $router->post('/API/asigrequisitos/modificar', [AsigRequisitoController::class,'modificarAPI']);
 $router->post('/API/asigrequisitos/guardar', [AsigRequisitoController::class,'guardarAPI']);
+
+//!Rutas para Asignar Evaluaciones a cada Puesto
+$router->get('/asigevaluaciones', [AsigEvaluacionController::class,'index']);
+$router->get('/API/asigevaluaciones/buscar', [AsigEvaluacionController::class,'buscarAPI']);
+$router->get('/API/asigevaluaciones/buscarRequisitoPuesto', [AsigEvaluacionController::class,'buscarRequisitoPuestoAPI']);
+$router->post('/API/asigevaluaciones/eliminar', [AsigEvaluacionController::class,'eliminarAPI']);
+$router->post('/API/asigevaluaciones/modificar', [AsigEvaluacionController::class,'modificarAPI']);
+$router->post('/API/asigevaluaciones/guardar', [AsigEvaluacionController::class,'guardarAPI']);
 
 //!Rutas para Primer Ingreso del Personal
 $router->get('/usuarios', [UsuarioController::class,'index']);
