@@ -1,43 +1,51 @@
+//?--------------------------------------------------------------
+import { Dropdown } from "bootstrap";
 import Datatable from "datatables.net-bs5";
-import { lenguaje } from "../lenguaje";
-import { Toast } from "../funciones";
+import { lenguaje } from "../lenguaje"
+import { validarFormulario, Toast } from "../funciones"
 import Swal from "sweetalert2";
+//?--------------------------------------------------------------
 
-//?------------------------------------------------------------
+const formulario = document.querySelector('form');
+const btnFormulario = document.getElementById('btnFormulario');
+const btnModificar = document.getElementById('btnModificar');
 const btnGuardar = document.getElementById('btnGuardar');
-const btnEliminar = document.getElementById('btnGuardar');
-//?------------------------------------------------------------
+const btnBuscar = document.getElementById('btnBuscar');
+const btnCancelar = document.getElementById('btnCancelar');
+const btnCerrar = document.getElementById('btnCerrar');
+const tablaAspirantesContainer = document.getElementById('tablaAspirantesContainer');
 
+
+//?--------------------------------------------------------------
 let contenedor = 1;
-const datatable = new Datatable('#tablaAsigResultados', {
-    language: lenguaje,
-    data: null,
-    columns: [
+let contenedorr = 1;
+
+const datatable = new Datatable('#tablaAspirantes', {
+    language : lenguaje,
+    data : null,
+    columns : [
         {
-            title: 'NO',
-            render: () => contenedor++
+            title : 'NO',
+            render: () => contenedor++ 
+            
         },
         {
-            title: 'Nombre del Aspirante',
-            data: 'nombre_aspirante'
+            title : 'PUESTOS',
+            data: 'pue_nombre'
         },
         {
-            title: 'MISIONES',
+            title : 'VER REQUISITOS',
             data: 'id_aspirante',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-info ver-evaluaciones-btn" data-bs-toggle='modal' data-bs-target='#modalEvaluaciones' data-id='${data}'>Asignar Notas</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-info ver-requisitos-btn" data-bs-toggle='modal' data-bs-target='#modalRequisito' data-id='${data}'>Ver Requisitos Necesarios para este Puesto</button>`
         }
     ]
-});
+})
 
-window.limpiar = () => {
-    tablaresultados.clear();
-    contenedorr = 1;
-};
+//?--------------------------------------------------------------
 
-let contenedorr = 1;
-let tablaresultados = new Datatable('#tablaresultados', {
+let tablaRequisitos = new Datatable('#tablaRequisitos', {
     language: lenguaje,
     data: null,
     columns: [
@@ -46,47 +54,52 @@ let tablaresultados = new Datatable('#tablaresultados', {
             render: () => contenedorr++
         },
         {
-            title: 'EVALUACIONES ASIGNADAS',
-            data: 'mis_nombre'
+            title: 'REQUISITOS ASIGNADOS PARA EL PUESTO',
+            data: 'id_aspirante'
         },
         {
-            title: 'ASIGNAR NOTA',
-            data: 'asig_id',
+            title: 'ELIMINAR',
+            data: 'nombre_aspirante',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Remover Requisito</button>`
         }
     ]
 });
 
-// Agregar un manejador de eventos para los botones "Ver Misiones"
-$('#tablaAsigResultados').on('click', '.ver-evaluaciones-btn', function () {
-    const id_aspirante = parseInt($(this).data('id')); // Convertir a entero
-    buscarEvaluacionesAPI(id_aspirante);
+
+let pue_id;
+$('#tablaAspirantes').on('click', '.ver-requisitos-btn', function () {
+    pue_id = parseInt($(this).data('id'));
+    buscarRequisitoPuestoAPI(pue_id);
 });
 
+
 // Agregar un manejador de eventos para el cierre del modal
-$('#modalEvaluaciones').on('hidden.bs.modal', function (e) {
+$('#modalRequisito').on('hidden.bs.modal', function (e) {
     // Restablecer el contador y limpiar la tabla de misiones cuando se cierra el modal
     limpiar();
 });
 
-const buscarEvaluacionesAPI = async (id_aspirante) => {
-    const url = `API/resultados/buscarEvaluaciones?id_aspirante=${id_aspirante}`;
-    const url2 = `API/resultados/guardar?id_aspirante=${id_aspirante}`;
-    console.log(url,url2);
+const buscarRequisitoPuestoAPI = async (pue_id) => {
+        // Reiniciar los contadores
+        contenedor = 1;
+        contenedorr = 1;
+    const url = `API/resultados/buscarRequisitoPuesto?pue_id=${pue_id}`;
+    console.log(url);
+
     const config = {
         method: 'GET'
     };
-
+    
     try {
-        const respuesta = await fetch(url,url2, config);
+        const respuesta = await fetch(url, config);
         if (respuesta.ok) {
             const data = await respuesta.json();
             console.log(data);
-            tablaresultados.clear().draw();
+            tablaRequisitos.clear().draw();
             if (data) {
-                tablaresultados.rows.add(data).draw();
+                tablaRequisitos.rows.add(data).draw();
             }
         } else {
             console.error('Error en la solicitud: ' + respuesta.status);
@@ -96,38 +109,46 @@ const buscarEvaluacionesAPI = async (id_aspirante) => {
     }
 };
 
-//!Función para buscar registros
+
+//?--------------------------------------------------------------
+//!Aca esta la funcion para buscar
 const buscar = async () => {
+
     contenedor = 1;
+    contenedorr = 1;
 
     const url = `API/resultados/buscar`;
     const config = {
         method: 'GET'
-    };
+    }
 
     try {
-        const respuesta = await fetch(url, config);
+        const respuesta = await fetch(url, config)
         const data = await respuesta.json();
 
         console.log(data);
-        datatable.clear().draw();
+        datatable.clear().draw()
         if (data) {
             datatable.rows.add(data).draw();
         } else {
             Toast.fire({
                 title: 'No se encontraron registros',
                 icon: 'info'
-            });
+            })
         }
+
     } catch (error) {
         console.log(error);
     }
-};
+}
 
-//!Función para guardar un registro
+
+//?--------------------------------------------------------------
+
+// //!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
-    if (!validarFormulario(formulario, ['res_id'])) {
+    if (!validarFormulario(formulario, ['asig_req_id'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
@@ -136,7 +157,7 @@ const guardar = async (evento) => {
     }
 
     const body = new FormData(formulario);
-    body.delete('res_id');
+    body.delete('asig_req_id');
     const url = 'API/resultados/guardar';
     const headers = new Headers();
     headers.append("X-Requested-With", "fetch");
@@ -154,12 +175,13 @@ const guardar = async (evento) => {
         switch (codigo) {
             case 1:
                 formulario.reset();
-                icon = 'success';
+                icon = 'success', 
+                        'mensaje';
                 buscar();
                 break;
 
             case 0:
-                icon = 'error';
+                icon = 'info';
                 console.log(detalle);
                 break;
 
@@ -172,53 +194,57 @@ const guardar = async (evento) => {
         });
     } catch (error) {
         console.log(error);
-    }
-};
+        
+        }
+}
 
-//! Función Eliminar
-const eliminar = async (e) => {
+//?--------------------------------------------------------------
+
+// //!Funcion Eliminar
+const eliminar = async e => {
     const result = await Swal.fire({
         icon: 'question',
-        title: 'Eliminar Datos de Contingente',
-        text: '¿Desea eliminar los Datos de este Contingente?',
+        title: 'Remover Requisito',
+        text: '¿Desea Remover este Requisito?',
         showCancelButton: true,
-        confirmButtonText: 'Eliminar',
+        confirmButtonText: 'Remover',
         cancelButtonText: 'Cancelar'
     });
-
+    
     const button = e.target;
-    const id = button.dataset.id;
-
+    const id = button.dataset.id
+    // alert(id);
+    
     if (result.isConfirmed) {
         const body = new FormData();
-        body.append('asig_id', id);
-
+        body.append('asig_req_id', id);
+        
         const url = `API/resultados/eliminar`;
         const config = {
             method: 'POST',
             body,
         };
-
+        
         try {
             const respuesta = await fetch(url, config);
             const data = await respuesta.json();
             console.log(data);
             const { codigo, mensaje, detalle } = data;
 
-            let icon = 'info';
+            let icon='info'
             switch (codigo) {
                 case 1:
-                    buscarEvaluacionesAPI();
+                    buscarRequisitoPuestoAPI(pue_id);
                     Swal.fire({
                         icon: 'success',
-                        title: 'Eliminado Exitosamente',
+                        title: 'Removido Exitosamente',
                         text: mensaje,
                         confirmButtonText: 'OK'
                     });
                     break;
-                case 0:
-                    console.log(detalle);
-                    break;
+                    case 0:
+                        console.log(detalle);
+                        break;
                 default:
                     break;
             }
@@ -229,19 +255,145 @@ const eliminar = async (e) => {
     }
 };
 
-// --------------------------------------------------------------
-// Bloque para mostrar/ocultar
-// --------------------------------------------------------------
 
-buscar();
-// --------------------------------------------------------------
-// btnBuscar.addEventListener('click', buscar)
-// --------------------------------------------------------------
+//?--------------------------------------------------------------
+//?block es mostrar 
+//?none y ocultar
+
+//!Ocultar el Datatable al inicio
+formulario.style.display = 'block';
+tablaAspirantesContainer.style.display = 'none'; 
+
+//!Mostrar el formulario, ocultar datatable
+const mostrarFormulario = () => {
+    formulario.style.display = 'block';
+    tablaAspirantesContainer.style.display = 'none'; 
+    };
+
+//!Ocultar el formulario, mostrar datatable
+const ocultarFormulario = () => {
+    // formulario.reset();
+    formulario.style.display = 'none';
+    tablaAspirantesContainer.style.display = 'block';
+};
+
+//?--------------------------------------------------------------
+
+//!Ocultar el btnFormulario, mostrar btnBuscar al Inicio
+btnFormulario.style.display = 'none';
+btnBuscar.style.display = 'block';
+
+//!Mostrar el btnFormulario, Ocultar btnBuscar
+const ocultarBtnForumulario = () => {
+    btnFormulario.style.display = 'block';
+    btnBuscar.style.display = 'none';
+};
+
+//!Mostrar el btnFormulario, Ocultar btnBuscar
+const MostrarBtnForumulario = () => {
+    btnFormulario.style.display = 'none';
+    btnBuscar.style.display = 'block';
+};
+
+//!Mostrar el btnFormulario, Ocultar btnBuscar
+const OcultarTodoForumulario = () => {
+    btnFormulario.style.display = 'none';
+    btnBuscar.style.display = 'none';
+};
+//?--------------------------------------------------------------
+
+//!Mostrar el btnGuardar, Ocultar los btnModificar y btnCancelar al Inicio
+btnGuardar.style.display = 'block';
+btnModificar.style.display = 'none';
+btnCancelar.style.display = 'none';
+
+//!Mostrar el btnGuardar, Ocultar los btnModificar y btnCancelar 
+const ocultarBtns = () => {
+    btnGuardar.style.display = 'block';
+    btnModificar.style.display = 'none';
+    btnCancelar.style.display = 'none';
+};
+
+//!Mostrar el btnFormulario, Ocultar btnBuscar
+const mostrarBtns = () => {
+    btnGuardar.style.display = 'none';
+    btnModificar.style.display = 'block';
+    btnCancelar.style.display = 'block';
+};
+//?--------------------------------------------------------------
+
+//!Para colocar los datos sobre el formulario
+const traeDatos = (e) => {
+    const button = e.target;
+    const id = button.dataset.id;
+    const nombre = button.dataset.nombre;
+//?--------------------------------------------------------------
+
+    //! Llenar el formulario con los datos obtenidos
+    formulario.asig_req_id.value = id;
+    formulario.req_nombre.value = nombre;
+};
+
+//?--------------------------------------------------------------
+
+//!Aca esta la funcino de cancelar la accion de modificar un registro.
+const cancelarAccion = () => {
+    formulario.reset();
+    document.getElementById('tablaAspirantesContainer').style.display = 'block'; 
+};
+//?--------------------------------------------------------------
+
+
+
+
+
+//?--------------------------------------------------------------
+btnBuscar.addEventListener('click', buscar)
+btnBuscar.addEventListener('click', ocultarFormulario)
+btnBuscar.addEventListener('click', ocultarBtnForumulario)
+btnBuscar.addEventListener('click', ocultarBtns)
+//?--------------------------------------------------------------
 btnGuardar.addEventListener('click', guardar)
-// --------------------------------------------------------------
-// btnCancelar.addEventListener('click', cancelarAccion);
-// --------------------------------------------------------------
-// btnModificar.addEventListener('click', modificar);
-// --------------------------------------------------------------
-// tablaresultados.on('click','.btn-danger', eliminar)
-// --------------------------------------------------------------
+//?--------------------------------------------------------------
+btnFormulario.addEventListener('click', mostrarFormulario)
+btnFormulario.addEventListener('click', MostrarBtnForumulario)
+//?--------------------------------------------------------------
+btnCancelar.addEventListener('click', ocultarFormulario);
+btnCancelar.addEventListener('click', cancelarAccion);
+btnCancelar.addEventListener('click', ocultarBtnForumulario);
+btnCancelar.addEventListener('click', ocultarBtns);
+//?--------------------------------------------------------------
+btnModificar.addEventListener('click', () => {
+    setTimeout(() => {
+        btnGuardar.style.display = 'block';
+        btnModificar.style.display = 'none';
+        btnCancelar.style.display = 'none';
+    }, 1600);
+});
+
+btnModificar.addEventListener('click', () => {
+    setTimeout(() => {
+        btnFormulario.style.display = 'block';
+        btnBuscar.style.display = 'none';
+    }, 1200);
+});
+
+//?--------------------------------------------------------------
+datatable.on('click','.btn-warning', traeDatos)
+datatable.on('click','.btn-warning', mostrarFormulario)
+datatable.on('click','.btn-warning', MostrarBtnForumulario)
+datatable.on('click','.btn-warning', mostrarBtns)
+datatable.on('click','.btn-warning', OcultarTodoForumulario)
+//?--------------------------------------------------------------
+tablaRequisitos.on('click','.btn-danger', eliminar)
+//?--------------------------------------------------------------
+
+btnCerrar.addEventListener('click', function () {
+    // Limpiar la tabla y redibujarla
+    tablaRequisitos.clear().draw();
+});
+buscar();
+
+
+
+

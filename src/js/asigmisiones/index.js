@@ -64,7 +64,7 @@ let cont_id;
 
 $('#tablaAsigMisiones').on('click', '.ver-misiones-btn', function () {
     cont_id = parseInt($(this).data('id'));
-    buscarMisionesContingenteAPI(cont_id);
+    
 });
 
 // Agregar un manejador de eventos para el cierre del modal

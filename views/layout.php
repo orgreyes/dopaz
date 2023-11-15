@@ -73,8 +73,9 @@
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/puestos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Puestos</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/asiggrados"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>asignacion de grados los puestos</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/asiggrados"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>asignacion de grados a los puestos</a>
                             </li>
+                           
                         </ul>
                     </div> 
 
@@ -107,6 +108,9 @@
                             </li>
                             <li>
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/resultados"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Notas Al Personal Aspirante</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigevaluaciones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>asignacion de Evaluaciones a los puestos</a>
                             </li>
                         </ul>
                     </div> 

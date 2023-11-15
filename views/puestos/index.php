@@ -58,14 +58,6 @@
   </div>
   <script src="<?= asset('./build/js/puestos/index.js') ?>"></script>
 </div>
-<!-- Agrega la biblioteca de jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Agrega la biblioteca de Bootstrap (JS) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Agrega la biblioteca de Select2 (JS) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
-<script>
-  // Inicializa Select2 en el elemento select con el id "pue_grado"
 
 </script>
 </body>

@@ -85,6 +85,21 @@ CREATE TABLE cont_requisitos(
     req_situacion SMALLINT
 );
 
+CREATE TABLE cont_puestos (
+    pue_id SERIAL PRIMARY KEY,
+    pue_nombre CHAR(150),
+    pue_situacion SMALLINT
+);
+
+CREATE TABLE cont_asig_evaluaciones(
+    asig_eva_id SERIAL PRIMARY KEY,
+    asig_eva_nombre INT,
+    asig_eva_puesto INT,
+    asig_eva_situacion SMALLINT,
+    FOREIGN KEY (asig_eva_nombre) REFERENCES cont_evaluaciones(eva_id),
+    FOREIGN KEY (asig_eva_puesto) REFERENCES cont_puestos(pue_id) 
+)
+
 CREATE TABLE cont_asig_requisitos(
     asig_req_id SERIAL PRIMARY KEY,
     asig_req_puesto INT,
@@ -95,11 +110,7 @@ CREATE TABLE cont_asig_requisitos(
 )
 
 -- Tabla Cont_Puestos
-CREATE TABLE cont_puestos (
-    pue_id SERIAL PRIMARY KEY,
-    pue_nombre CHAR(150),
-    pue_situacion SMALLINT
-);
+
 
 CREATE TABLE asig_grado_puesto (
     asig_grado_id SERIAL PRIMARY KEY,
@@ -211,8 +222,7 @@ CREATE TABLE cont_resultados (
     res_nota DECIMAL(5, 2),
     res_evaluacion INT,
     res_situacion SMALLINT,
-    FOREIGN KEY (res_aspirante) REFERENCES cont_ingresos(ing_id),
-    FOREIGN KEY (res_evaluacion) REFERENCES cont_evaluaciones(eva_id)
+    FOREIGN KEY (res_aspirante) REFERENCES cont_ingresos(ing_id)
 );
 
 
