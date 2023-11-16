@@ -221,12 +221,14 @@ CREATE TABLE cont_resultados (
     res_aspirante INT NOT NULL,
     res_nota DECIMAL(5, 2),
     res_evaluacion INT,
+    res_fecha_evaluacion DATE,
     res_situacion SMALLINT,
     FOREIGN KEY (res_aspirante) REFERENCES cont_ingresos(ing_id)
 );
 
 
 DROP TABLE asig_grado_puesto
+DROP TABLE cont_asig_evaluaciones
 DROP TABLE contingentes
 DROP TABLE cont_requisitos
 DROP TABLE cont_asig_requisitos

@@ -119,7 +119,7 @@ $router->get('/API/resultados/buscar', [ResultadoController::class,'buscarAPI'])
 $router->get('/API/resultados/buscarEvaluaciones', [ResultadoController::class,'buscarEvaluacionesAPI']);
 $router->post('/API/resultados/eliminar', [ResultadoController::class,'eliminarAPI']);
 $router->post('/API/resultados/modificar', [ResultadoController::class,'modificarAPI']);
-$router->post('/API/resultados/guardar', [ResultadoController::class,'guardarAPI']);
+$router->get('/API/resultados/guardar', [ResultadoController::class,'guardarAPI']);
 
 
 // //!Rutas para Primer Ingreso del Personal

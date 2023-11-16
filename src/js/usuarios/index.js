@@ -26,7 +26,7 @@ function generarCodigoAleatorio(longitud) {
 }
 //?--------------------------------------------------------------
 
-// //!Funcion Guardar
+//!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
     if (!validarFormulario(formulario, ['per_catalogo'])) {
