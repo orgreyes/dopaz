@@ -142,6 +142,8 @@ const guardar = async (ing_id, eva_id, res_nota) => {
                 icon = 'success';
                 formulario.reset();
                 buscarEvaluacionesAPI(pue_id, asp_id);
+                cancelarAccion(); // Corrección aquí
+                ocultarFormulario(); // Ocultar el formulario
                 break;
 
             case 0:
