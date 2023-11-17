@@ -100,9 +100,18 @@ $router->post('/API/asigevaluaciones/guardar', [AsigEvaluacionController::class,
 //!Rutas para Primer Ingreso del Personal
 $router->get('/usuarios', [UsuarioController::class,'index']);
 $router->get('/API/usuarios/buscar', [UsuarioController::class,'buscarAPI']);
-$router->get('/API/usuarios/buscarPuesto', [UsuarioController::class,'buscarPuesto']);
+$router->get('/API/usuarios/buscarPuesto', [UsuarioController::class,'buscarPuestoAPI']);
 $router->post('/API/usuarios/guardar', [UsuarioController::class,'guardarAPI']);
 $router->post('/API/usuarios/enviar', [UsuarioController::class,'enviarAPI']);
+
+
+//!Rutas para Segundo Ingreso del Personal 
+$router->get('/aspirantes', [AspiranteController::class,'index']);
+$router->get('/API/aspirantes/buscar', [AspiranteController::class,'buscarAPI']);
+$router->get('/API/aspirantes/buscarPuesto', [AspiranteController::class,'buscarPuestoAPI']);
+$router->post('/API/aspirantes/eliminar', [AspiranteController::class,'eliminarAPI']);
+$router->post('/API/aspirantes/modificar', [AspiranteController::class,'modificarAPI']);
+$router->post('/API/aspirantes/guardar', [AspiranteController::class,'guardarAPI']);
 
 //!Rutas para Personal de que busca optar por una plaza
 $router->get('/ingresos', [IngresoController::class,'index']);
@@ -122,12 +131,6 @@ $router->post('/API/resultados/modificar', [ResultadoController::class,'modifica
 $router->get('/API/resultados/guardar', [ResultadoController::class,'guardarAPI']);
 
 
-// //!Rutas para Primer Ingreso del Personal
-// $router->get('/aspirantes', [AspiranteController::class,'index']);
-// $router->get('/API/aspirantes/buscar', [AspiranteController::class,'buscarAPI']);
-// $router->post('/API/aspirantes/eliminar', [AspiranteController::class,'eliminarAPI']);
-// $router->post('/API/aspirantes/modificar', [AspiranteController::class,'modificarAPI']);
-// $router->post('/API/aspirantes/guardar', [AspiranteController::class,'guardarAPI']);
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador

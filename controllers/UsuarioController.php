@@ -19,7 +19,8 @@ class UsuarioController
     {
         $contingentes = static::buscaContingentes();
         $grados = static::buscarGrados();
-        $puestos = static::buscarPuesto();
+        $puestos = static::buscarPuestoAPI();
+        
         $router->render('usuarios/index', [
             'contingentes' => $contingentes,
             'puestos' => $puestos,
@@ -56,24 +57,22 @@ public static function buscaContingentes()
         }
     }
 //!Funcion Select Puestos
-    public static function buscarPuesto()
+    public static function buscarPuestoAPI()
     {
         $grado = $_GET['pue_grado'];
 
-
-        $sql = "SELECT pue_id, pue_nombre
-        FROM cont_puestos 
-        WHERE pue_situacion = 1
-        ORDER BY pue_nombre ASC";
-
-// SELECT pue_id, pue_nombre
-// FROM cont_puestos 
-// WHERE pue_grado = $grado
-// AND pue_situacion = 1
-// ORDER BY pue_nombre ASC
-
         try {
+
+        $sql = "
+        SELECT p.*
+                FROM cont_puestos p
+                JOIN asig_grado_puesto agp ON p.pue_id = agp.asig_puesto
+                JOIN grados g ON agp.asig_grado = g.gra_codigo
+                WHERE p.pue_situacion = 1
+                AND g.gra_codigo = $grado";
+
             $puestos = Puesto::fetchArray($sql);
+            echo json_encode($puestos);
             return $puestos;
         } catch (Exception $e) {
             return [];
@@ -98,7 +97,7 @@ public static function buscarAPI()
                     WHEN per_sexo = 'F' THEN 'FEMENINO'
                     ELSE 'DESCONOCIDO'
                 END AS per_sexo,
-                grados.gra_codigo,
+                grados.gra_codigo as per_grado_id,
                 armas.arm_desc_md
             FROM mper
             INNER JOIN grados ON mper.per_grado = grados.gra_codigo

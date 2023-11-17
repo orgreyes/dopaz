@@ -111,7 +111,7 @@ const buscar = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-
+console.log(data);
         if (data === null) {
             Toast.fire({
                 icon: 'info',
@@ -129,12 +129,12 @@ const buscar = async () => {
             formulario.asp_ape2.value = d.per_ape2;
             formulario.asp_genero.value = d.per_sexo;
             formulario.asp_dpi.value = d.per_dpi;
-            formulario.per_grado.value = d.gra_codigo;
+            formulario.per_grado.value = d.per_grado_id;
             formulario.per_arma.value = d.arm_desc_md;
             formulario.foto.src = `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${d.per_catalogo}.jpg`;
 
             // Buscar puestos con el grado obtenido
-            const url2 = `API/usuarios/buscarPuesto?pue_grado=${d.gra_codigo}`;
+            const url2 = `API/usuarios/buscarPuesto?pue_grado=${d.per_grado_id}`;
             console.log(url2);
 
             const respuesta2 = await fetch(url2);
@@ -147,9 +147,25 @@ const buscar = async () => {
             try {
                 const puestosData = await respuesta2.json();
 
+                // Limpiar el select antes de agregar nuevas opciones
+                formulario.ing_puesto.innerHTML = '<option value="">SELECCIONE...</option>';
+
+                if (Array.isArray(puestosData) && puestosData.length > 0) {
+                    puestosData.forEach((puesto) => {
+                        // Asegurarse de que existan las propiedades necesarias
+                        if (puesto && puesto.pue_id && puesto.pue_nombre) {
+                            const option = document.createElement('option');
+                            option.value = puesto.pue_id;
+                            option.textContent = puesto.pue_nombre;
+                            formulario.ing_puesto.appendChild(option);
+                        }
+                    });
+                }
+
                 // Ahora puedes manejar los datos de puestosData como desees
                 console.log(puestosData);
             } catch (error) {
+                console.error('Error al procesar la respuesta de puestos:', error);
             }
         } else {
             Swal.fire({

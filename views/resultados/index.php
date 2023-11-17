@@ -44,13 +44,14 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="modalRequisitoLabel">Formulario para Subir Notas</h5>
             </div>
-            <div class="container">
+            
+            <div class="container" id="contenedorFormulario">
                 <div class="row justify-content-center">
                     <form class="col-lg-8 border bg-light p-3">
                         <h1 class="text-center">Ingreso de Evaluaciones</h1><br>
-                        <input type="text" name="eva_id" id="eva_id">
-                        <input type="text" name="ing_id" id="ing_id">
-                        <input type="text" name="res_id" id="res_id">
+                        <input type="hidden" name="eva_id" id="eva_id">
+                        <input type="hidden" name="ing_id" id="ing_id">
+                        <input type="hidden" name="res_id" id="res_id">
                         <!-- Nombre de La Evaluacion A Calificar -->
                         <div class="row mb-3">
                             <div class="col">
@@ -66,29 +67,32 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-12">
-                                <button type="button" id="btnGuardar" class="btn btn-info w-100">Guardar</button>
-                            </div>
-                            <div class="col-6">
-                                <button type="button" id="btnModificar" class="btn btn-warning w-100">Modificar</button>
-                            </div>
-                            <div class="col-6">
-                                <button type="button" id="btnCancelar" class="btn btn-danger w-100">Cancelar</button>
-                            </div>
-                        </div>
+    <div class="col-12 mb-3">
+        <button type="button" id="btnGuardar" class="btn btn-info w-100">Guardar</button>
+    </div>
+    <div>
+        <button type="button" id="btnModificar" class="btn btn-warning w-100">Modificar</button>
+    </div>
+    <div>
+    <button style="margin-top: 8px;" type="button" id="btnCancelar" class="btn btn-danger w-100">Cancelar</button>
+
+    </div>
+</div>
                     </form>
                 </div>
             </div>
 
             <!-- //?------------------------------------------------------------------------------------ -->
-            <div class="modal-body container text-center">
-              <h1>Lista de Evaluaciones a Calificar</h1>
-                <table id="tablaRequisitos" class="table table-hover table-condensed table-bordered w-100">
-                    <!-- Contenido de la tabla -->
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+            <div id="tablaNotasContainer" class="container mt-1">
+                <div class="modal-body container text-center">
+                <h1>Lista de Evaluaciones a Calificar</h1>
+                    <table id="tablaRequisitos" class="table table-hover table-condensed table-bordered w-100">
+                        <!-- Contenido de la tabla -->
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>

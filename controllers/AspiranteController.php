@@ -5,6 +5,7 @@ namespace Controllers;
 use Exception;
 use Model\Ingreso;
 use Model\Aspirante;
+use Model\Contingente;
 use Model\Grado;
 use Model\Arma;
 use Model\Puesto;
@@ -14,20 +15,61 @@ class AspiranteController
 {
     public static function index(Router $router)
     {
-        $puestos = static::buscarPuesto();
+        $contingentes = static::buscaContingentes();
+        $grados = static::buscarGrados();
+        $puestos = static::buscarPuestoAPI();
         $router->render('aspirantes/index', [
+             'contingentes' => $contingentes,
             'puestos' => $puestos,
+            'grados' => $grados,
         ]);
     }
 
-//!Funcion Select Puestos
-    public static function buscarPuesto()
+    //!Funcion Select Contingentes
+public static function buscaContingentes()
+{
+    $sql = "SELECT *
+    FROM contingentes
+    WHERE cont_situacion = 1
+        AND cont_fecha_inicio > TODAY";
+
+    try {
+        $contingentes = Contingente::fetchArray($sql);
+        return $contingentes;
+    } catch (Exception $e) {
+        return [];
+    }
+}
+//!Funcion Select Grados
+    public static function buscarGrados()
     {
-        $sql = "SELECT * FROM cont_puestos where pue_situacion = 1";
+        $sql = "SELECT * FROM grados
+        ORDER BY gra_desc_md ASC";
 
         try {
-            $puestos = Puesto::fetchArray($sql);
-            return $puestos;
+            $grados = Grado::fetchArray($sql);
+            return $grados;
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+//!Funcion Select Puestos
+    public static function buscarPuestoAPI()
+    {
+    $Grado = $_GET['pue_grado'];
+    
+    try {
+        $sql = "SELECT p.*
+        FROM cont_puestos p
+        JOIN asig_grado_puesto agp ON p.pue_id = agp.asig_puesto
+        JOIN grados g ON agp.asig_grado = g.gra_codigo
+        WHERE p.pue_situacion = 1
+        AND g.gra_codigo = $Grado;";
+        
+
+            $Puestos = Puesto::fetchArray($sql);
+        echo json_encode($Puestos);
+            return $Puestos;
         } catch (Exception $e) {
             return [];
         }
@@ -35,26 +77,37 @@ class AspiranteController
 //!Funcion Buscar
 public static function buscarAPI()
 {
-    $catalogo = $_GET['per_catalogo'];
+    $catalogo = $_GET['asp_catalogo'];
     
     try {
         if ($catalogo != '') {
             $sql = "SELECT 
-            p.per_id,
-            p.per_dpi,
-            p.per_nom1,
-            p.per_nom2,
-            p.per_ape1,
-            p.per_ape2,
-            p.per_grado, 
-            p.per_arma, 
-            p.per_genero,
-            p.per_catalogo,
-            c.pue_nombre AS nombre_puesto
-        FROM cont_personal p
-        LEFT JOIN cont_puestos c ON p.per_puesto = c.pue_id
-        WHERE p.per_catalogo = $catalogo
-            ";
+            ca.asp_id,
+            ca.asp_catalogo,
+            ca.asp_dpi, 
+            ca.asp_nom1, 
+            ca.asp_nom2, 
+            ca.asp_ape1, 
+            ca.asp_ape2, 
+            CASE
+                WHEN ca.asp_genero = 'M' THEN 'MASCULINO'
+                WHEN ca.asp_genero = 'F' THEN 'FEMENINO'
+                ELSE 'OTRO'
+            END AS asp_genero_desc,
+            mper.per_arma,
+            g.gra_codigo AS per_grado_id, -- Cambiado: Ahora se selecciona el ID del grado
+            a.arm_desc_md AS arma
+        FROM 
+            cont_aspirantes ca
+        LEFT JOIN 
+            mper ON ca.asp_catalogo = mper.per_catalogo
+        LEFT JOIN
+            grados g ON mper.per_grado = g.gra_codigo
+        LEFT JOIN
+            armas a ON mper.per_arma = a.arm_codigo
+        WHERE 
+            ca.asp_catalogo = $catalogo";
+
             $aspirantes = Aspirante::fetchArray($sql);
         
             echo json_encode($aspirantes);
@@ -76,13 +129,26 @@ public static function buscarAPI()
 
 
 //!Funcion Guardar
- public static function guardarAPI(){
-     
+public static function guardarAPI() {
     try {
-        $aspirante = new Aspirante($_POST);
-        $resultado = $aspirante->crear();
+        $codigo = $_POST['ing_codigo'];
+        $puesto = $_POST['ing_puesto'];
+        $Id_Aspirante = $_POST['asp_id'];
+        $contingente = $_POST['asig_contingente'];
+        $fecha_hoy = date("d/m/Y");
+        
+        // ! Aca se recibe los datos que se guardaran en otra tabla.
+        $datos['ing_codigo'] = $codigo;
+        $datos['ing_puesto'] = $puesto;
+        $datos['ing_aspirante'] = $Id_Aspirante;
+        $datos['ing_contingente'] = $contingente;
+        $datos['ing_fecha_cont'] = $fecha_hoy;
+        
+        $ingresos = new Ingreso($datos);
+        $result = $ingresos->guardar();
 
-        if ($resultado['resultado'] == 1) {
+        // ! Solo envía una respuesta JSON al final
+        if ($result['resultado'] == 1) {
             echo json_encode([
                 'mensaje' => 'Registro guardado correctamente',
                 'codigo' => 1
@@ -93,12 +159,12 @@ public static function buscarAPI()
                 'codigo' => 0
             ]);
         }
-        // echo json_encode($resultado);
     } catch (Exception $e) {
+        // ! Si hay una excepción, envía una respuesta JSON de error
         echo json_encode([
             'detalle' => $e->getMessage(),
             'mensaje' => 'El Aspirante ya fue Inscrito',
-            'codigo' => 0
+            'codigo' => 2
         ]);
     }
 }

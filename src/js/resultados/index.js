@@ -4,6 +4,7 @@ import { Toast , validarFormulario } from "../funciones";
 import Swal from "sweetalert2";
 
 const formulario = document.querySelector('form');
+const tablaNotasContainer = document.getElementById('tablaNotasContainer');
 const btnGuardar = document.getElementById('btnGuardar');
 const btnModificar = document.getElementById('btnModificar');
 const btnCancelar = document.getElementById('btnCancelar');
@@ -173,8 +174,8 @@ const modificar = async () => {
 
     const body = new FormData(formulario);
     body.append('res_id', res_id);
-    body.append('eva_id', eva_id);
-    body.append('ing_id', res_aspirante);  
+    body.append('res_evaluacion', eva_id);
+    body.append('res_aspirante', res_aspirante);  
 
     const url = `/dopaz/API/resultados/modificar`;
     const config = {
@@ -191,9 +192,8 @@ const modificar = async () => {
         switch (codigo) {
             case 1:
                 formulario.reset();
-                cancelarAccion(); // Corrección aquí
                 buscarEvaluacionesAPI(pue_id, asp_id);
-
+                cancelarAccion(); // Corrección aquí
                 ocultarFormulario(); // Ocultar el formulario
                 
                 Toast.fire({
@@ -339,6 +339,48 @@ const buscar = async () => {
 // btnCerrar.addEventListener('click', Cerrar_Modal);
 // //?----------------------------------------------------------------------------------------------
 
+const cancelarAccion = () => {
+    formulario.reset();
+    btnGuardar.style.display = 'block';
+    btnModificar.style.display = 'block';
+}
+
+btnCancelar.addEventListener('click',cancelarAccion);
+
+//?block es mostrar 
+//?none y ocultar
+
+//?--------------------------------------------------------------
+//!Ocultar el Formulario al inicio
+formulario.style.display = 'none';
+
+//?--------------------------------------------------------------
+//!Ocultar el Datatable y mostar el formulario
+const MostrarFormulario = () => {
+    formulario.style.display = 'block';
+    tablaNotasContainer.style.display = 'none';
+};
+datatableRequisitos.on('click','.modificar-nota-btn', MostrarFormulario)
+datatableRequisitos.on('click','.ver-calificaiones-btn', MostrarFormulario)
+
+const ocultarFormulario = () => {
+    formulario.style.display = 'none';
+    tablaNotasContainer.style.display = 'block';
+};
+btnCancelar.addEventListener('click',ocultarFormulario);
+
+const ocultarbtnGuardar = () => {
+    btnGuardar.style.display = 'none';
+};
+datatableRequisitos.on('click','.modificar-nota-btn', ocultarbtnGuardar)
+
+const ocultarbtnModificar = () => {
+    btnModificar.style.display = 'none';
+};
+datatableRequisitos.on('click','.ver-calificaiones-btn', ocultarbtnModificar)
+
+
+//?--------------------------------------------------------------
 
 btnGuardar.addEventListener('click', function () {
     // Obtener los datos del formulario
