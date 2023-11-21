@@ -5,60 +5,17 @@ import Datatable from "datatables.net-bs5";
 import { lenguaje } from "../lenguaje";
 import { Toast } from "../funciones";
 import Swal from "sweetalert2";
-//? ------------------------------------------------------------------------------------------>
-//? ------------------------------------------------------------------------------------------>
-//? ------------------------------------------------------------------------------------------>
-// Declaración de variables
-let contenedor = 1;
-let contenedorr = 1;
-//? ------------------------------------------------------------------------------------------>
-//? ------------------------------------------------------------------------------------------>
-//? ------------------------------------------------------------------------------------------>
-//!Función Guardar
-const guardarAPI = async (ing_id, asig_req_id) => {
-    const url = `API/ingresos/guardar?ing_id=${ing_id}&asig_req_id=${asig_req_id}`;
-    console.log(url);
 
-    const config = {
-        method: 'GET',
-    };
 
-    try {
-        const respuesta = await fetch(url, config);
-        const data = await respuesta.json();
-
-        const { codigo, mensaje, detalle } = data;
-        let icon = 'info';
-        switch (codigo) {
-            case 1:
-                icon = 'success';
-                datatableRequisitos.clear().draw(); 
-                break;
-
-            case 0:
-                icon = 'error';
-                console.log(detalle);
-                break;
-
-            default:
-                break;
-        }
-
-        Toast.fire({
-            icon,
-            text: mensaje
-        });
-    } catch (error) {
-        console.error(error);
-    }
-};
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
+
+                                        //!DATATABLES!\\
+                      
+//!DataTable que Buscar las Notas.
 let contenedornotas = 1;
-let datatableNotas; // Declara la variable aquí
-
-// Luego, donde recibes los datos de la búsqueda, actualiza la tabla de notas
+let datatableNotas;
 const respuesta = await fetch('API/ingresos/buscarNotas');
 const data = await respuesta.json();
 console.log(data);
@@ -72,8 +29,6 @@ if (data && data.length > 0) {
     if (datatableNotas) {
         datatableNotas.clear().destroy();
     }
-
-    // Agrega una columna para el promedio
     const columnas = [
         {
             title: 'NO',
@@ -112,27 +67,20 @@ if (data && data.length > 0) {
             render: (data) => `<button class="btn btn-success btn-aprobar-requisito" data-asig-req-id='${data}'>Aprobar fase 1</button>`
         }
     ];
-
     // Crea la tabla con las nuevas columnas
     datatableNotas = $('#tablaNotas').DataTable({
         language: lenguaje,
         data: data,
         columns: columnas
     });
-
     // Dibuja la tabla con las nuevas columnas
     datatableNotas.draw();
 }
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
-
-
-
-
-
-
 // !Tabla de ingresos
+let contenedor = 1;
 const datatableIngresos = new Datatable('#tablaIngesos', {
     language: lenguaje,
     data: null,
@@ -169,8 +117,11 @@ const datatableIngresos = new Datatable('#tablaIngesos', {
         }
     ]
 });
-
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
 // !Tabla de requisitos
+let contenedorr = 1;
 const datatableRequisitos = new Datatable('#tablaRequisitos', {
     language: lenguaje,
     data: null,
@@ -225,19 +176,19 @@ const datatableRequisitos = new Datatable('#tablaRequisitos', {
         }
     ]
 });
-
-
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//!Aca se Capturan los Id de las DataTables, necesarios para correro ciertos querys en el controlador.
 // Agregar manejador de eventos para los botones "Ver Misiones"
 $('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
     const ing_puesto = parseInt($(this).data('ingpuesto'));
     const ing_id = parseInt($(this).data('ingid'));
     buscarRequisitoPuestoAPI(ing_puesto, ing_id);
 });
-
 // Agregar manejador de eventos para el cierre del modal
 $('#modalRequisito').on('hidden.bs.modal', function (e) {
 });
-
 // Agregar manejador de eventos para los botones de aprobación de requisitos
 $('.dataTable').on('click', '.btn-aprobar-requisito', function () {
     const asig_req_id = $(this).data('asig-req-id');
@@ -246,12 +197,20 @@ $('.dataTable').on('click', '.btn-aprobar-requisito', function () {
     guardarAPI(ing_id, asig_req_id);
     buscarRequisitoPuestoAPI(ing_puesto_global, ing_id_global);
 });
-
-// Función para buscar requisitos por puesto
+let ing_puesto_global;
+let ing_id_global;
+$('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
+    ing_puesto_global = parseInt($(this).data('ingpuesto'));
+    ing_id_global = parseInt($(this).data('ingid'));
+});
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//!Función para buscar requisitos por puesto
 const buscarRequisitoPuestoAPI = async (ing_puesto, ing_id) => {
+    //*Aca se agregaron los contadors para la busqueda iniciara de 1 en adelante y no de forma desordenada.
     contenedor = 1;
     contenedorr = 1;
-
     const url = `API/ingresos/buscarRequisitoPuesto?ing_puesto=${ing_puesto}&ing_id=${ing_id}`;
     console.log(url);
 
@@ -275,8 +234,10 @@ const buscarRequisitoPuestoAPI = async (ing_puesto, ing_id) => {
         console.error(error);
     }
 };
-
-// Función para buscar ingresos
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//!Función para buscar al personal antes de buscar los requisitos.
 const buscar = async () => {
     contenedor = 1;
 
@@ -304,16 +265,50 @@ const buscar = async () => {
         console.log(error);
     }
 };
-//?------------------------
-let ing_puesto_global;
-let ing_id_global;
-$('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
-    ing_puesto_global = parseInt($(this).data('ingpuesto'));
-    ing_id_global = parseInt($(this).data('ingid'));
-});
-//?------------------------
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//!Función Para Aprovar un requisito por primera Vez.
+const guardarAPI = async (ing_id, asig_req_id) => {
+    const url = `API/ingresos/guardar?ing_id=${ing_id}&asig_req_id=${asig_req_id}`;
+    console.log(url);
 
+    const config = {
+        method: 'GET',
+    };
 
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        const { codigo, mensaje, detalle } = data;
+        let icon = 'info';
+        switch (codigo) {
+            case 1:
+                icon = 'success';
+                datatableRequisitos.clear().draw(); 
+                break;
+
+            case 0:
+                icon = 'error';
+                console.log(detalle);
+                break;
+
+            default:
+                break;
+        }
+
+        Toast.fire({
+            icon,
+            text: mensaje
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
 //!Funcion desaprovar
 const desaprobar = async e => {
     const result = await Swal.fire({
@@ -366,8 +361,9 @@ const desaprobar = async e => {
         }
     }
 };
-
-
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
 //!Funcion aprovar
 const aprovar = async e => {
     const result = await Swal.fire({
@@ -420,8 +416,11 @@ const aprovar = async e => {
         }
     }
 };
-
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
 datatableRequisitos.on('click','.btn-desaprobar-requisito', desaprobar)
+datatableRequisitos.on('click','.btn-reaprobar-requisito', aprovar)
 datatableRequisitos;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 // Inicializar búsqueda al cargar la página
 buscar();
