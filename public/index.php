@@ -116,6 +116,7 @@ $router->post('/API/aspirantes/guardar', [AspiranteController::class,'guardarAPI
 //!Rutas para Personal de que busca optar por una plaza
 $router->get('/ingresos', [IngresoController::class,'index']);
 $router->get('/API/ingresos/buscar', [IngresoController::class,'buscarAPI']);
+$router->get('/API/ingresos/buscarNotas', [IngresoController::class,'buscarNotasAPI']);
 $router->get('/API/ingresos/buscarRequisitoPuesto', [IngresoController::class,'buscarRequisitoPuestoAPI']);
 $router->get('/API/ingresos/guardar', [IngresoController::class,'guardarAPI']);
 $router->post('/API/ingresos/desaprovar', [IngresoController::class,'desaprovarAPI']);

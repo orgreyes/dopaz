@@ -1,32 +1,38 @@
+import $ from "jquery";
+import "datatables.net-bs5";
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Datatable from "datatables.net-bs5";
 import { lenguaje } from "../lenguaje";
 import { Toast } from "../funciones";
 import Swal from "sweetalert2";
-
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
 // Declaración de variables
 let contenedor = 1;
 let contenedorr = 1;
-
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
 //!Función Guardar
 const guardarAPI = async (ing_id, asig_req_id) => {
     const url = `API/ingresos/guardar?ing_id=${ing_id}&asig_req_id=${asig_req_id}`;
     console.log(url);
 
     const config = {
-        method: 'GET', // Cambiado de POST a GET
+        method: 'GET',
     };
 
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
 
-        // Procesa la respuesta según tus necesidades
         const { codigo, mensaje, detalle } = data;
         let icon = 'info';
         switch (codigo) {
             case 1:
                 icon = 'success';
-                datatableRequisitos.clear().draw(); // Limpiar la tabla después de guardar
+                datatableRequisitos.clear().draw(); 
                 break;
 
             case 0:
@@ -46,6 +52,84 @@ const guardarAPI = async (ing_id, asig_req_id) => {
         console.error(error);
     }
 };
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+let contenedornotas = 1;
+let datatableNotas; // Declara la variable aquí
+
+// Luego, donde recibes los datos de la búsqueda, actualiza la tabla de notas
+const respuesta = await fetch('API/ingresos/buscarNotas');
+const data = await respuesta.json();
+console.log(data);
+
+// Limpia y dibuja la tabla con los nuevos datos
+if (data && data.length > 0) {
+    // Obtén las claves de las propiedades dinámicas (Ingles, Matematica, etc.)
+    const columnasDinamicas = Object.keys(data[0]).filter(columna => columna !== 'puesto_nombre' && columna !== 'ing_contingente');
+
+    // Borra las columnas existentes y agrega las columnas dinámicas a la configuración de la tabla
+    if (datatableNotas) {
+        datatableNotas.clear().destroy();
+    }
+
+    // Agrega una columna para el promedio
+    const columnas = [
+        {
+            title: 'NO',
+            render: () => contenedornotas++
+        },
+        {
+            title: 'Puesto',
+            data: 'puesto_nombre'
+        },
+        ...columnasDinamicas.map(columna => ({
+            title: columna,
+            data: columna,
+            render: function (data, type, row) {
+                if (type === 'display' && (data === null || data === undefined || data === '')) {
+                    return '<span class="nota-pendiente text-danger">NOTA PENDIENTE</span>';
+                } else {
+                    return data;
+                }
+            }
+        })),
+        {
+            title: 'Promedio',
+            data: null,
+            render: function (data, type, row) {
+                const notas = columnasDinamicas.map(columna => row[columna]).filter(valor => valor !== null && !isNaN(valor));
+                const sum = notas.reduce((acc, nota) => acc + parseFloat(nota || 0), 0);
+                const promedio = notas.length > 0 ? sum / notas.length : 0;
+                return type === 'display' ? promedio.toFixed(2) : promedio;
+            }
+        },
+        {
+            title: 'APROVAR FASE 1',
+            data: 'asig_req_id',
+            searchable: false,
+            orderable: false,
+            render: (data) => `<button class="btn btn-success btn-aprobar-requisito" data-asig-req-id='${data}'>Aprobar fase 1</button>`
+        }
+    ];
+
+    // Crea la tabla con las nuevas columnas
+    datatableNotas = $('#tablaNotas').DataTable({
+        language: lenguaje,
+        data: data,
+        columns: columnas
+    });
+
+    // Dibuja la tabla con las nuevas columnas
+    datatableNotas.draw();
+}
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+
+
+
+
 
 
 // !Tabla de ingresos
@@ -66,11 +150,8 @@ const datatableIngresos = new Datatable('#tablaIngesos', {
             data: 'cont_nombre'
         },
         {
-            title: 'EVALUACIONES',
-            data: 'id_aspirante',
-            searchable: false,
-            orderable: false,
-            render: (data, type, row) => `<button class="btn btn-info ver-requisitos-btn" data-bs-toggle='modal' data-bs-target='#modalRequisito' data-ingpuesto='${data}' data-ingid='${row["ing_id"]}' data-nombre='${row["eva_nombre"]}'>Revisar Notas</button>`
+            title: 'CODIGO UNICO',
+            data: 'ing_codigo'
         },
         {
             title: 'REQUISITOS',
@@ -155,7 +236,6 @@ $('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
 
 // Agregar manejador de eventos para el cierre del modal
 $('#modalRequisito').on('hidden.bs.modal', function (e) {
-    limpiar();
 });
 
 // Agregar manejador de eventos para los botones de aprobación de requisitos
@@ -342,7 +422,6 @@ const aprovar = async e => {
 };
 
 datatableRequisitos.on('click','.btn-desaprobar-requisito', desaprobar)
-datatableRequisitos.on('click','.btn-reaprobar-requisito', aprovar)
-
+datatableRequisitos;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 // Inicializar búsqueda al cargar la página
 buscar();

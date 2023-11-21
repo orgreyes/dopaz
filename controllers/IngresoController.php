@@ -17,7 +17,99 @@ class IngresoController {
     }
     
 
- //!Funcion Buscar
+   //!Funcion Buscar Notas
+   public static function buscarNotasAPI()
+   {
+       try {
+           // Consulta para obtener la lista de evaluaciones asociadas a cada puesto
+           $queryEvaluaciones = "SELECT
+           p.pue_id,
+           p.pue_nombre AS puesto_nombre,
+           e.eva_id,
+           e.eva_nombre
+       FROM
+           cont_puestos p
+       LEFT JOIN
+           cont_asig_evaluaciones ae ON p.pue_id = ae.asig_eva_puesto
+       LEFT JOIN
+           cont_evaluaciones e ON ae.asig_eva_nombre = e.eva_id
+       WHERE
+           p.pue_id = 2";
+   
+           $evaluaciones = Ingreso::fetchArray($queryEvaluaciones);
+   
+           // Crear un array para almacenar los nombres de evaluaciones
+           $evaluacionesArray = [];
+           foreach ($evaluaciones as $evaluacion) {
+               $evaluacionesArray[$evaluacion['pue_id']][] = $evaluacion['eva_nombre'];
+           }
+   
+           // Consulta para obtener las notas de las evaluaciones filtradas por el array
+           $queryNotas = "SELECT
+    c.cont_nombre AS Contingente,
+    p.pue_nombre AS puesto_nombre,
+    " . self::buildMaxCaseStatements($evaluacionesArray) . "
+FROM
+    cont_ingresos i
+LEFT JOIN
+    cont_puestos p ON i.ing_puesto = p.pue_id
+LEFT JOIN
+    contingentes c ON i.ing_contingente = c.cont_id
+LEFT JOIN
+    cont_asig_evaluaciones ae ON p.pue_id = ae.asig_eva_puesto
+LEFT JOIN
+    cont_evaluaciones e ON ae.asig_eva_nombre = e.eva_id
+LEFT JOIN
+    cont_resultados r ON i.ing_aspirante = r.res_aspirante AND e.eva_id = r.res_evaluacion
+WHERE
+    i.ing_puesto = 2
+GROUP BY
+    i.ing_aspirante, i.ing_puesto, c.cont_nombre, p.pue_nombre
+ORDER BY
+    " . self::buildOrderByStatements($evaluacionesArray);
+                            
+
+
+           $resultados = Ingreso::fetchArray($queryNotas);
+           echo json_encode($resultados);
+       } catch (Exception $e) {
+           echo json_encode([
+               'detalle' => $e->getMessage(),
+               'mensaje' => 'Ocurrió un error',
+               'codigo' => 0
+           ]);
+       }
+   }
+   // Función para construir las declaraciones MAX(CASE WHEN ...)
+private static function buildMaxCaseStatements($evaluacionesArray)
+{
+    $maxCaseStatements = '';
+    foreach ($evaluacionesArray as $puestoId => $evaluaciones) {
+        foreach ($evaluaciones as $evaluacion) {
+            $maxCaseStatements .= "MAX(CASE WHEN e.eva_nombre = '$evaluacion' THEN r.res_nota END) AS $evaluacion,\n";
+        }
+    }
+
+    return rtrim($maxCaseStatements, ",\n");
+}
+
+// Función para construir la cláusula ORDER BY
+private static function buildOrderByStatements($evaluacionesArray)
+{
+    $orderByStatements = '';
+    foreach ($evaluacionesArray as $puestoId => $evaluaciones) {
+        foreach ($evaluaciones as $evaluacion) {
+            $orderByStatements .= "$evaluacion DESC, ";
+        }
+    }
+
+    return rtrim($orderByStatements, ', ');
+}
+
+
+
+
+    //!Funcion Buscar
  public static function buscarAPI()
  {
     
@@ -97,6 +189,8 @@ class IngresoController {
      }
  }
  
+
+
  //!Funcion Guardar
 public static function guardarAPI() {
     try {
