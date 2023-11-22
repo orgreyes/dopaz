@@ -5,14 +5,134 @@ import Datatable from "datatables.net-bs5";
 import { lenguaje } from "../lenguaje";
 import { Toast } from "../funciones";
 import Swal from "sweetalert2";
+//? ------------------------------------------------------------------------------------------>
+const ContenedorbtnInicio = document.getElementsByName('ContenedorbtnInicio')[0];;
+const btnFase1 = document.getElementsByName('btnFase1')[0];
+const btnFase2 = document.getElementsByName('btnFase2')[0];
+const btnRegresarFase1 = document.getElementById('btnRegresarFase1');
+const btnRegresar = document.getElementById('btnRegresar');
+const btnFaseFinal = document.getElementById('btnFaseFinal');
+const containerBtn = document.getElementById('containerBtn');
+const tablaSolicitudesContainer = document.getElementById('tablaSolicitudesContainer');
+const tablaNotasContainer = document.getElementById('tablaNotasContainer');
+const tablaIngresosContainer = document.getElementById('tablaIngresosContainer');
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+
+//!Función para buscar al personal que solicita iniciar proceso de selección.
+const buscarPuestos = async () => {
+    const url = `API/ingresos/buscarPuestos`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        console.log(data);
+        if (data) {
+            const contenedorBotones = document.getElementById('contenedorBotones'); // Cambia 'contenedorBotones' por el ID de tu contenedor en el formulario
+
+            data.forEach(puesto => {
+                const divBoton = document.createElement('div');
+                divBoton.classList.add('col-md-3', 'mb-3'); // Clases de Bootstrap para columnas y margen inferior
+
+                const boton = document.createElement('button');
+                boton.textContent = puesto.puesto_nombre;
+                boton.setAttribute('data-idpuesto', puesto.ing_puesto);
+                boton.classList.add('btn', 'btn-primary', 'btn-block'); // Clases de Bootstrap para botones
+
+                boton.addEventListener('click', async () => {
+                    const ing_puesto = puesto.ing_puesto;
+                    console.log(`Clic en el botón de ${puesto.puesto_nombre}. ing_puesto: ${ing_puesto}`);
+
+                    // Realizar la solicitud a la API sin redirigir
+                    const url = `API/ingresos/buscarSolicitudes?ing_puesto=${ing_puesto}`;
+                    const config = {
+                        method: 'GET'
+                    };
+
+                    try {
+                        const respuesta = await fetch(url, config);
+                        const data = await respuesta.json();
+
+                        // Manejar la respuesta como desees
+                        console.log('Respuesta de la API:', data);
+
+                        // Aquí puedes agregar más lógica para trabajar con la respuesta, por ejemplo, mostrar datos en el mismo formulario.
+                        if (data) {
+                            // Limpia la tabla de solicitudes
+                            datatableSolicitudes.clear();
+                            contenedorsolicitudes = 1;
+                            // Agrega las nuevas filas con los datos obtenidos de la API
+                            datatableSolicitudes.rows.add(data).draw();
+                        } else {
+                            Toast.fire({
+                                title: 'No se encontraron registros',
+                                icon: 'info'
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error al realizar la solicitud:', error);
+                    }
+                });
+
+                divBoton.appendChild(boton);
+                contenedorBotones.appendChild(divBoton);
+            });
+        }
+    } catch (error) {
+        console.error('Error al buscar puestos:', error);
+    }
+};
+buscarPuestos();
 
 
-//? ------------------------------------------------------------------------------------------>
-//? ------------------------------------------------------------------------------------------>
-//? ------------------------------------------------------------------------------------------>
 
                                         //!DATATABLES!\\
-                      
+// !Tabla de Solicitudes
+let contenedorsolicitudes = 1;
+const datatableSolicitudes = new Datatable('#tablaSolicitudes', {
+    language: lenguaje,
+    data: null,
+    columns: [
+        {
+            title: 'NO',
+            render: () => contenedorsolicitudes++
+        },
+        {
+            title: 'NOMBRE DE ASPIRANTE',
+            data: 'nombre_aspirante'
+        },
+        {
+            title: 'PUESTO SOLICITANTE',
+            data: 'nombre_puesto'
+        },
+        {
+            title: 'CONTINGENTE A PARTICIPAR',
+            data: 'nombre_contingente'
+        },
+        {
+            title: 'INICIAR PROCESO DE SELECCION',
+            data: 'ing_id',
+            searchable: false,
+            orderable: false,
+            render: (data) => `<button class="btn btn-info btn-iniciar-proceso" data-ing-id='${data}'>Iniciar Proceso</button>`
+
+        }
+    ]
+}); 
+// Agregar manejador de eventos para los botones de aprobación de requisitos
+datatableSolicitudes.on('click', '.btn-iniciar-proceso', function () {
+    const ing_id = $(this).data('ing-id').toString();
+    // Llamar a la iniciarProcesoAPI con los datos capturados
+    iniciarProcesoAPI(ing_id);
+});
+
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>            
 //!DataTable que Buscar las Notas.
 let contenedornotas = 1;
 let datatableNotas;
@@ -61,7 +181,7 @@ if (data && data.length > 0) {
         },
         {
             title: 'APROVAR FASE 1',
-            data: 'asig_req_id',
+            data: 'ing_situacion',
             searchable: false,
             orderable: false,
             render: (data) => `<button class="btn btn-success btn-aprobar-requisito" data-asig-req-id='${data}'>Aprobar fase 1</button>`
@@ -179,6 +299,8 @@ const datatableRequisitos = new Datatable('#tablaRequisitos', {
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
+                                    //!CAPTURA DE DATOS!\\
+
 //!Aca se Capturan los Id de las DataTables, necesarios para correro ciertos querys en el controlador.
 // Agregar manejador de eventos para los botones "Ver Misiones"
 $('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
@@ -203,6 +325,70 @@ $('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
     ing_puesto_global = parseInt($(this).data('ingpuesto'));
     ing_id_global = parseInt($(this).data('ingid'));
 });
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+
+                                        //!FUNCIONES!//
+
+
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//!Función para buscar al personal que solicita iniciar proceso de seleccion.
+const buscarTodo = async () => {
+
+    const url = `API/ingresos/buscarTodo`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        console.log(data);
+        datatableSolicitudes.clear().draw();
+        if (data) {
+            // Actualizar la tabla de solicitudes con los nuevos datos
+            datatableSolicitudes.rows.add(data).draw();
+        } else {
+            Toast.fire({
+                title: 'No se encontraron registros',
+                icon: 'info'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+buscarTodo();
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//!Función para buscar al personal antes de buscar los requisitos.
+const buscar = async () => {
+    contenedor = 1;
+
+    const url = `API/ingresos/buscar`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        console.log(data);
+        datatableIngresos.clear().draw();
+        if (data) {
+            datatableIngresos.rows.add(data).draw();
+        };
+
+    } catch (error) {
+        console.log(error);
+    }
+};
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
@@ -232,37 +418,6 @@ const buscarRequisitoPuestoAPI = async (ing_puesto, ing_id) => {
         }
     } catch (error) {
         console.error(error);
-    }
-};
-//? ------------------------------------------------------------------------------------------>
-//? ------------------------------------------------------------------------------------------>
-//? ------------------------------------------------------------------------------------------>
-//!Función para buscar al personal antes de buscar los requisitos.
-const buscar = async () => {
-    contenedor = 1;
-
-    const url = `API/ingresos/buscar`;
-    const config = {
-        method: 'GET'
-    };
-
-    try {
-        const respuesta = await fetch(url, config);
-        const data = await respuesta.json();
-
-        console.log(data);
-        datatableIngresos.clear().draw();
-        if (data) {
-            datatableIngresos.rows.add(data).draw();
-        } else {
-            Toast.fire({
-                title: 'No se encontraron registros',
-                icon: 'info'
-            });
-        }
-
-    } catch (error) {
-        console.log(error);
     }
 };
 //? ------------------------------------------------------------------------------------------>
@@ -419,8 +574,114 @@ const aprovar = async e => {
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
+//!Funcion inciar el Proceso de seleccion
+const iniciarProcesoAPI = async (ing_id) => {
+    // Verificar si ing_id es un número válido
+    if (!isNaN(ing_id) && Number.isInteger(parseFloat(ing_id))) {
+        // Convertir ing_id a entero si es necesario
+        ing_id = parseInt(ing_id);
+        
+        // Construir la URL
+        const url = `API/ingresos/iniciarProceso?ing_id=${ing_id}`;
+        console.log(url);
+
+        const config = {
+            method: 'GET',
+            // Puedes omitir el cuerpo ya que es una solicitud GET
+        };
+
+        try {
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            console.log(data);
+
+            const { codigo, mensaje, detalle } = data;
+
+            let icon = 'info';
+            switch (codigo) {
+                case 1:
+                    buscar();  // Esto puede cambiar según lo que necesites hacer después de iniciar el proceso
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Proceso iniciado exitosamente',
+                        text: mensaje
+                    });
+                    break;
+                case 0:
+                    console.log(detalle);
+                    break;
+                default:
+                    break;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    } else {
+        console.error('ing_id no es un número válido:', ing_id);
+    }
+};
+
+//? ------------------------------------------------------------------------------------------>
+//!Ocultar el Datatables al inicio
+tablaNotasContainer.style.display = 'none'; 
+tablaIngresosContainer.style.display = 'none'; 
+btnFase1.style.display = 'none'; 
+btnFase2.style.display = 'none'; 
+
+//!Ocultar la primer datatable y oculta el btnIniciarProceso
+const mostrarFase1 = () => {
+    containerBtn.style.display ='none';
+    tablaSolicitudesContainer.style.display ='none';
+    ContenedorbtnInicio.style.display = 'none';
+    btnFase1.style.display = 'block';
+    tablaNotasContainer.style.display = 'block';
+};
+
+//!Ocultar la primer datatable y oculta el btnIniciarProceso
+const mostrarFaseInicio = () => {
+    containerBtn.style.display ='block';
+    tablaSolicitudesContainer.style.display ='block';
+    ContenedorbtnInicio.style.display = 'block';
+    btnFase1.style.display = 'none';
+    tablaNotasContainer.style.display = 'none';
+};
+
+//!Mostrar Fase Final
+const mostrarFaseFinal = () => {
+    tablaNotasContainer.style.display ='none';
+    btnFase1.style.display = 'none';
+    tablaIngresosContainer.style.display = 'block'; 
+    btnFase2.style.display = 'block';
+};
+
+//!Ocultar la primer datatable y oculta el btnIniciarProceso
+const mostrarfase1 = () => {
+    tablaNotasContainer.style.display ='block';
+    btnFase1.style.display = 'block';
+    tablaIngresosContainer.style.display = 'none'; 
+    btnFase2.style.display = 'none';
+};
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
 datatableRequisitos.on('click','.btn-desaprobar-requisito', desaprobar)
 datatableRequisitos.on('click','.btn-reaprobar-requisito', aprovar)
 datatableRequisitos;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 // Inicializar búsqueda al cargar la página
+datatableSolicitudes.on('click','.btn-iniciar-proceso', function () {
+    const ing_id = $(this).data('ing-id');
+    
+    // Verificar si ing_id es un número válido
+    if (!isNaN(ing_id) && Number.isInteger(parseFloat(ing_id))) {
+        // Convertir ing_id a entero si es necesario
+        const ing_id_int = parseInt(ing_id);
+        
+        // Llamar a la iniciarProcesoAPI con los datos capturados
+    } else {
+        console.error('ing_id no es un número válido:', ing_id);
+    }
+});
+btnRegresarFase1.addEventListener('click', mostrarfase1)
+btnFaseFinal.addEventListener('click', mostrarFaseFinal)
+btnRegresar.addEventListener('click', mostrarFaseInicio)
+btnInicio.addEventListener('click', mostrarFase1)
 buscar();

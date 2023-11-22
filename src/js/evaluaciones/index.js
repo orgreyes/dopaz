@@ -140,7 +140,7 @@ const guardar = async (evento) => {
 
 //?--------------------------------------------------------------
 
-// //!Funcion Eliminar
+//!Funcion Eliminar
 const eliminar = async e => {
     const result = await Swal.fire({
         icon: 'question',

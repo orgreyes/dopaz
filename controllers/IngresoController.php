@@ -17,8 +17,8 @@ class IngresoController {
     }
     
 
-   //!Funcion Buscar Notas
-   public static function buscarNotasAPI()
+//!Funcion Buscar Notas
+public static function buscarNotasAPI()
    {
        try {
            // Consulta para obtener la lista de evaluaciones asociadas a cada puesto
@@ -46,27 +46,29 @@ class IngresoController {
    
            // Consulta para obtener las notas de las evaluaciones filtradas por el array
            $queryNotas = "SELECT
-    c.cont_nombre AS Contingente,
-    p.pue_nombre AS puesto_nombre,
-    " . self::buildMaxCaseStatements($evaluacionesArray) . "
-FROM
-    cont_ingresos i
-LEFT JOIN
-    cont_puestos p ON i.ing_puesto = p.pue_id
-LEFT JOIN
-    contingentes c ON i.ing_contingente = c.cont_id
-LEFT JOIN
-    cont_asig_evaluaciones ae ON p.pue_id = ae.asig_eva_puesto
-LEFT JOIN
-    cont_evaluaciones e ON ae.asig_eva_nombre = e.eva_id
-LEFT JOIN
-    cont_resultados r ON i.ing_aspirante = r.res_aspirante AND e.eva_id = r.res_evaluacion
-WHERE
-    i.ing_puesto = 2
-GROUP BY
-    i.ing_aspirante, i.ing_puesto, c.cont_nombre, p.pue_nombre
-ORDER BY
-    " . self::buildOrderByStatements($evaluacionesArray);
+                                c.cont_nombre AS Contingente,
+                                p.pue_nombre AS puesto_nombre,
+                                " . self::buildMaxCaseStatements($evaluacionesArray) . "
+                            FROM
+                                cont_ingresos i
+                            LEFT JOIN
+                                cont_puestos p ON i.ing_puesto = p.pue_id
+                            LEFT JOIN
+                                contingentes c ON i.ing_contingente = c.cont_id
+                            LEFT JOIN
+                                cont_asig_evaluaciones ae ON p.pue_id = ae.asig_eva_puesto
+                            LEFT JOIN
+                                cont_evaluaciones e ON ae.asig_eva_nombre = e.eva_id
+                            LEFT JOIN
+                                cont_resultados r ON i.ing_aspirante = r.res_aspirante AND e.eva_id = r.res_evaluacion
+                            WHERE
+                                i.ing_puesto = 2
+                            AND i.ing_situacion = 2
+                            AND YEAR(i.ing_fecha_cont) IN (YEAR(CURRENT), YEAR(CURRENT) + 1)
+                            GROUP BY
+                                i.ing_aspirante, i.ing_puesto, c.cont_nombre, p.pue_nombre
+                            ORDER BY
+                                " . self::buildOrderByStatements($evaluacionesArray);
                             
 
 
@@ -80,9 +82,8 @@ ORDER BY
            ]);
        }
    }
-   // Función para construir las declaraciones MAX(CASE WHEN ...)
-private static function buildMaxCaseStatements($evaluacionesArray)
-{
+// Función para construir las declaraciones MAX(CASE WHEN ...)
+private static function buildMaxCaseStatements($evaluacionesArray){
     $maxCaseStatements = '';
     foreach ($evaluacionesArray as $puestoId => $evaluaciones) {
         foreach ($evaluaciones as $evaluacion) {
@@ -91,11 +92,9 @@ private static function buildMaxCaseStatements($evaluacionesArray)
     }
 
     return rtrim($maxCaseStatements, ",\n");
-}
-
+ }
 // Función para construir la cláusula ORDER BY
-private static function buildOrderByStatements($evaluacionesArray)
-{
+private static function buildOrderByStatements($evaluacionesArray){
     $orderByStatements = '';
     foreach ($evaluacionesArray as $puestoId => $evaluaciones) {
         foreach ($evaluaciones as $evaluacion) {
@@ -104,14 +103,112 @@ private static function buildOrderByStatements($evaluacionesArray)
     }
 
     return rtrim($orderByStatements, ', ');
+    }
+
+
+//!Funcion Buscar todos los puestos solicitados.
+public static function buscarPuestosAPI()
+{
+    $sql = "SELECT DISTINCT
+    pue_id AS ing_puesto,
+    pue_nombre AS puesto_nombre
+FROM
+    cont_ingresos 
+JOIN
+    cont_puestos ON ing_puesto = pue_id
+WHERE
+    ing_situacion = 1
+    AND (YEAR(ing_fecha_cont) = YEAR(TODAY) OR YEAR(ing_fecha_cont) = YEAR(TODAY) + 1)";
+    
+    try {
+        $ingresos = Ingreso::fetchArray($sql);
+        header('Content-Type: application/json');
+        echo json_encode($ingresos);
+    } catch (Exception $e) {
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'Ocurrió un error',
+            'codigo' => 0
+        ]);
+    }
 }
 
+//!Funcion Buscar a Personal que Solicita iniciar proceso de seleccion.
+public static function buscarTodoAPI()
+   {
+       try {
+       
+       $sql = "SELECT
+       TRIM(asp_nom1 || ' ' || NVL(asp_nom2, '') || ' ' || asp_ape1 || ' ' || NVL(asp_ape2, '')) AS nombre_aspirante,
+       cp.pue_nombre AS nombre_puesto,
+       c.cont_nombre AS nombre_contingente,
+       ci.ing_id
+   FROM
+       cont_ingresos ci
+   JOIN
+       cont_aspirantes a ON ci.ing_aspirante = a.asp_id
+   JOIN
+       cont_puestos cp ON ci.ing_puesto = cp.pue_id
+   JOIN
+       contingentes c ON ci.ing_contingente = c.cont_id
+   WHERE
+       ci.ing_situacion = 1
+       AND YEAR(ci.ing_fecha_cont) IN (YEAR(CURRENT), YEAR(CURRENT) + 1)";
+  
+  
+           $ingresos = Ingreso::fetchArray($sql);
+  
+           echo json_encode($ingresos);
+       } catch (Exception $e) {
+           echo json_encode([
+               'detalle' => $e->getMessage(),
+               'mensaje' => 'Ocurrió un error',
+               'codigo' => 0
+           ]);
+       }
+   }
+
+//!Funcion Buscar a Personal que Solicita iniciar proceso de seleccion.
+public static function buscarSolicitudesAPI()
+   {
+    $puestoId = $_GET['ing_puesto'];
+       try {
+      
+       $sql = "SELECT
+       TRIM(asp_nom1 || ' ' || NVL(asp_nom2, '') || ' ' || asp_ape1 || ' ' || NVL(asp_ape2, '')) AS nombre_aspirante,
+       cp.pue_nombre AS nombre_puesto,
+       c.cont_nombre AS nombre_contingente,
+       ci.ing_id
+   FROM
+       cont_ingresos ci
+   JOIN
+       cont_aspirantes a ON ci.ing_aspirante = a.asp_id
+   JOIN
+       cont_puestos cp ON ci.ing_puesto = cp.pue_id
+   JOIN
+       contingentes c ON ci.ing_contingente = c.cont_id
+   WHERE
+       ci.ing_situacion = 1
+       AND YEAR(ci.ing_fecha_cont) IN (YEAR(CURRENT), YEAR(CURRENT) + 1)
+       AND ci.ing_puesto = $puestoId";
+  
+  
+           $ingresos = Ingreso::fetchArray($sql);
+  
+           echo json_encode($ingresos);
+       } catch (Exception $e) {
+           echo json_encode([
+               'detalle' => $e->getMessage(),
+               'mensaje' => 'Ocurrió un error',
+               'codigo' => 0
+           ]);
+       }
+   }
 
 
-
-    //!Funcion Buscar
+//!Funcion Buscar
  public static function buscarAPI()
- {
+    {
     
      $sql = "SELECT 
                 ci.ing_id,
@@ -123,7 +220,8 @@ private static function buildOrderByStatements($evaluacionesArray)
             FROM cont_ingresos ci
             JOIN cont_aspirantes asp ON ci.ing_aspirante = asp.asp_id
             JOIN cont_puestos pue ON ci.ing_puesto = pue.pue_id
-            JOIN contingentes cont ON ci.ing_contingente = cont.cont_id";
+            JOIN contingentes cont ON ci.ing_contingente = cont.cont_id
+            WHERE ci.ing_situacion = 3";
 
      try {
 
@@ -137,10 +235,10 @@ private static function buildOrderByStatements($evaluacionesArray)
              'codigo' => 0
          ]);
      }
- }
+    }
 
- public static function buscarRequisitoPuestoAPI()
- {
+//!Funcion Buscar Los requisitos que se deben cumplir
+ public static function buscarRequisitoPuestoAPI(){
      $puestoId = $_GET['ing_puesto'];
      $ingId = $_GET['ing_id'];
      
@@ -186,11 +284,8 @@ private static function buildOrderByStatements($evaluacionesArray)
              'mensaje' => 'Ocurrió un error al obtener los Requisitos del puesto',
              'codigo' => 0
          ]);
-     }
- }
+     }}
  
-
-
  //!Funcion Guardar
 public static function guardarAPI() {
     try {
@@ -304,4 +399,32 @@ public static function guardarAPI() {
          ]);
      }
  }
+
+  //!Funcion Eliminar
+  public static function iniciarProcesoAPI(){
+    try{
+        $ing_id = $_GET['ing_id'];
+        $evaluacion = Ingreso::find($ing_id);
+        $evaluacion->ing_situacion = 2;
+        $resultado = $evaluacion->actualizar();
+
+        if($resultado['resultado'] == 1){
+            echo json_encode([
+                'mensaje' => 'El Aspirante inicio el proceso correctamente',
+                'codigo' => 1
+            ]);
+        }else{
+            echo json_encode([
+                'mensaje' => 'Ocurrio un error',
+                'codigo' => 0
+            ]);
+        }
+    }catch(Exception $e){
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje'=> 'Ocurrio un Error',
+            'codigo' => 0
+    ]);
+    }
+}
 }
