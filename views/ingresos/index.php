@@ -54,7 +54,7 @@
         }
     </style>
 <body>
-<div class="container"  id="containerBtn">
+<div class="container" name="containerBtn"  id="containerBtn">
 <center><h1>Listado de Puestos</h1></center>
     <div id="contenedorBotones" class="row justify-content-center mt-4">
         <!-- Aquí se añadirán los botones dinámicamente -->
@@ -85,6 +85,12 @@
 <!-- //? ------------------------------------------------------------------------------------------>
 <!-- //? ------------------------------------------------------------------------------------------>
 <!-- //? ------------------------------------------------------------------------------------------>
+<div class="container"  id="containerBtn2">
+<center><h1>Listado de Puestos2</h1></center>
+    <div id="contenedorBotones2" class="row justify-content-center mt-4">
+        <!-- Aquí se añadirán los botones dinámicamente -->
+    </div>
+</div>
 <!-- //!Tabla de seleccion por Notas -->
 <div class="container"> 
         <div id="tablaNotasContainer" class="container mt-1">
@@ -105,6 +111,12 @@
 <!-- //? ------------------------------------------------------------------------------------------>
 <!-- //? ------------------------------------------------------------------------------------------>
 <!-- //? ------------------------------------------------------------------------------------------>
+<div class="container"  id="containerBtn3">
+<center><h1>Listado de Puestos2</h1></center>
+    <div id="contenedorBotones3" class="row justify-content-center mt-4">
+        <!-- Aquí se añadirán los botones dinámicamente -->
+    </div>
+</div>
 <!-- //!Tabla de seleccion por Requisitos -->
 <div class="container">
         <div id="tablaIngresosContainer" class="container mt-1">
@@ -150,7 +162,7 @@
                         <button type="button" id="btnInicio" class="btn btn-success w-100">INICIO DE PROCESO DE SELECCION</button>
                     </div>
                 </div>
-
+<!-- //? ------------------------------------------------------------------------------------------>
                 <div name="btnFase1">
                 <div id="containerBtn2"  style="margin-top:50px" class="row mb-3 d-flex">
                     <div class="col-6">
@@ -161,7 +173,7 @@
                     </div>
                 </div>
                 </div>
-
+<!-- //? ------------------------------------------------------------------------------------------>
                 <div name="btnFase2">
                 <div id="containerBtn2"  style="margin-top:50px" class="row mb-3 d-flex">
                     <div class="col-6">
@@ -172,7 +184,7 @@
                     </div>
                 </div>
                 </div>
-
+<!-- //? ------------------------------------------------------------------------------------------>
 <script src="<?= asset('./build/js/ingresos/index.js') ?>"></script>
 </body>
 </html>

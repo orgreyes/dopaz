@@ -118,6 +118,8 @@ $router->get('/ingresos', [IngresoController::class,'index']);
 $router->get('/API/ingresos/buscar', [IngresoController::class,'buscarAPI']);
 $router->get('/API/ingresos/buscarTodo', [IngresoController::class,'buscarTodoAPI']);
 $router->get('/API/ingresos/buscarPuestos', [IngresoController::class,'buscarPuestosAPI']);
+$router->get('/API/ingresos/buscarPuestosNotas', [IngresoController::class,'buscarPuestosNotasAPI']);
+$router->get('/API/ingresos/buscarPuestosRequisitos', [IngresoController::class,'buscarPuestosRequisitosAPI']);
 $router->get('/API/ingresos/buscarSolicitudes', [IngresoController::class,'buscarSolicitudesAPI']);
 $router->get('/API/ingresos/buscarNotas', [IngresoController::class,'buscarNotasAPI']);
 $router->get('/API/ingresos/buscarRequisitoPuesto', [IngresoController::class,'buscarRequisitoPuestoAPI']);

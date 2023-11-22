@@ -133,6 +133,59 @@ WHERE
     }
 }
 
+//!Funcion Buscar todos los puestos solicitados.
+public static function buscarPuestosNotasAPI()
+{
+    $sql = "SELECT DISTINCT
+    pue_id AS ing_puesto,
+    pue_nombre AS puesto_nombre
+FROM
+    cont_ingresos 
+JOIN
+    cont_puestos ON ing_puesto = pue_id
+WHERE
+    ing_situacion = 1
+    AND (YEAR(ing_fecha_cont) = YEAR(TODAY) OR YEAR(ing_fecha_cont) = YEAR(TODAY) + 1)";
+    
+    try {
+        $ingresos = Ingreso::fetchArray($sql);
+        header('Content-Type: application/json');
+        echo json_encode($ingresos);
+    } catch (Exception $e) {
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'Ocurrió un error',
+            'codigo' => 0
+        ]);
+    }
+}
+
+//!Funcion Buscar todos los puestos solicitados.
+public static function buscarPuestosRequisitosAPI()
+{
+    $sql = "SELECT DISTINCT
+    pue_id AS ing_puesto,
+    pue_nombre AS puesto_nombre
+FROM
+    cont_ingresos 
+JOIN
+    cont_puestos ON ing_puesto = pue_id
+WHERE
+    ing_situacion = 1
+    AND (YEAR(ing_fecha_cont) = YEAR(TODAY) OR YEAR(ing_fecha_cont) = YEAR(TODAY) + 1)";
+    
+    try {
+        $ingresos = Ingreso::fetchArray($sql);
+        header('Content-Type: application/json');
+        echo json_encode($ingresos);
+    } catch (Exception $e) {
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'Ocurrió un error',
+            'codigo' => 0
+        ]);
+    }
+}
 //!Funcion Buscar a Personal que Solicita iniciar proceso de seleccion.
 public static function buscarTodoAPI()
    {

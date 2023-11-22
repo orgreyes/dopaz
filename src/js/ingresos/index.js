@@ -13,6 +13,8 @@ const btnRegresarFase1 = document.getElementById('btnRegresarFase1');
 const btnRegresar = document.getElementById('btnRegresar');
 const btnFaseFinal = document.getElementById('btnFaseFinal');
 const containerBtn = document.getElementById('containerBtn');
+const containerBtn2 = document.getElementById('containerBtn2');
+const containerBtn3 = document.getElementById('containerBtn3');
 const tablaSolicitudesContainer = document.getElementById('tablaSolicitudesContainer');
 const tablaNotasContainer = document.getElementById('tablaNotasContainer');
 const tablaIngresosContainer = document.getElementById('tablaIngresosContainer');
@@ -20,7 +22,7 @@ const tablaIngresosContainer = document.getElementById('tablaIngresosContainer')
 //? ------------------------------------------------------------------------------------------>
 
 //!Función para buscar al personal que solicita iniciar proceso de selección.
-const buscarPuestos = async () => {
+const buscarPuestosSolicitudes = async () => {
     const url = `API/ingresos/buscarPuestos`;
     const config = {
         method: 'GET'
@@ -86,9 +88,7 @@ const buscarPuestos = async () => {
         console.error('Error al buscar puestos:', error);
     }
 };
-buscarPuestos();
-
-
+buscarPuestosSolicitudes();
 
                                         //!DATATABLES!\\
 // !Tabla de Solicitudes
@@ -132,7 +132,77 @@ datatableSolicitudes.on('click', '.btn-iniciar-proceso', function () {
 
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
-//? ------------------------------------------------------------------------------------------>            
+//? ------------------------------------------------------------------------------------------>  
+
+//!Función para buscar al personal que solicita iniciar proceso de selección.
+const buscarPuestosNotas = async () => {
+    const url = `API/ingresos/buscarPuestosNotas`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        console.log(data);
+        if (data) {
+            const contenedorBotones = document.getElementById('contenedorBotones2'); // Cambia 'contenedorBotones' por el ID de tu contenedor en el formulario
+
+            data.forEach(puesto => {
+                const divBoton = document.createElement('div');
+                divBoton.classList.add('col-md-3', 'mb-3'); // Clases de Bootstrap para columnas y margen inferior
+
+                const boton = document.createElement('button');
+                boton.textContent = puesto.puesto_nombre;
+                boton.setAttribute('data-idpuesto', puesto.ing_puesto);
+                boton.classList.add('btn', 'btn-success', 'btn-block'); // Clases de Bootstrap para botones
+
+                boton.addEventListener('click', async () => {
+                    const ing_puesto = puesto.ing_puesto;
+                    console.log(`Clic en el botón de ${puesto.puesto_nombre}. ing_puesto: ${ing_puesto}`);
+
+                    // Realizar la solicitud a la API sin redirigir
+                    const url = `API/ingresos/buscarSolicitudes?ing_puesto=${ing_puesto}`;
+                    const config = {
+                        method: 'GET'
+                    };
+
+                    try {
+                        const respuesta = await fetch(url, config);
+                        const data = await respuesta.json();
+
+                        // Manejar la respuesta como desees
+                        console.log('Respuesta de la API:', data);
+
+                        // Aquí puedes agregar más lógica para trabajar con la respuesta, por ejemplo, mostrar datos en el mismo formulario.
+                        if (data) {
+                            // Limpia la tabla de solicitudes
+                            datatableSolicitudes.clear();
+                            contenedorsolicitudes = 1;
+                            // Agrega las nuevas filas con los datos obtenidos de la API
+                            datatableSolicitudes.rows.add(data).draw();
+                        } else {
+                            Toast.fire({
+                                title: 'No se encontraron registros',
+                                icon: 'info'
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error al realizar la solicitud:', error);
+                    }
+                });
+
+                divBoton.appendChild(boton);
+                contenedorBotones.appendChild(divBoton);
+            });
+        }
+    } catch (error) {
+        console.error('Error al buscar puestos:', error);
+    }
+};
+buscarPuestosNotas();
+
 //!DataTable que Buscar las Notas.
 let contenedornotas = 1;
 let datatableNotas;
@@ -200,6 +270,74 @@ if (data && data.length > 0) {
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 // !Tabla de ingresos
+//!Función para buscar al personal que solicita iniciar proceso de selección.
+const buscarPuestosRequisitos = async () => {
+    const url = `API/ingresos/buscarPuestosRequisitos`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+
+        console.log(data);
+        if (data) {
+            const contenedorBotones = document.getElementById('contenedorBotones3'); // Cambia 'contenedorBotones' por el ID de tu contenedor en el formulario
+
+            data.forEach(puesto => {
+                const divBoton = document.createElement('div');
+                divBoton.classList.add('col-md-3', 'mb-3'); // Clases de Bootstrap para columnas y margen inferior
+
+                const boton = document.createElement('button');
+                boton.textContent = puesto.puesto_nombre;
+                boton.setAttribute('data-idpuesto', puesto.ing_puesto);
+                boton.classList.add('btn', 'btn-success', 'btn-block'); // Clases de Bootstrap para botones
+
+                boton.addEventListener('click', async () => {
+                    const ing_puesto = puesto.ing_puesto;
+                    console.log(`Clic en el botón de ${puesto.puesto_nombre}. ing_puesto: ${ing_puesto}`);
+
+                    // Realizar la solicitud a la API sin redirigir
+                    const url = `API/ingresos/buscarSolicitudes?ing_puesto=${ing_puesto}`;
+                    const config = {
+                        method: 'GET'
+                    };
+
+                    try {
+                        const respuesta = await fetch(url, config);
+                        const data = await respuesta.json();
+
+                        // Manejar la respuesta como desees
+                        console.log('Respuesta de la API:', data);
+
+                        // Aquí puedes agregar más lógica para trabajar con la respuesta, por ejemplo, mostrar datos en el mismo formulario.
+                        if (data) {
+                            // Limpia la tabla de solicitudes
+                            datatableSolicitudes.clear();
+                            contenedorsolicitudes = 1;
+                            // Agrega las nuevas filas con los datos obtenidos de la API
+                            datatableSolicitudes.rows.add(data).draw();
+                        } else {
+                            Toast.fire({
+                                title: 'No se encontraron registros',
+                                icon: 'info'
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error al realizar la solicitud:', error);
+                    }
+                });
+
+                divBoton.appendChild(boton);
+                contenedorBotones.appendChild(divBoton);
+            });
+        }
+    } catch (error) {
+        console.error('Error al buscar puestos:', error);
+    }
+};
+buscarPuestosRequisitos();
 let contenedor = 1;
 const datatableIngresos = new Datatable('#tablaIngesos', {
     language: lenguaje,
@@ -627,12 +765,15 @@ tablaNotasContainer.style.display = 'none';
 tablaIngresosContainer.style.display = 'none'; 
 btnFase1.style.display = 'none'; 
 btnFase2.style.display = 'none'; 
+containerBtn2.style.display ='none';
+containerBtn3.style.display ='none';
 
 //!Ocultar la primer datatable y oculta el btnIniciarProceso
 const mostrarFase1 = () => {
     containerBtn.style.display ='none';
     tablaSolicitudesContainer.style.display ='none';
     ContenedorbtnInicio.style.display = 'none';
+    containerBtn2.style.display ='block';
     btnFase1.style.display = 'block';
     tablaNotasContainer.style.display = 'block';
 };
@@ -642,6 +783,7 @@ const mostrarFaseInicio = () => {
     containerBtn.style.display ='block';
     tablaSolicitudesContainer.style.display ='block';
     ContenedorbtnInicio.style.display = 'block';
+    containerBtn2.style.display ='none';
     btnFase1.style.display = 'none';
     tablaNotasContainer.style.display = 'none';
 };
@@ -650,14 +792,18 @@ const mostrarFaseInicio = () => {
 const mostrarFaseFinal = () => {
     tablaNotasContainer.style.display ='none';
     btnFase1.style.display = 'none';
+    containerBtn3.style.display ='block';
     tablaIngresosContainer.style.display = 'block'; 
     btnFase2.style.display = 'block';
+    containerBtn2.style.display ='none';
 };
 
 //!Ocultar la primer datatable y oculta el btnIniciarProceso
 const mostrarfase1 = () => {
     tablaNotasContainer.style.display ='block';
     btnFase1.style.display = 'block';
+    containerBtn2.style.display ='block';
+    containerBtn3.style.display ='none';
     tablaIngresosContainer.style.display = 'none'; 
     btnFase2.style.display = 'none';
 };
