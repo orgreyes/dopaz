@@ -72,7 +72,6 @@ where per_catalogo =--catalogo
 
 --//!BASE DE DATOS
 
--- Tabla Cont_Evaluaciones
 CREATE TABLE cont_evaluaciones (
     eva_id SERIAL PRIMARY KEY,
     eva_nombre CHAR(50),
@@ -104,7 +103,7 @@ CREATE TABLE cont_asig_evaluaciones(
     asig_eva_situacion SMALLINT,
     FOREIGN KEY (asig_eva_nombre) REFERENCES cont_evaluaciones(eva_id),
     FOREIGN KEY (asig_eva_puesto) REFERENCES cont_puestos(pue_id) 
-)
+);
 
 CREATE TABLE cont_asig_papeleria(
     asig_pap_id SERIAL PRIMARY KEY,
@@ -113,7 +112,7 @@ CREATE TABLE cont_asig_papeleria(
     asig_pap_situacion SMALLINT,
     FOREIGN KEY (asig_pap_nombre) REFERENCES cont_papeleria(pap_id),
     FOREIGN KEY (asig_pap_puesto) REFERENCES cont_puestos(pue_id) 
-)
+);
 
 CREATE TABLE cont_asig_requisitos(
     asig_req_id SERIAL PRIMARY KEY,
@@ -122,9 +121,8 @@ CREATE TABLE cont_asig_requisitos(
     asig_req_situacion SMALLINT,
     FOREIGN KEY (asig_req_puesto) REFERENCES cont_puestos(pue_id),
     FOREIGN KEY (asig_req_requisito) REFERENCES cont_requisitos(req_id) 
-)
+);
 
--- Tabla Cont_Puestos
 
 
 CREATE TABLE asig_grado_puesto (
@@ -135,7 +133,7 @@ CREATE TABLE asig_grado_puesto (
     FOREIGN KEY (asig_grado) REFERENCES grados (gra_codigo),
     FOREIGN KEY (asig_puesto) REFERENCES cont_puestos (pue_id)
 );
--- Tabla cont_aspirantes
+
 CREATE TABLE cont_aspirantes (
     asp_id SERIAL PRIMARY KEY,
     asp_catalogo INTEGER UNIQUE,
@@ -149,7 +147,6 @@ CREATE TABLE cont_aspirantes (
     FOREIGN KEY (asp_catalogo) REFERENCES mper(per_catalogo)
 );
 
--- Tabla Contingente
 CREATE TABLE contingentes (
     cont_id SERIAL PRIMARY KEY,
     cont_nombre CHAR(150),
@@ -179,7 +176,6 @@ CREATE TABLE cont_asig_misiones (
 
 
 
--- Tabla cont_ingresos
 CREATE TABLE cont_ingresos (
     ing_id SERIAL PRIMARY KEY,
     ing_puesto INT,
@@ -208,9 +204,8 @@ CREATE TABLE cont_req_aprovado (
     apro_requisito INT,
     apro_situacion SMALLINT,
     FOREIGN KEY (apro_ingreso) REFERENCES cont_ingresos(ing_id)
-)
+);
 
--- Tabla cont_aprovados
 CREATE TABLE cont_aprovados (
     apro_id SERIAL PRIMARY KEY,
     apro_asp INT,
@@ -225,7 +220,6 @@ CREATE TABLE cont_plazas (
     plaz_situacion SMALLINT
 );
 
--- Tabla cont_asig_plazas
 CREATE TABLE cont_asig_plazas(
     asig_id SERIAL PRIMARY KEY,
     asig_contingente INT,
@@ -238,7 +232,6 @@ CREATE TABLE cont_asig_plazas(
 );
 
 
--- Tabla Cont_Resultado
 CREATE TABLE cont_resultados (
     res_id SERIAL PRIMARY KEY,
     res_aspirante INT NOT NULL,

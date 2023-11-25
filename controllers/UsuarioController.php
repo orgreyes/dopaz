@@ -138,13 +138,14 @@ public static function buscarAPI()
 //!Funcion Guardar
 public static function guardarAPI() {
     try {
-        echo json_encode($_POST);
-        exit;
+        // echo json_encode(['POST' => $_POST, 'FILES' => $_FILES]);
         $catalogo_doc = $_POST['asp_catalogo'];
         $codigo = $_POST['ing_codigo'];
         $puesto = $_POST['ing_puesto'];
         $contingente = $_POST['asig_contingente'];
         $fecha_hoy = date("d/m/Y");
+        // echo json_encode([$catalogo_doc]);
+
 
         $aspirante = new Aspirante($_POST);
         $resultado = $aspirante->crear();
@@ -158,42 +159,41 @@ public static function guardarAPI() {
         $datos['ing_fecha_cont'] = $fecha_hoy;
         $datos['ing_puesto'] = $puesto;
         $datos['ing_contingente'] = $contingente;
+        // echo json_encode([$datos]);
 
         $ingresos = new Ingreso($datos);
         $result = $ingresos->guardar();
 
         if ($result['resultado'] == 1) {
             // Subir archivo y guardar en la base de datos
-            $archivo = $_FILES['pdf_ruta'];
-
-            // Agregar una verificación para asegurarse de que se haya enviado un archivo
-            if ($archivo['error'] === UPLOAD_ERR_OK) {
-                $ruta = "./storage/$catalogo_doc" . uniqid() . ".pdf";
-                $subido = move_uploaded_file($archivo['tmp_name'], $ruta);
-
-                if ($subido) {
-                    $PDFS['pdf_ingreso'] = $codigo;
+            $archivos = $_FILES['pdf_ruta'];
+            $rutas = []; // Aquí almacenaremos las rutas de los archivos
+        
+            foreach ($archivos['name'] as $index => $nombreArchivo) {
+                // Generar una ruta única para cada archivo
+                $ruta = "../storage/$catalogo" . uniqid() . ".pdf";
+                $rutas[] = $ruta; // Almacenar la ruta en el arreglo
+        
+                // Mover el archivo a la ruta generada
+                $subido = move_uploaded_file($archivos['tmp_name'][$index], $ruta);
+                }   
+            
+                $PDFS['pdf_ingreso'] = $id_aspirante;
+                $PDFS['pdf_ruta'] = $rutas;
+                
+                foreach ($rutas as $ruta) {
                     $PDFS['pdf_ruta'] = $ruta;
+                
+                    // Crear un nuevo objeto Pdf con las mismas propiedades
                     $pdf = new Pdf($PDFS);
                     $pdfResultado = $pdf->guardar();
-
-                    // Solo envía una respuesta JSON al final
-                    echo json_encode([
-                        'mensaje' => 'Registro guardado correctamente',
-                        'codigo' => 1
-                    ]);
-                } else {
-                    echo json_encode([
-                        'mensaje' => 'Error al subir el archivo PDF',
-                        'codigo' => 0
-                    ]);
                 }
-            } else {
+                // Solo envía una respuesta JSON al final
                 echo json_encode([
-                    'mensaje' => 'No se ha enviado ningún archivo PDF',
-                    'codigo' => 0
+                    'mensaje' => 'Registros guardados correctamente',
+                    'codigo' => 1
                 ]);
-            }
+
         } else {
             echo json_encode([
                 'mensaje' => 'Ocurrió un error al guardar el aspirante',
@@ -204,7 +204,7 @@ public static function guardarAPI() {
         // Si hay una excepción, envía una respuesta JSON de error
         echo json_encode([
             'detalle' => $e->getMessage(),
-            'mensaje' => 'Error en el proceso',
+            'mensaje' => 'El Aspirante ya Fue Inscrito',
             'codigo' => 2
         ]);
     }

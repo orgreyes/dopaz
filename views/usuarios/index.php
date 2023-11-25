@@ -43,7 +43,7 @@
         <div class="container mt-4">
             <h2 id="titulo">Formulario para personal que viaja por primera vez a Contingente</h2><br>
 
-            <form class="form-container" id="formularioPersonal">
+            <form class="form-container" id="formularioPersonal" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-3">
                         <img for="asp_catalogo" id="foto" src="./images/foto.jpg" alt="Fotografía">

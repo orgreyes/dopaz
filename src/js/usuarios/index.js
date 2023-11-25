@@ -61,9 +61,20 @@ const guardar = async (evento) => {
     // Agrega los archivos PDF al formulario
     const archivosPDF = document.querySelectorAll('input[type="file"][name^="pdf_ruta"]');
     archivosPDF.forEach((archivo, index) => {
+    const nombreArchivo = archivo.files[0].name;
+    if (nombreArchivo.toLowerCase().endsWith('.pdf')) {
         console.log(`Adjuntando archivo ${index + 1}:`, archivo.files[0]);
-        body.append(`pdf_documento${index + 1}`, archivo.files[0]);
-    });
+        body.append(`pdf_ruta[]`, archivo.files[0]); // Cambia pdf_documento por pdf_ruta
+    } else {
+        // Muestra un mensaje de error si el formato no es PDF
+        Toast.fire({
+            icon: 'error',
+            text: `El archivo ${nombreArchivo} no tiene el formato PDF.`,
+        });
+        // Detiene la ejecución de la función
+        return;
+    }
+});
 
     // Agrega estos console.log adicionales
     console.log("Archivos adjuntos:", body.getAll("pdf_documento1"), body.getAll("pdf_documento2"));
@@ -86,7 +97,7 @@ const guardar = async (evento) => {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
 console.log(data);
-return;  
+
         // Procesa la respuesta
         const { codigo, mensaje, detalle } = data;
         let icon = 'info';
@@ -96,6 +107,11 @@ return;
                 'mensaje';
                 formulario.reset();
                 buscar();
+                ocultarBtnGuardar(); // Oculta el botón de guardar después de un éxito
+
+                // Limpia los inputs de documentos
+                const contenedorDocumentos = document.getElementById('contenedorDocumentos');
+                contenedorDocumentos.innerHTML = '';
                 break;
 
             case 0:
