@@ -100,8 +100,7 @@ public static function buscarEvaluaciones()
                         AND cont_puestos.pue_id = $id_puesto
                         AND cont_ingresos.ing_id = $asp_id
                     ORDER BY 
-                        cont_evaluaciones.eva_nombre ASC;
-     ";
+                        cont_evaluaciones.eva_nombre ASC";
  
          // Ejecutar la consulta y obtener las misiones del contingente.
          $asig_evaluacion = Resultado::fetchArray($sql);

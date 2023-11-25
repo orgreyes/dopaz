@@ -79,6 +79,12 @@ CREATE TABLE cont_evaluaciones (
     eva_situacion SMALLINT
 );
 
+CREATE TABLE cont_papeleria (
+    pap_id SERIAL PRIMARY KEY,
+    pap_nombre CHAR(50),
+    pap_situacion SMALLINT
+);
+
 CREATE TABLE cont_requisitos(
     req_id SERIAL PRIMARY KEY,
     req_nombre CHAR(50),
@@ -98,6 +104,15 @@ CREATE TABLE cont_asig_evaluaciones(
     asig_eva_situacion SMALLINT,
     FOREIGN KEY (asig_eva_nombre) REFERENCES cont_evaluaciones(eva_id),
     FOREIGN KEY (asig_eva_puesto) REFERENCES cont_puestos(pue_id) 
+)
+
+CREATE TABLE cont_asig_papeleria(
+    asig_pap_id SERIAL PRIMARY KEY,
+    asig_pap_nombre INT,
+    asig_pap_puesto INT,
+    asig_pap_situacion SMALLINT,
+    FOREIGN KEY (asig_pap_nombre) REFERENCES cont_papeleria(pap_id),
+    FOREIGN KEY (asig_pap_puesto) REFERENCES cont_puestos(pue_id) 
 )
 
 CREATE TABLE cont_asig_requisitos(
@@ -179,6 +194,14 @@ CREATE TABLE cont_ingresos (
     UNIQUE (ing_aspirante,ing_fecha_cont)
 );
 
+CREATE TABLE cont_pdf(
+	pdf_id SERIAL PRIMARY KEY,
+	pdf_ruta VARCHAR (200) NOT NULL,
+	pdf_ingreso INTEGER NOT NULL,
+	pdf_situacion SMALLINT,
+	FOREIGN KEY (pdf_ingreso) REFERENCES cont_ingresos (ing_id)
+);
+
 CREATE TABLE cont_req_aprovado (
     apro_id SERIAL PRIMARY KEY,
     apro_ingreso INT,
@@ -229,6 +252,9 @@ CREATE TABLE cont_resultados (
 
 DROP TABLE asig_grado_puesto
 DROP TABLE cont_asig_evaluaciones
+DROP TABLE cont_asig_papeleria
+DROP TABLE cont_papeleria
+DROP TABLE cont_pdf
 DROP TABLE contingentes
 DROP TABLE cont_requisitos
 DROP TABLE cont_asig_requisitos
@@ -248,5 +274,21 @@ DROP TABLE cont_asig_plazas
 --!Datos
 
 
+SELECT
+    cp.pue_nombre AS puesto,
+    COUNT(car.asig_req_id) AS cantidad_requisitos
+FROM
+    cont_puestos cp
+JOIN
+    cont_asig_requisitos car ON cp.pue_id = car.asig_req_puesto
+JOIN
+    cont_requisitos cr ON car.asig_req_requisito = cr.req_id
+WHERE
+    cp.pue_id = 1 AND
+    cp.pue_situacion = 1 AND
+    car.asig_req_situacion = 1 AND
+    cr.req_situacion = 1
+GROUP BY
+    cp.pue_nombre;
 
 

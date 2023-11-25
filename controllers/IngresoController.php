@@ -274,7 +274,7 @@ public static function buscarSolicitudesAPI()
             JOIN cont_aspirantes asp ON ci.ing_aspirante = asp.asp_id
             JOIN cont_puestos pue ON ci.ing_puesto = pue.pue_id
             JOIN contingentes cont ON ci.ing_contingente = cont.cont_id
-            WHERE ci.ing_situacion = 3";
+            WHERE ci.ing_situacion IN (1,2,3)";
 
      try {
 

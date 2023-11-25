@@ -147,8 +147,12 @@
                                     </select>
                                 </div>
                             </div>
-                            <br>
-                            <div class="col-6 mx-auto">
+                            
+                            <div id="contenedorDocumentos" class="col-lg-12">
+                                <!-- Aquí se insertarán dinámicamente los campos -->
+                            </div>
+
+                            <div class="col-6 mx-auto" style="margin-top:12px">
                                 <button type="button" id="btnGuardar" class="btn btn-primary w-100">
                                     <i class="fas fa-save"></i> Guardar Registro
                                 </button>
