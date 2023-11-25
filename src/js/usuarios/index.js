@@ -344,6 +344,7 @@ async function obtenerRequisitos() {
                 nuevoDiv.appendChild(nuevoInput);
                 contenedorDocumentos.appendChild(nuevoDiv);
             }
+            mostrarBtnGuardar();
         } else {
             console.log('No se encontraron requisitos para el puesto seleccionado.');
         }
@@ -352,7 +353,18 @@ async function obtenerRequisitos() {
     }
 }
 
+//!Ocultar btnGuardar
+btnGuardar.style.display = 'none';
 
+//!Mostrar btnGuardar
+const mostrarBtnGuardar = () => {
+    btnGuardar.style.display = 'none';
+    };
+
+//!Ocultar btnGuardar
+const ocultarBtnGuardar = () => {
+    btnGuardar.style.display = 'none';
+    };
 
 btnBuscar.addEventListener('click', buscar);
 btnGuardar.addEventListener('click', guardar);
