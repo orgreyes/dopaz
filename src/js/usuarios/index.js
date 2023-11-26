@@ -42,42 +42,38 @@ function generarCodigoAleatorio(longitud) {
 //!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
-    if (!validarFormulario(formulario, ['per_catalogo'])) {
-        Toast.fire({
-            icon: 'info',
-            text: 'Debe llenar todos los datos'
-        });
-        return;
+
+    // Agrega los archivos PDF al formulario con validación de formato
+    const archivosPDF = document.querySelectorAll('input[type="file"][name^="pdf_ruta"]');
+    for (const archivo of archivosPDF) {
+        const nombreArchivo = archivo.files[0].name;
+        if (!nombreArchivo.toLowerCase().endsWith('.pdf')) {
+            // Muestra un mensaje de error si el formato no es PDF
+            Toast.fire({
+                icon: 'error',
+                text: `El archivo ${nombreArchivo} no tiene el formato PDF.`,
+            });
+            // Detiene la ejecución de la función
+            return;
+        }
     }
 
     // Genera un código aleatorio
     const codigoAleatorio = generarCodigoAleatorio(10); // Cambia la longitud según tus necesidades
 
-    // Construye el cuerpo de la solicitud
+    // Construye el cuerpo de la solicitud  
     const body = new FormData(formulario);
     body.delete('per_catalogo');
     body.append('ing_codigo', codigoAleatorio);
 
     // Agrega los archivos PDF al formulario
-    const archivosPDF = document.querySelectorAll('input[type="file"][name^="pdf_ruta"]');
     archivosPDF.forEach((archivo, index) => {
-    const nombreArchivo = archivo.files[0].name;
-    if (nombreArchivo.toLowerCase().endsWith('.pdf')) {
         console.log(`Adjuntando archivo ${index + 1}:`, archivo.files[0]);
         body.append(`pdf_ruta[]`, archivo.files[0]); // Cambia pdf_documento por pdf_ruta
-    } else {
-        // Muestra un mensaje de error si el formato no es PDF
-        Toast.fire({
-            icon: 'error',
-            text: `El archivo ${nombreArchivo} no tiene el formato PDF.`,
-        });
-        // Detiene la ejecución de la función
-        return;
-    }
-});
+    });
 
     // Agrega estos console.log adicionales
-    console.log("Archivos adjuntos:", body.getAll("pdf_documento1"), body.getAll("pdf_documento2"));
+    console.log("Archivos adjuntos:", body.getAll("pdf_ruta[]"));
     console.log("Solicitud antes de enviar:", body);
 
     // Define la URL del servicio
@@ -96,7 +92,7 @@ const guardar = async (evento) => {
         // Realiza la solicitud
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-console.log(data);
+        console.log(data);
 
         // Procesa la respuesta
         const { codigo, mensaje, detalle } = data;
@@ -106,10 +102,9 @@ console.log(data);
                 icon = 'success';
                 'mensaje';
                 formulario.reset();
+                ocultarBtnGuardar();
                 buscar();
-                ocultarBtnGuardar(); // Oculta el botón de guardar después de un éxito
-
-                // Limpia los inputs de documentos
+                formulario.foto.src = './images/foto.jpg';
                 const contenedorDocumentos = document.getElementById('contenedorDocumentos');
                 contenedorDocumentos.innerHTML = '';
                 break;
@@ -130,7 +125,6 @@ console.log(data);
         console.log(error);
     }
 };
-
 
 
 
@@ -358,7 +352,7 @@ btnGuardar.style.display = 'none';
 
 //!Mostrar btnGuardar
 const mostrarBtnGuardar = () => {
-    btnGuardar.style.display = 'none';
+    btnGuardar.style.display = 'block';
     };
 
 //!Ocultar btnGuardar
