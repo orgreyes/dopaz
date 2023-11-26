@@ -50,6 +50,7 @@ public static function buscarNotasAPI()
            $queryNotas = "SELECT
                                 c.cont_nombre AS Contingente,
                                 p.pue_nombre AS puesto_nombre,
+                                i.ing_id,
                                 " . self::buildMaxCaseStatements($evaluacionesArray) . "
                             FROM
                                 cont_ingresos i
@@ -67,8 +68,7 @@ public static function buscarNotasAPI()
                                 i.ing_puesto = $pue_id
                             AND i.ing_situacion = 2
                             AND YEAR(i.ing_fecha_cont) IN (YEAR(CURRENT), YEAR(CURRENT) + 1)
-                            GROUP BY
-                                i.ing_aspirante, i.ing_puesto, c.cont_nombre, p.pue_nombre
+                            GROUP BY i.ing_id, i.ing_aspirante, i.ing_puesto, c.cont_nombre, p.pue_nombre
                             ORDER BY
                                 " . self::buildOrderByStatements($evaluacionesArray);
                             
@@ -449,7 +449,7 @@ public static function guardarAPI() {
      }
  }
 
-  //!Funcion Para Iniciar el proceso del aspiratne y que pase al proceso de seleccion por notas
+//!Funcion Para Iniciar el proceso del aspiratne y que pase al proceso de seleccion por notas
 public static function iniciarProcesoAPI(){
     try{
         $ing_id = $_GET['ing_id'];
@@ -477,4 +477,31 @@ public static function iniciarProcesoAPI(){
     }
 }
 
+//!Funcion Para Aprovar el proceso por notas
+public static function seleccionPorNotaAPI(){
+    try{
+        $ing_id = $_GET['ing_id'];
+        $evaluacion = Ingreso::find($ing_id);
+        $evaluacion->ing_situacion = 3;
+        $resultado = $evaluacion->actualizar();
+
+        if($resultado['resultado'] == 1){
+            echo json_encode([
+                'mensaje' => 'El Aspirante inicio el proceso correctamente',
+                'codigo' => 1
+            ]);
+        }else{
+            echo json_encode([
+                'mensaje' => 'Ocurrio un error',
+                'codigo' => 0
+            ]);
+        }
+    }catch(Exception $e){
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje'=> 'Ocurrio un Error',
+            'codigo' => 0
+    ]);
+    }
+}
 }

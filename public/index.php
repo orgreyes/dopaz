@@ -129,6 +129,7 @@ $router->get('/API/ingresos/guardar', [IngresoController::class,'guardarAPI']);
 $router->post('/API/ingresos/desaprovar', [IngresoController::class,'desaprovarAPI']);
 $router->post('/API/ingresos/aprovar', [IngresoController::class,'aprovarAPI']);
 $router->get('/API/ingresos/iniciarProceso', [IngresoController::class,'iniciarProcesoAPI']);
+$router->get('/API/ingresos/seleccionPorNota', [IngresoController::class,'seleccionPorNotaAPI']);
 
 
 

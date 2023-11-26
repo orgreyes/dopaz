@@ -136,7 +136,7 @@ datatableSolicitudes.on('click', '.btn-iniciar-proceso', function () {
 
 let ingPuestoActual = null;
 let datatableNotas = null;
-
+let ingPuesto = null; 
 const buscarPuestosNotas = async () => {
     const url = `API/ingresos/buscarPuestosNotas`;
     const config = {
@@ -161,6 +161,9 @@ const buscarPuestosNotas = async () => {
                 boton.classList.add('btn', 'btn-success', 'btn-block');
 
                 boton.addEventListener('click', async () => {
+                    // Captura el ing_puesto seleccionado y almacénalo en la variable ingPuesto
+                    ingPuesto = puesto.ing_puesto;
+                    
                     const ing_puesto = puesto.ing_puesto;
                     if (ing_puesto !== ingPuestoActual) {
                         limpiarDataTable();
@@ -203,44 +206,45 @@ const inicializarDataTable = async (ing_puesto) => {
         if (data && data.length > 0) {
             limpiarDataTable();
 
-            const columnasDinamicas = Object.keys(data[0]).filter(columna => columna !== 'puesto_nombre' && columna !== 'ing_contingente');
 
-            const columnas = [
-                {
-                    title: 'NO',
-                    render: () => contenedornotas++
-                },
-                {
-                    title: 'Puesto',
-                    data: 'puesto_nombre'
-                },
-                ...columnasDinamicas.map(columna => ({
-                    title: columna,
-                    data: columna,
-                    render: function (data, type, row) {
-                        if (type === 'display' && (data === null || data === undefined || data === '')) {
-                            return '<span class="nota-pendiente text-danger">NOTA PENDIENTE</span>';
-                        } else {
-                            return data;
-                        }
-                    }
-                })),
-                {
-                    title: 'Promedio',
-                    data: null,
-                    render: function (data, type, row) {
-                        const notas = columnasDinamicas.map(columna => row[columna]).filter(valor => valor !== null && !isNaN(valor));
-                        const sum = notas.reduce((acc, nota) => acc + parseFloat(nota || 0), 0);
-                        const promedio = notas.length > 0 ? sum / notas.length : 0;
-                        return type === 'display' ? promedio.toFixed(2) : promedio;
-                    }
-                },
+            const columnasDinamicas = Object.keys(data[0]).filter(columna => columna !== 'puesto_nombre' && columna !== 'ing_contingente' && columna !== 'ing_id');
+
+const columnas = [
+    {
+        title: 'NO',
+        render: () => contenedornotas++
+    },
+    {
+        title: 'Puesto',
+        data: 'puesto_nombre'
+    },
+    ...columnasDinamicas.map(columna => ({
+        title: columna,
+        data: columna,
+        render: function (data, type, row) {
+            if (type === 'display' && (data === null || data === undefined || data === '')) {
+                return '<span class="nota-pendiente text-danger">NOTA PENDIENTE</span>';
+            } else {
+                return data;
+            }
+        }
+    })),
+    {
+        title: 'Promedio',
+        data: null,
+        render: function (data, type, row) {
+            const notas = columnasDinamicas.map(columna => row[columna]).filter(valor => valor !== null && !isNaN(valor));
+            const sum = notas.reduce((acc, nota) => acc + parseFloat(nota || 0), 0);
+            const promedio = notas.length > 0 ? sum / notas.length : 0;
+            return type === 'display' ? promedio.toFixed(2) : promedio;
+        }
+    },
                 {
                     title: 'APROVAR FASE 1',
-                    data: 'ing_situacion',
+                    data: 'ing_id', // Usar 'ing_id' aquí
                     searchable: false,
                     orderable: false,
-                    render: (data) => `<button class="btn btn-success btn-aprobar-requisito" data-asig-req-id='${data}'>Aprobar fase 1</button>`
+                    render: (data) => `<button class="btn btn-success btn-aprobar-fase1" data-ing-id='${data}'>Aprobar fase 1</button>`
                 }
             ];
 
@@ -255,6 +259,14 @@ const inicializarDataTable = async (ing_puesto) => {
     }
 };
 
+
+let ing_id;
+// Agregar manejador de eventos para los botones de aprobación de requisitos
+$('#tablaNotas').on('click', '.btn-aprobar-fase1', function () {
+    ing_id = $(this).data('ing-id').toString();
+    // Llamar a la iniciarProcesoAPI con los datos capturados
+    seleccionPorNota(ing_id);
+});
 
 
 //? ------------------------------------------------------------------------------------------>
@@ -750,6 +762,57 @@ const iniciarProcesoAPI = async (ing_id) => {
 };
 
 //? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//!Funcion inciar el Proceso de seleccion
+const seleccionPorNota = async (ing_id) => {
+    // Verificar si ing_id es un número válido
+    if (!isNaN(ing_id) && Number.isInteger(parseFloat(ing_id))) {
+        // Convertir ing_id a entero si es necesario
+        ing_id = parseInt(ing_id);
+        
+        // Construir la URL
+        const url = `API/ingresos/seleccionPorNota?ing_id=${ing_id}`;
+        console.log(url);
+
+        const config = {
+            method: 'GET',
+            // Puedes omitir el cuerpo ya que es una solicitud GET
+        };
+
+        try {
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            console.log(data);
+
+            const { codigo, mensaje, detalle } = data;
+
+            let icon = 'info';
+            switch (codigo) {
+                case 1:
+                    buscar();
+                    buscarPuestosNotas();
+                    inicializarDataTable(ingPuesto);
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Proceso iniciado exitosamente',
+                        text: mensaje
+                    });
+                    break;
+                case 0:
+                    console.log(detalle);
+                    break;
+                default:
+                    break;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    } else {
+        console.error('ing_id no es un número válido:', ing_id);
+    }
+};
+//? ------------------------------------------------------------------------------------------>
 //!Ocultar el Datatables al inicio
 tablaNotasContainer.style.display = 'none'; 
 tablaIngresosContainer.style.display = 'none'; 
@@ -816,6 +879,9 @@ datatableSolicitudes.on('click','.btn-iniciar-proceso', function () {
         console.error('ing_id no es un número válido:', ing_id);
     }
 });
+
+
+
 btnRegresarFase1.addEventListener('click', mostrarfase1)
 btnFaseFinal.addEventListener('click', mostrarFaseFinal)
 btnRegresar.addEventListener('click', mostrarFaseInicio)
