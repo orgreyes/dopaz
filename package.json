@@ -34,6 +34,7 @@
     "fullcalendar": "^5.11.3",
     "jquery": "^3.7.1",
     "leaflet": "^1.9.2",
-    "sweetalert2": "^11.4.38"
+    "sweetalert2": "^11.4.38",
+    "toastify-js": "^1.12.0"
   }
 }

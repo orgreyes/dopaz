@@ -2,13 +2,33 @@ import Datatable from "datatables.net-bs5";
 import { lenguaje } from "../lenguaje";
 import { Toast , validarFormulario } from "../funciones";
 import Swal from "sweetalert2";
-
+import Toastify from 'toastify-js';
 const formulario = document.querySelector('form');
 const tablaNotasContainer = document.getElementById('tablaNotasContainer');
 const btnGuardar = document.getElementById('btnGuardar');
 const btnModificar = document.getElementById('btnModificar');
+const Input_nota = document.getElementById('res_nota'); 
 const btnCancelar = document.getElementById('btnCancelar');
 
+
+Input_nota.addEventListener('input', function() {
+    const valorNota = parseFloat(Input_nota.value);
+
+    // Verifica si es un número y está en el rango permitido
+    if (isNaN(valorNota) || valorNota < 0 || valorNota > 100) {
+        Toastify({
+            text: 'Ingrese un número válido entre 0 y 100',
+            duration: 3000,  // Duración del toast en milisegundos
+            gravity: 'bottom',  // Posición del toast
+            position: 'center',  // Alineación del texto
+            style: {
+                background: 'linear-gradient(to right, #ff6a00, #ee0979)'  // Estilo del fondo del toast
+            }
+        }).showToast();
+
+        Input_nota.value = ''; // Limpiar el valor
+    }
+});
 
 //?------------------------------------------------------------------------------------------------
 // !Tabla de Ingresos

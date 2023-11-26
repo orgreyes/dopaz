@@ -63,9 +63,10 @@
                         <div class="row mb-3">
                             <div class="col">
                                 <label for="res_nota">Ingrese la Nota</label>
-                                <input type="number" name="res_nota" id="res_nota" class="form-control">
+                                <input type="number" name="res_nota" id="res_nota" class="form-control" step="0.1">
                             </div>
                         </div>
+
                         <div class="row mb-3">
     <div class="col-12 mb-3">
         <button type="button" id="btnGuardar" class="btn btn-info w-100">Guardar</button>

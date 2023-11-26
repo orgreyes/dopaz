@@ -20,6 +20,8 @@ class IngresoController {
 //!Funcion Buscar Notas
 public static function buscarNotasAPI()
    {
+
+    $pue_id = $_GET['ing_puesto'];
        try {
            // Consulta para obtener la lista de evaluaciones asociadas a cada puesto
            $queryEvaluaciones = "SELECT
@@ -34,7 +36,8 @@ public static function buscarNotasAPI()
        LEFT JOIN
            cont_evaluaciones e ON ae.asig_eva_nombre = e.eva_id
        WHERE
-           p.pue_id = 2";
+           p.pue_id = $pue_id";
+           
    
            $evaluaciones = Ingreso::fetchArray($queryEvaluaciones);
    
@@ -62,7 +65,7 @@ public static function buscarNotasAPI()
                             LEFT JOIN
                                 cont_resultados r ON i.ing_aspirante = r.res_aspirante AND e.eva_id = r.res_evaluacion
                             WHERE
-                                i.ing_puesto = 2
+                                i.ing_puesto = $pue_id
                             AND i.ing_situacion = 2
                             AND YEAR(i.ing_fecha_cont) IN (YEAR(CURRENT), YEAR(CURRENT) + 1)
                             GROUP BY

@@ -383,7 +383,7 @@ datatable.on('click','.btn-warning', OcultarTodoForumulario)
 //?--------------------------------------------------------------
 datatable.on('click','.btn-danger', eliminar)
 //?--------------------------------------------------------------
-buscar();
+
 
 
 

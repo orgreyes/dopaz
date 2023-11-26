@@ -54,17 +54,17 @@
         }
     </style>
 <body>
+
+<!-- //? ------------------------------------------------------------------------------------------>
+<!-- //? ------------------------------------------------------------------------------------------>
+<!-- //? ------------------------------------------------------------------------------------------>
+<!-- //!Formulario de Busqueda para personal que solicita iniciar con proceso de seleccion -->
 <div class="container" name="containerBtn"  id="containerBtn">
-<center><h1>Listado de Puestos</h1></center>
+ <center><h1>Listado de Puestos</h1></center>
     <div id="contenedorBotones" class="row justify-content-center mt-4">
         <!-- Aquí se añadirán los botones dinámicamente -->
     </div>
 </div>
-
-
-<!-- //? ------------------------------------------------------------------------------------------>
-<!-- //? ------------------------------------------------------------------------------------------>
-<!-- //? ------------------------------------------------------------------------------------------>
 <!-- //!Tabla de personal que solicita iniciar con seleccion -->
 <div class="container">
         <div id="tablaSolicitudesContainer" class="container mt-1">

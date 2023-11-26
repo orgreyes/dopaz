@@ -134,7 +134,9 @@ datatableSolicitudes.on('click', '.btn-iniciar-proceso', function () {
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>  
 
-//!Función para buscar al personal que solicita iniciar proceso de selección.
+let ingPuestoActual = null;
+let datatableNotas = null;
+
 const buscarPuestosNotas = async () => {
     const url = `API/ingresos/buscarPuestosNotas`;
     const config = {
@@ -147,50 +149,25 @@ const buscarPuestosNotas = async () => {
 
         console.log(data);
         if (data) {
-            const contenedorBotones = document.getElementById('contenedorBotones2'); // Cambia 'contenedorBotones' por el ID de tu contenedor en el formulario
+            const contenedorBotones = document.getElementById('contenedorBotones2');
 
             data.forEach(puesto => {
                 const divBoton = document.createElement('div');
-                divBoton.classList.add('col-md-3', 'mb-3'); // Clases de Bootstrap para columnas y margen inferior
+                divBoton.classList.add('col-md-3', 'mb-3');
 
                 const boton = document.createElement('button');
                 boton.textContent = puesto.puesto_nombre;
                 boton.setAttribute('data-idpuesto', puesto.ing_puesto);
-                boton.classList.add('btn', 'btn-success', 'btn-block'); // Clases de Bootstrap para botones
+                boton.classList.add('btn', 'btn-success', 'btn-block');
 
                 boton.addEventListener('click', async () => {
                     const ing_puesto = puesto.ing_puesto;
-                    console.log(`Clic en el botón de ${puesto.puesto_nombre}. ing_puesto: ${ing_puesto}`);
-
-                    // Realizar la solicitud a la API sin redirigir
-                    const url = `API/ingresos/buscarSolicitudes?ing_puesto=${ing_puesto}`;
-                    const config = {
-                        method: 'GET'
-                    };
-
-                    try {
-                        const respuesta = await fetch(url, config);
-                        const data = await respuesta.json();
-
-                        // Manejar la respuesta como desees
-                        console.log('Respuesta de la API:', data);
-
-                        // Aquí puedes agregar más lógica para trabajar con la respuesta, por ejemplo, mostrar datos en el mismo formulario.
-                        if (data) {
-                            // Limpia la tabla de solicitudes
-                            datatableSolicitudes.clear();
-                            contenedorsolicitudes = 1;
-                            // Agrega las nuevas filas con los datos obtenidos de la API
-                            datatableSolicitudes.rows.add(data).draw();
-                        } else {
-                            Toast.fire({
-                                title: 'No se encontraron registros',
-                                icon: 'info'
-                            });
-                        }
-                    } catch (error) {
-                        console.error('Error al realizar la solicitud:', error);
+                    if (ing_puesto !== ingPuestoActual) {
+                        limpiarDataTable();
                     }
+                    console.log(`Clic en el botón de ${puesto.puesto_nombre}. ing_puesto: ${ing_puesto}`);
+                    await inicializarDataTable(ing_puesto);
+                    ingPuestoActual = ing_puesto;
                 });
 
                 divBoton.appendChild(boton);
@@ -201,71 +178,86 @@ const buscarPuestosNotas = async () => {
         console.error('Error al buscar puestos:', error);
     }
 };
-buscarPuestosNotas();
 
-//!DataTable que Buscar las Notas.
-let contenedornotas = 1;
-let datatableNotas;
-const respuesta = await fetch('API/ingresos/buscarNotas');
-const data = await respuesta.json();
-console.log(data);
-
-// Limpia y dibuja la tabla con los nuevos datos
-if (data && data.length > 0) {
-    // Obtén las claves de las propiedades dinámicas (Ingles, Matematica, etc.)
-    const columnasDinamicas = Object.keys(data[0]).filter(columna => columna !== 'puesto_nombre' && columna !== 'ing_contingente');
-
-    // Borra las columnas existentes y agrega las columnas dinámicas a la configuración de la tabla
+const limpiarDataTable = () => {
     if (datatableNotas) {
         datatableNotas.clear().destroy();
+        datatableNotas = null;
+        $('#tablaNotas').empty();
     }
-    const columnas = [
-        {
-            title: 'NO',
-            render: () => contenedornotas++
-        },
-        {
-            title: 'Puesto',
-            data: 'puesto_nombre'
-        },
-        ...columnasDinamicas.map(columna => ({
-            title: columna,
-            data: columna,
-            render: function (data, type, row) {
-                if (type === 'display' && (data === null || data === undefined || data === '')) {
-                    return '<span class="nota-pendiente text-danger">NOTA PENDIENTE</span>';
-                } else {
-                    return data;
+};
+
+const inicializarDataTable = async (ing_puesto) => {
+    const url = `API/ingresos/buscarNotas?ing_puesto=${ing_puesto}`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        let contenedornotas = 1;
+
+        if (data && data.length > 0) {
+            limpiarDataTable();
+
+            const columnasDinamicas = Object.keys(data[0]).filter(columna => columna !== 'puesto_nombre' && columna !== 'ing_contingente');
+
+            const columnas = [
+                {
+                    title: 'NO',
+                    render: () => contenedornotas++
+                },
+                {
+                    title: 'Puesto',
+                    data: 'puesto_nombre'
+                },
+                ...columnasDinamicas.map(columna => ({
+                    title: columna,
+                    data: columna,
+                    render: function (data, type, row) {
+                        if (type === 'display' && (data === null || data === undefined || data === '')) {
+                            return '<span class="nota-pendiente text-danger">NOTA PENDIENTE</span>';
+                        } else {
+                            return data;
+                        }
+                    }
+                })),
+                {
+                    title: 'Promedio',
+                    data: null,
+                    render: function (data, type, row) {
+                        const notas = columnasDinamicas.map(columna => row[columna]).filter(valor => valor !== null && !isNaN(valor));
+                        const sum = notas.reduce((acc, nota) => acc + parseFloat(nota || 0), 0);
+                        const promedio = notas.length > 0 ? sum / notas.length : 0;
+                        return type === 'display' ? promedio.toFixed(2) : promedio;
+                    }
+                },
+                {
+                    title: 'APROVAR FASE 1',
+                    data: 'ing_situacion',
+                    searchable: false,
+                    orderable: false,
+                    render: (data) => `<button class="btn btn-success btn-aprobar-requisito" data-asig-req-id='${data}'>Aprobar fase 1</button>`
                 }
-            }
-        })),
-        {
-            title: 'Promedio',
-            data: null,
-            render: function (data, type, row) {
-                const notas = columnasDinamicas.map(columna => row[columna]).filter(valor => valor !== null && !isNaN(valor));
-                const sum = notas.reduce((acc, nota) => acc + parseFloat(nota || 0), 0);
-                const promedio = notas.length > 0 ? sum / notas.length : 0;
-                return type === 'display' ? promedio.toFixed(2) : promedio;
-            }
-        },
-        {
-            title: 'APROVAR FASE 1',
-            data: 'ing_situacion',
-            searchable: false,
-            orderable: false,
-            render: (data) => `<button class="btn btn-success btn-aprobar-requisito" data-asig-req-id='${data}'>Aprobar fase 1</button>`
+            ];
+
+            datatableNotas = $('#tablaNotas').DataTable({
+                data: data,
+                columns: columnas
+            });
+            datatableNotas.draw();
         }
-    ];
-    // Crea la tabla con las nuevas columnas
-    datatableNotas = $('#tablaNotas').DataTable({
-        language: lenguaje,
-        data: data,
-        columns: columnas
-    });
-    // Dibuja la tabla con las nuevas columnas
-    datatableNotas.draw();
-}
+    } catch (error) {
+        console.error('Error al buscar notas:', error);
+    }
+};
+
+buscarPuestosNotas();
+
+
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
@@ -500,7 +492,6 @@ const buscarTodo = async () => {
         console.log(error);
     }
 };
-buscarTodo();
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
@@ -738,7 +729,8 @@ const iniciarProcesoAPI = async (ing_id) => {
             let icon = 'info';
             switch (codigo) {
                 case 1:
-                    buscar();  // Esto puede cambiar según lo que necesites hacer después de iniciar el proceso
+                    buscar();
+                    buscarTodo();  // Esto puede cambiar según lo que necesites hacer después de iniciar el proceso
                     Toast.fire({
                         icon: 'success',
                         title: 'Proceso iniciado exitosamente',
@@ -830,4 +822,6 @@ btnRegresarFase1.addEventListener('click', mostrarfase1)
 btnFaseFinal.addEventListener('click', mostrarFaseFinal)
 btnRegresar.addEventListener('click', mostrarFaseInicio)
 btnInicio.addEventListener('click', mostrarFase1)
+buscarTodo();
+
 buscar();

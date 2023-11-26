@@ -78,11 +78,6 @@ CREATE TABLE cont_evaluaciones (
     eva_situacion SMALLINT
 );
 
-CREATE TABLE cont_papeleria (
-    pap_id SERIAL PRIMARY KEY,
-    pap_nombre CHAR(50),
-    pap_situacion SMALLINT
-);
 
 CREATE TABLE cont_requisitos(
     req_id SERIAL PRIMARY KEY,
@@ -105,14 +100,6 @@ CREATE TABLE cont_asig_evaluaciones(
     FOREIGN KEY (asig_eva_puesto) REFERENCES cont_puestos(pue_id) 
 );
 
-CREATE TABLE cont_asig_papeleria(
-    asig_pap_id SERIAL PRIMARY KEY,
-    asig_pap_nombre INT,
-    asig_pap_puesto INT,
-    asig_pap_situacion SMALLINT,
-    FOREIGN KEY (asig_pap_nombre) REFERENCES cont_papeleria(pap_id),
-    FOREIGN KEY (asig_pap_puesto) REFERENCES cont_puestos(pue_id) 
-);
 
 CREATE TABLE cont_asig_requisitos(
     asig_req_id SERIAL PRIMARY KEY,
@@ -245,8 +232,6 @@ CREATE TABLE cont_resultados (
 
 DROP TABLE asig_grado_puesto
 DROP TABLE cont_asig_evaluaciones
-DROP TABLE cont_asig_papeleria
-DROP TABLE cont_papeleria
 DROP TABLE cont_pdf
 DROP TABLE contingentes
 DROP TABLE cont_requisitos
@@ -260,6 +245,7 @@ DROP TABLE cont_ingresos
 DROP TABLE cont_resultados
 DROP TABLE cont_asig_misiones
 DROP TABLE cont_misiones_contingente
+
 DROP TABLE cont_plazas
 DROP TABLE cont_asig_plazas
 
