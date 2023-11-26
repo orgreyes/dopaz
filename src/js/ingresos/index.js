@@ -20,7 +20,18 @@ const tablaNotasContainer = document.getElementById('tablaNotasContainer');
 const tablaIngresosContainer = document.getElementById('tablaIngresosContainer');
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
-
+const limpiarBotones = () => {
+    const contenedorBotones = document.getElementById('contenedorBotones');
+    contenedorBotones.innerHTML = '';  // Elimina todo el contenido dentro del contenedor
+};
+const limpiarBotones2 = () => {
+    const contenedorBotones = document.getElementById('contenedorBotones2');
+    contenedorBotones.innerHTML = '';  // Elimina todo el contenido dentro del contenedor
+};
+const limpiarBotones3 = () => {
+    const contenedorBotones = document.getElementById('contenedorBotones3');
+    contenedorBotones.innerHTML = '';  // Elimina todo el contenido dentro del contenedor
+};
 //!Función para buscar al personal que solicita iniciar proceso de selección.
 const buscarPuestosSolicitudes = async () => {
     const url = `API/ingresos/buscarPuestos`;
@@ -239,14 +250,24 @@ const columnas = [
             return type === 'display' ? promedio.toFixed(2) : promedio;
         }
     },
-                {
-                    title: 'APROVAR FASE 1',
-                    data: 'ing_id', // Usar 'ing_id' aquí
-                    searchable: false,
-                    orderable: false,
-                    render: (data) => `<button class="btn btn-success btn-aprobar-fase1" data-ing-id='${data}'>Aprobar fase 1</button>`
-                }
-            ];
+    {
+        title: 'APROVAR FASE 1',
+        data: 'ing_id',
+        searchable: false,
+        orderable: false,
+        render: function (data, type, row) {
+            const notasPendientes = columnasDinamicas.some(columna => row[columna] === null || row[columna] === undefined || row[columna] === '');
+
+            if (notasPendientes) {
+                // Si hay al menos una "NOTA PENDIENTE", mostrar el botón de "PENDIENTE EN INGRESAR NOTAS"
+                return '<button class="btn btn-warning btn-pendiente-ingresar-notas">Pendiente a Ingresar Notas</button>';
+            } else {
+                // Si no hay "NOTA PENDIENTE", mostrar el botón de "APROBAR FASE 1"
+                return `<button class="btn btn-success btn-aprobar-fase1" data-ing-id='${data}'>Aprobar fase 1</button>`;
+            }
+        }
+    }
+];
 
             datatableNotas = $('#tablaNotas').DataTable({
                 data: data,
@@ -476,8 +497,9 @@ $('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //!Función para buscar al personal que solicita iniciar proceso de seleccion.
+let contadorBuscarTodo = 1;
 const buscarTodo = async () => {
-
+    contadorBuscarTodo = 1;
     const url = `API/ingresos/buscarTodo`;
     const config = {
         method: 'GET'
@@ -739,8 +761,10 @@ const iniciarProcesoAPI = async (ing_id) => {
             let icon = 'info';
             switch (codigo) {
                 case 1:
+                    limpiarBotones();
                     buscarPuestosSolicitudes();
-                    buscarTodo();  // Esto puede cambiar según lo que necesites hacer después de iniciar el proceso
+                    limpiarBotones2();
+                    buscarPuestosNotas();
                     Toast.fire({
                         icon: 'success',
                         title: 'Proceso iniciado exitosamente',
@@ -791,6 +815,7 @@ const seleccionPorNota = async (ing_id) => {
             switch (codigo) {
                 case 1:
                     buscar();
+                    limpiarBotones2();
                     buscarPuestosNotas();
                     inicializarDataTable(ingPuesto);
                     Toast.fire({

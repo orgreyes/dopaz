@@ -425,7 +425,7 @@ public static function guardarAPI() {
  
              if ($resultado['resultado'] == 1) {
                  echo json_encode([
-                     'mensaje' => 'Requisito Aprovado correctamente',
+                     'mensaje' => 'Calificado correctamente',
                      'codigo' => 1
                  ]);
              } else {
