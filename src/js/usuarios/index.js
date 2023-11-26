@@ -262,9 +262,10 @@ const buscar = async () => {
 //!Funcion OBTENER REQUISITOS, ACA SE GENERAN LOS INPUTS DE LOS PDF DINAMICAMENTE
 
 formulario.ing_puesto.addEventListener('change', obtenerRequisitos);
+
 async function obtenerRequisitos() {
     const puestoSeleccionado = formulario.ing_puesto.value;
-    
+
     const url = `API/usuarios/obtenerRequisitos?pue_id=${puestoSeleccionado}`;
     const config = {
         method: 'GET'
@@ -281,10 +282,11 @@ async function obtenerRequisitos() {
 
         // Verifica si hay requisitos y crea campos dinámicos
         if (Array.isArray(data.usuarios) && data.usuarios.length > 0) {
-            const cantidadRequisitos = data.usuarios[0].cantidad_requisitos;
+            const requisitosFiltrados = data.nombreRequisitos.filter(requisito => !requisito.requisito.toLowerCase().startsWith('psicologico'));
+            const cantidadRequisitos = requisitosFiltrados.length;
 
             // Obtén los nombres de los requisitos
-            const nombresRequisitos = data.nombreRequisitos.map(requisito => requisito.requisito);
+            const nombresRequisitos = requisitosFiltrados.map(requisito => requisito.requisito);
 
             for (let i = 0; i < cantidadRequisitos; i++) {
                 // Crea el contenedor div

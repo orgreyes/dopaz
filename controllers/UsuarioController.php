@@ -127,14 +127,6 @@ public static function buscarAPI()
 }
 
 
-
-
-
-
-
-
-
-
 //!Funcion Guardar
 public static function guardarAPI() {
     try {
@@ -150,7 +142,7 @@ public static function guardarAPI() {
         $aspirante = new Aspirante($_POST);
         $resultado = $aspirante->crear();
 
-        // Aca se captura el id que se crea.
+        //!Aca se captura el id que se crea.
         $id_aspirante = $resultado['id'];
 
         // Aca se recibe los datos que se guardaran en otra tabla.
@@ -163,6 +155,7 @@ public static function guardarAPI() {
 
         $ingresos = new Ingreso($datos);
         $result = $ingresos->guardar();
+        $ing_id = $result['id'];
 
         if ($result['resultado'] == 1) {
             // Subir archivo y guardar en la base de datos
@@ -171,14 +164,14 @@ public static function guardarAPI() {
         
             foreach ($archivos['name'] as $index => $nombreArchivo) {
                 // Generar una ruta única para cada archivo
-                $ruta = "../storage/$catalogo" . uniqid() . ".pdf";
+                $ruta = "../storage/$nombreArchivo" . uniqid() . ".pdf";
                 $rutas[] = $ruta; // Almacenar la ruta en el arreglo
         
                 // Mover el archivo a la ruta generada
                 $subido = move_uploaded_file($archivos['tmp_name'][$index], $ruta);
                 }   
             
-                $PDFS['pdf_ingreso'] = $id_aspirante;
+                $PDFS['pdf_ingreso'] = $ing_id;
                 $PDFS['pdf_ruta'] = $rutas;
                 
                 foreach ($rutas as $ruta) {
@@ -291,82 +284,6 @@ public static function obtenerRequisitosAPI()
         ]);
     }
 }
-
-
-
-
-
-
-
-
-// //!Funcion Guardar
-// public static function guardarAPI() {
-//     try {
-//         // Validación y sanitización de las entradas
-//         $catalogo = isset($_POST['asp_catalogo']) ? $_POST['asp_catalogo'] : '';
-//         $codigo = isset($_POST['ing_codigo']) ? $_POST['ing_codigo'] : '';
-//         $puesto = isset($_POST['ing_puesto']) ? $_POST['ing_puesto'] : '';
-//         $contingente = isset($_POST['asig_contingente']) ? $_POST['asig_contingente'] : '';
-
-//         // Validar que se haya enviado un archivo
-//         if (!isset($_FILES['pdf_ruta']) || !is_uploaded_file($_FILES['pdf_ruta']['tmp_name'])) {
-//             throw new Exception('No se ha proporcionado un archivo PDF válido.');
-//         }
-
-//         // Mover el archivo a la ruta deseada
-//         $archivo = $_FILES['pdf_ruta'];
-//         $ruta = "../storage/$catalogo" . uniqid() . ".pdf";
-//         if (!move_uploaded_file($archivo['tmp_name'], $ruta)) {
-//             throw new Exception('Error al mover el archivo PDF.');
-//         }
-
-//         // Crear instancia de Pdf después de asegurarse de que el archivo se ha subido correctamente
-//         $pdf = new Pdf([
-//             'ing_id' => $Id_Aspirante, // No está claro de dónde proviene esta variable, asegúrate de definirla
-//             'pdf_ruta' => $ruta
-//         ]);
-//         $pdfResultado = $pdf->crear();
-
-//         // Crear instancia de Aspirante y guardar en la base de datos
-//         $aspirante = new Aspirante($_POST);
-//         $resultado = $aspirante->crear();
-
-//         // Obtener el ID del aspirante creado
-//         $id_aspirante = $resultado['id'];
-
-//         // Crear instancia de Ingreso y guardar en la base de datos
-//         $datos['ing_codigo'] = $codigo;
-//         $datos['ing_aspirante'] = $id_aspirante;
-//         $datos['ing_fecha_cont'] = date("Y-m-d"); // Formato de fecha compatible con MySQL
-//         $datos['ing_puesto'] = $puesto;
-//         $datos['ing_contingente'] = $contingente;
-
-//         $ingresos = new Ingreso($datos);
-//         $result = $ingresos->guardar();
-
-//         // Enviar respuesta JSON al final
-//         if ($result['resultado'] == 1) {
-//             echo json_encode([
-//                 'mensaje' => 'Registro guardado correctamente',
-//                 'codigo' => 1
-//             ]);
-//         } else {
-//             echo json_encode([
-//                 'mensaje' => 'Ocurrió un error al guardar en la base de datos',
-//                 'codigo' => 0
-//             ]);
-//         }
-//     } catch (Exception $e) {
-//         // Loguear la excepción en lugar de mostrar el mensaje directamente al usuario
-//         error_log($e->getMessage());
-
-//         echo json_encode([
-//             'detalle' => 'Ocurrió un error en el servidor',
-//             'mensaje' => 'Por favor, intenta nuevamente más tarde',
-//             'codigo' => 2
-//         ]);
-//     }
-// }
 
 
 

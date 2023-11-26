@@ -19,8 +19,7 @@ module.exports = {
     'js/asigrequisitos/index' : './src/js/asigrequisitos/index.js',
     'js/asiggrados/index' : './src/js/asiggrados/index.js',
     'js/asigevaluaciones/index' : './src/js/asigevaluaciones/index.js',
-    'js/papeleria/index' : './src/js/papeleria/index.js',
-    'js/asigpapeleria/index' : './src/js/asigpapeleria/index.js',
+
 
   },
   output: {

@@ -14,12 +14,11 @@ use Controllers\ContingenteController;
 use Controllers\IngresoController;
 use Controllers\ResultadoController;
 use Controllers\RequisitoController;
-use Controllers\PapeleriaController;
 use Controllers\AsigGradoController;
 use Controllers\AsigMisionController;
 use Controllers\AsigRequisitoController;
 use Controllers\AsigEvaluacionController;
-use Controllers\AsigPapeleriaController;
+
 
 
 $router = new Router();
@@ -44,12 +43,7 @@ $router->post('/API/requisitos/eliminar', [RequisitoController::class,'eliminarA
 $router->post('/API/requisitos/modificar', [RequisitoController::class,'modificarAPI']);
 $router->post('/API/requisitos/guardar', [RequisitoController::class,'guardarAPI']);
 
-//!Rutas para Papeleria
-$router->get('/papeleria', [PapeleriaController::class,'index']);
-$router->get('/API/papeleria/buscar', [PapeleriaController::class,'buscarAPI']);
-$router->post('/API/papeleria/eliminar', [PapeleriaController::class,'eliminarAPI']);
-$router->post('/API/papeleria/modificar', [PapeleriaController::class,'modificarAPI']);
-$router->post('/API/papeleria/guardar', [PapeleriaController::class,'guardarAPI']);
+
 
 //!Rutas para Puestos
 $router->get('/puestos', [PuestoController::class,'index']);
@@ -104,12 +98,7 @@ $router->get('/API/asigevaluaciones/buscarEvaluacionPuesto', [AsigEvaluacionCont
 $router->post('/API/asigevaluaciones/eliminar', [AsigEvaluacionController::class,'eliminarAPI']);
 $router->post('/API/asigevaluaciones/guardar', [AsigEvaluacionController::class,'guardarAPI']);
 
-//!Rutas para Asignar Ducuntacion a cada Puesto
-$router->get('/asigpapeleria', [AsigPapeleriaController::class,'index']);
-$router->get('/API/asigpapeleria/buscar', [AsigPapeleriaController::class,'buscarAPI']);
-$router->get('/API/asigpapeleria/buscarPapeleriaPuesto', [AsigPapeleriaController::class,'buscarPapeleriaPuestoAPI']);
-$router->post('/API/asigpapeleria/eliminar', [AsigPapeleriaController::class,'eliminarAPI']);
-$router->post('/API/asigpapeleria/guardar', [AsigPapeleriaController::class,'guardarAPI']);
+
 
 //!Rutas para Primer Ingreso del Personal
 $router->get('/usuarios', [UsuarioController::class,'index']);
@@ -117,15 +106,13 @@ $router->get('/API/usuarios/buscar', [UsuarioController::class,'buscarAPI']);
 $router->get('/API/usuarios/obtenerRequisitos', [UsuarioController::class,'obtenerRequisitosAPI']);
 $router->get('/API/usuarios/buscarPuesto', [UsuarioController::class,'buscarPuestoAPI']);
 $router->post('/API/usuarios/guardar', [UsuarioController::class,'guardarAPI']);
-$router->post('/API/usuarios/enviar', [UsuarioController::class,'enviarAPI']);
 
 
 //!Rutas para Segundo Ingreso del Personal 
 $router->get('/aspirantes', [AspiranteController::class,'index']);
 $router->get('/API/aspirantes/buscar', [AspiranteController::class,'buscarAPI']);
+$router->get('/API/aspirantes/obtenerRequisitos', [UsuarioController::class,'obtenerRequisitosAPI']);
 $router->get('/API/aspirantes/buscarPuesto', [AspiranteController::class,'buscarPuestoAPI']);
-$router->post('/API/aspirantes/eliminar', [AspiranteController::class,'eliminarAPI']);
-$router->post('/API/aspirantes/modificar', [AspiranteController::class,'modificarAPI']);
 $router->post('/API/aspirantes/guardar', [AspiranteController::class,'guardarAPI']);
 
 //!Rutas para Personal de que busca optar por una plaza

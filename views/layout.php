@@ -128,21 +128,7 @@
                         </ul>
                     </div> 
 
-                    <div class="nav-item dropdown " >
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Documentacion
-                        </a>
-                        <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
-                            <!-- <h6 class="dropdown-header">Información</h6> -->
-                            <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigpapeleria"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Asignacion de Documentos Por Puesto</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/papeleria"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Creacion de Documentos</a>
-                            </li>
-                        </ul>
-                    </div> 
-
+                   
 
 
                 </ul> 

@@ -41,9 +41,9 @@
 
     <body>
         <div class="container mt-4">
-            <h2 id="titulo">Formulario para personal que viaja por primera vez a Contingente</h2><br>
+            <h2 id="titulo">Formulario para personal que ha participado en Contingente antes</h2><br>
 
-            <form class="form-container" id="formularioPersonal">
+            <form class="form-container" id="formularioPersonal" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-3">
                         <img for="asp_catalogo" id="foto" src="./images/foto.jpg" alt="Fotografía">
@@ -148,8 +148,12 @@
                                     </select>
                                 </div>
                             </div>
-                            <br>
-                            <div class="col-6 mx-auto">
+                            
+                            <div id="contenedorDocumentos" class="col-lg-12">
+                                <!-- Aquí se insertarán dinámicamente los campos -->
+                            </div>
+
+                            <div class="col-6 mx-auto" style="margin-top:12px">
                                 <button type="button" id="btnGuardar" class="btn btn-primary w-100">
                                     <i class="fas fa-save"></i> Guardar Registro
                                 </button>

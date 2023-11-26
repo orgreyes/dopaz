@@ -6,6 +6,8 @@ use Exception;
 use Model\Ingreso;
 use Model\Aspirante;
 use Model\Contingente;
+use Model\Requisito;
+use Model\Pdf;
 use Model\Grado;
 use Model\Arma;
 use Model\Puesto;
@@ -129,42 +131,157 @@ public static function buscarAPI()
 
 
 //!Funcion Guardar
-public static function guardarAPI() {
+public static function guardarAPI()
+{
     try {
         $codigo = $_POST['ing_codigo'];
         $puesto = $_POST['ing_puesto'];
         $Id_Aspirante = $_POST['asp_id'];
         $contingente = $_POST['asig_contingente'];
         $fecha_hoy = date("d/m/Y");
-        
-        // ! Aca se recibe los datos que se guardaran en otra tabla.
+
+        //!Aca se reciben los datos que se guardarán en otra tabla.
         $datos['ing_codigo'] = $codigo;
         $datos['ing_puesto'] = $puesto;
         $datos['ing_aspirante'] = $Id_Aspirante;
         $datos['ing_contingente'] = $contingente;
         $datos['ing_fecha_cont'] = $fecha_hoy;
-        
+
         $ingresos = new Ingreso($datos);
         $result = $ingresos->guardar();
-
-        // ! Solo envía una respuesta JSON al final
+        //!Aca se captura el id que se crea.
+        $ing_id = $result['id'];
         if ($result['resultado'] == 1) {
-            echo json_encode([
-                'mensaje' => 'Registro guardado correctamente',
-                'codigo' => 1
-            ]);
+            //!Subir archivo y guardar en la base de datos
+            $archivos = $_FILES['pdf_ruta'];
+            $rutas = []; //!Aquí almacenaremos las rutas de los archivos
+
+            foreach ($archivos['name'] as $index => $nombreArchivo) {
+                //!Generar una ruta única para cada archivo
+                $ruta = "../storage/$nombreArchivo" . uniqid() . ".pdf";
+                $rutas[] = $ruta; // Almacenar la ruta en el arreglo
+
+                //!Mover el archivo a la ruta generada
+                $subido = move_uploaded_file($archivos['tmp_name'][$index], $ruta);
+            }
+
+            $PDFS['pdf_ingreso'] = $ing_id;
+            $PDFS['pdf_ruta'] = $rutas;
+
+            foreach ($rutas as $ruta) {
+                $PDFS['pdf_ruta'] = $ruta;
+
+                //!Crear un nuevo objeto Pdf con las mismas propiedades
+                $pdf = new Pdf($PDFS);
+                $pdfResultado = $pdf->guardar();
+            }
+
+            //!Solo envía una respuesta JSON al final
+            if ($pdfResultado['resultado'] == 1) {
+                echo json_encode([
+                    'mensaje' => 'Registro guardado correctamente',
+                    'codigo' => 1
+                ]);
+            } else {
+                echo json_encode([
+                    'mensaje' => 'Ocurrió un error al guardar el PDF',
+                    'codigo' => 0
+                ]);
+            }
         } else {
             echo json_encode([
-                'mensaje' => 'Ocurrió un error',
+                'mensaje' => 'Ocurrió un error al guardar el registro principal',
                 'codigo' => 0
             ]);
         }
     } catch (Exception $e) {
-        // ! Si hay una excepción, envía una respuesta JSON de error
+        //!Si hay una excepción, envía una respuesta JSON de error
         echo json_encode([
             'detalle' => $e->getMessage(),
             'mensaje' => 'El Aspirante ya fue Inscrito',
             'codigo' => 2
+        ]);
+    }
+}
+
+
+public static function obtenerRequisitosAPI()
+{
+    try {
+        if (isset($_GET['pue_id'])) {
+            $puestoId = $_GET['pue_id'];
+
+            // Validar que $puestoId sea un número válido
+            if (!is_numeric($puestoId)) {
+                echo json_encode([
+                    'mensaje' => 'El ID del puesto debe ser un número válido',
+                    'codigo' => 1
+                ]);
+                return;
+            }
+
+            // Consulta SQL para obtener nombres de requisitos
+            $query1 = "SELECT
+                            cp.pue_id,
+                            cp.pue_nombre AS puesto,
+                            cr.req_nombre AS requisito
+                        FROM
+                            cont_puestos cp
+                        JOIN
+                            cont_asig_requisitos car ON cp.pue_id = car.asig_req_puesto
+                        JOIN
+                            cont_requisitos cr ON car.asig_req_requisito = cr.req_id
+                        WHERE
+                            cp.pue_id = $puestoId AND
+                            cp.pue_situacion = 1 AND
+                            car.asig_req_situacion = 1 AND
+                            cr.req_situacion = 1";
+
+            $nombreRequisitos = Requisito::fetchArray($query1);
+
+            // Consulta SQL para obtener la cantidad de requisitos y sus nombres
+            $query2 = "SELECT
+                        cp.pue_nombre AS puesto,
+                        COUNT(car.asig_req_id) AS cantidad_requisitos
+                    FROM
+                        cont_puestos cp
+                    JOIN
+                        cont_asig_requisitos car ON cp.pue_id = car.asig_req_puesto
+                    JOIN
+                        cont_requisitos cr ON car.asig_req_requisito = cr.req_id
+                    WHERE
+                        cp.pue_id = $puestoId AND
+                        cp.pue_situacion = 1 AND
+                        car.asig_req_situacion = 1 AND
+                        cr.req_situacion = 1
+                    GROUP BY
+                        cp.pue_nombre";
+
+            // Cambiar $sql a $query2
+            $usuarios = Requisito::fetchArray($query2);
+
+            // Crear un array asociativo con ambas consultas
+            $response = [
+                'nombreRequisitos' => $nombreRequisitos,
+                'usuarios' => $usuarios
+            ];
+
+            // Devolver el array como JSON
+            echo json_encode($response);
+        } else {
+            echo json_encode([
+                'mensaje' => 'Por favor, ingrese un número de catálogo',
+                'codigo' => 1
+            ]);
+        }
+    } catch (Exception $e) {
+        // Registrar el error en el log
+        error_log('Error en la función obtenerRequisitosAPI: ' . $e->getMessage());
+
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'Ocurrió un error',
+            'codigo' => 0
         ]);
     }
 }

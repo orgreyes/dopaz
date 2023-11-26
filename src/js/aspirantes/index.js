@@ -37,6 +37,22 @@ const guardar = async (evento) => {
         });
         return;
     }
+
+    // Agrega los archivos PDF al formulario con validación de formato
+    const archivosPDF = document.querySelectorAll('input[type="file"][name^="pdf_ruta"]');
+    for (const archivo of archivosPDF) {
+        const nombreArchivo = archivo.files[0].name;
+        if (!nombreArchivo.toLowerCase().endsWith('.pdf')) {
+            // Muestra un mensaje de error si el formato no es PDF
+            Toast.fire({
+                icon: 'error',
+                text: `El archivo ${nombreArchivo} no tiene el formato PDF.`,
+            });
+            // Detiene la ejecución de la función
+            return;
+        }
+    }
+
     // Genera un código aleatorio
     const codigoAleatorio = generarCodigoAleatorio(10); // Cambia la longitud según tus necesidades
 
@@ -44,6 +60,16 @@ const guardar = async (evento) => {
     const body = new FormData(formulario);
     body.delete('asp_catalogo');
     body.append('ing_codigo', codigoAleatorio);
+
+     // Agrega los archivos PDF al formulario
+     archivosPDF.forEach((archivo, index) => {
+        console.log(`Adjuntando archivo ${index + 1}:`, archivo.files[0]);
+        body.append(`pdf_ruta[]`, archivo.files[0]); // Cambia pdf_documento por pdf_ruta
+    });
+
+    // Agrega estos console.log adicionales
+    console.log("Archivos adjuntos:", body.getAll("pdf_ruta[]"));
+    console.log("Solicitud antes de enviar:", body);
 
     // Define la URL del servicio
     const url = '/dopaz/API/aspirantes/guardar';
@@ -58,6 +84,7 @@ const guardar = async (evento) => {
         // Realiza la solicitud
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
+        console.log(data);
 
         // Procesa la respuesta
         const { codigo, mensaje, detalle } = data;
@@ -66,8 +93,12 @@ const guardar = async (evento) => {
             case 1:
                 icon = 'success';
                         'mensaje';
-                formulario.reset();
+                 formulario.reset();
+                ocultarBtnGuardar();
                 buscar();
+                formulario.foto.src = './images/foto.jpg';
+                const contenedorDocumentos = document.getElementById('contenedorDocumentos');
+                contenedorDocumentos.innerHTML = '';
                 break;
 
             case 0:
@@ -116,7 +147,7 @@ const buscar = async () => {
             Swal.fire({
                 icon: 'info',
                 text: 'El Catalogo que Ingreso, no se ha guardado en la Base de Datos de Primer Ingreso.',
-                footer: '<button class="btn btn-warning"><a href="/dopaz/aspirantes" style="color: white; text-decoration: none;">Ir al Formulario de Personal que No ha sido registrado antes</a></button>'
+                footer: '<button class="btn btn-warning"><a href="/dopaz/usuarios" style="color: white; text-decoration: none;">Ir al Formulario de Personal que No ha sido registrado antes</a></button>'
             });
             return;
         }
@@ -180,7 +211,136 @@ const buscar = async () => {
         // Manejo de errores
         console.log('Error en la solicitud:', error);
     }
+ // Agrega un evento de escucha al cambio en el select de grados
+ formulario.per_grado.addEventListener('change', async () => {
+    // Limpia los botones de entrada de documentos generados dinámicamente
+    const contenedorDocumentos = document.getElementById('contenedorDocumentos');
+    contenedorDocumentos.innerHTML = '';
+
+    const gradoSeleccionado = formulario.per_grado.value;
+
+    if (gradoSeleccionado) {
+        const urlNueva = `API/usuarios/buscarPuesto?pue_grado=${gradoSeleccionado}`;
+
+        try {
+            const respuestaNueva = await fetch(urlNueva);
+
+            if (respuestaNueva.ok) {
+                const puestosDataNueva = await respuestaNueva.json();
+
+                formulario.ing_puesto.innerHTML = '<option value="">SELECCIONE...</option>';
+
+                if (Array.isArray(puestosDataNueva) && puestosDataNueva.length > 0) {
+                    puestosDataNueva.forEach((puesto) => {
+                        if (puesto && puesto.pue_id && puesto.pue_nombre) {
+                            const option = document.createElement('option');
+                            option.value = puesto.pue_id;
+                            option.textContent = puesto.pue_nombre;
+                            formulario.ing_puesto.appendChild(option);
+                        }
+                    });
+                }
+
+                console.log(puestosDataNueva);
+            } else {
+                console.error(`Error en la solicitud: ${respuestaNueva.status} ${respuestaNueva.statusText}`);
+            }
+        } catch (error) {
+            console.error('Error al procesar la respuesta de puestos:', error);
+        }
+    }
+});
+
+// Agrega un evento de escucha al clic en el botón "Limpiar"
+const btnLimpiar = document.getElementById('btnLimpiar');
+btnLimpiar.addEventListener('click', () => {
+    // Quita la foto usando la ruta especificada
+    formulario.foto.src = './images/foto.jpg';
+
+    // Limpia los botones de entrada de documentos generados dinámicamente
+    const contenedorDocumentos = document.getElementById('contenedorDocumentos');
+    contenedorDocumentos.innerHTML = '';
+});
 };
+
+
+
+//!Funcion OBTENER REQUISITOS, ACA SE GENERAN LOS INPUTS DE LOS PDF DINAMICAMENTE
+
+formulario.ing_puesto.addEventListener('change', obtenerRequisitos);
+
+async function obtenerRequisitos() {
+    const puestoSeleccionado = formulario.ing_puesto.value;
+
+    const url = `API/aspirantes/obtenerRequisitos?pue_id=${puestoSeleccionado}`;
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        const data = await respuesta.json();
+        console.log(data);
+
+        // Limpia el contenedor antes de insertar nuevos campos
+        const contenedorDocumentos = document.getElementById('contenedorDocumentos');
+        contenedorDocumentos.innerHTML = '';
+
+        // Verifica si hay requisitos y crea campos dinámicos
+        if (Array.isArray(data.usuarios) && data.usuarios.length > 0) {
+            const requisitosFiltrados = data.nombreRequisitos.filter(requisito => !requisito.requisito.toLowerCase().startsWith('psicologico'));
+            const cantidadRequisitos = requisitosFiltrados.length;
+
+            // Obtén los nombres de los requisitos
+            const nombresRequisitos = requisitosFiltrados.map(requisito => requisito.requisito);
+
+            for (let i = 0; i < cantidadRequisitos; i++) {
+                // Crea el contenedor div
+                const nuevoDiv = document.createElement('div');
+                nuevoDiv.className = 'col-lg-10';
+
+                // Crea una etiqueta (label) para cada input usando el nombre del requisito
+                const nuevoLabel = document.createElement('label');
+                nuevoLabel.textContent = `PDF ${i + 1} (${nombresRequisitos[i]})`;
+                nuevoLabel.htmlFor = `documento${i + 1}`;
+                nuevoLabel.className = 'bi bi-file-pdf-fill'; // Agrega la clase del ícono si es necesario
+
+                // Crea el input para el archivo
+                const nuevoInput = document.createElement('input');
+                nuevoInput.type = 'file';
+                nuevoInput.name = `pdf_ruta`;
+                nuevoInput.id = `pdf_ruta`;
+                nuevoInput.className = 'form-control'; // Agrega la clase del formulario si es necesario
+
+                // Agrega los elementos al contenedor
+                nuevoDiv.appendChild(nuevoLabel);
+                nuevoDiv.appendChild(nuevoInput);
+                contenedorDocumentos.appendChild(nuevoDiv);
+            }
+            mostrarBtnGuardar();
+        } else {
+            console.log('No se encontraron requisitos para el puesto seleccionado.');
+        }
+    } catch (error) {
+        console.error('Error al obtener requisitos:', error);
+    }
+}
+
+//!Ocultar btnGuardar
+btnGuardar.style.display = 'none';
+
+//!Mostrar btnGuardar
+const mostrarBtnGuardar = () => {
+    btnGuardar.style.display = 'block';
+    };
+
+//!Ocultar btnGuardar
+const ocultarBtnGuardar = () => {
+    btnGuardar.style.display = 'none';
+    };
+
+btnBuscar.addEventListener('click', buscar);
+btnGuardar.addEventListener('click', guardar);
 
 
 // buscar();
