@@ -70,7 +70,7 @@ $('#tablaAsigMisiones').on('click', '.ver-misiones-btn', function () {
 // Agregar un manejador de eventos para el cierre del modal
 $('#modalMisiones').on('hidden.bs.modal', function (e) {
     // Restablecer el contador y limpiar la tabla de misiones cuando se cierra el modal
-    limpiar();
+
 });
 
 const buscarMisionesContingenteAPI = async (cont_id) => {

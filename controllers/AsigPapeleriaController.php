@@ -3,20 +3,20 @@
 namespace Controllers;
 
 use Exception;
-use Model\AsigRequisito;
+use Model\AsigPapeleria;
 use Model\Puesto;
-use Model\Requisito;
+use Model\Papeleria;
 use MVC\Router;
 
-class AsigRequisitoController {
+class AsigPapeleriaController {
     public static function index(Router $router){
         $puestos = static::buscarPuestos();
-        $requisitos = static::buscarRequisito();
-        $asigrequisitos = AsigRequisito::all();
+        $papelerias = static::buscarPapeleria();
+        $asigpapeleria = AsigPapeleria::all();
 
-        $router->render('asigrequisitos/index', [
+        $router->render('asigpapeleria/index', [
             'puestos' => $puestos,
-            'requisitos' => $requisitos,
+            'papelerias' => $papelerias,
         ]);
     }
     
@@ -33,13 +33,13 @@ public static function buscarPuestos()
     }
 }
 //!Funcion Select requisitoelria
-public static function buscarRequisito()
+public static function buscarPapeleria()
 {
-    $sql = "SELECT * FROM cont_requisitos where req_situacion = 1";
+    $sql = "SELECT * FROM cont_papeleria where pap_situacion = 1";
 
     try {
-        $requisitos = Requisito::fetchArray($sql);
-        return $requisitos;
+        $papelerias = Papeleria::fetchArray($sql);
+        return $papelerias;
     } catch (Exception $e) {
         return [];
     }
@@ -48,7 +48,6 @@ public static function buscarRequisito()
  //!Funcion Buscar
  public static function buscarAPI()
  {
-    // $cont_nombre = $_GET['cont_nombre'] ?? '';
 
     $sql = "SELECT DISTINCT pue_id, pue_nombre
     FROM cont_puestos 
@@ -56,9 +55,9 @@ public static function buscarRequisito()
     
 
      try {
-         $asigmisiones = Puesto::fetchArray($sql);
+         $asigpapeleria = Puesto::fetchArray($sql);
 
-         echo json_encode($asigmisiones);
+         echo json_encode($asigpapeleria);
      } catch (Exception $e) {
          echo json_encode([
              'detalle' => $e->getMessage(),
@@ -69,7 +68,7 @@ public static function buscarRequisito()
  }
 
 
- public static function buscarRequisitoPuestoAPI()
+ public static function buscarPapeleriaPuestoAPI()
  {
      $puestoId = $_GET['pue_id'];
      
@@ -85,23 +84,23 @@ public static function buscarRequisito()
          $sql = "SELECT 
          pue.pue_id AS puesto_id,
          pue.pue_nombre AS puesto_nombre,
-         req.req_id AS requisito_id,
-         req.req_nombre AS requisito_nombre,
-         asig_req.asig_req_id
+         pap.pap_id AS requisito_id,
+         pap.pap_nombre AS documento_nombre,
+         asig_pap.asig_pap_id
      FROM 
-     cont_requisitos req
+     cont_papeleria pap
      JOIN 
-         cont_asig_requisitos asig_req ON req.req_id = asig_req.asig_req_requisito
+         cont_asig_papeleria asig_pap ON pap.pap_id = asig_pap.asig_pap_nombre
      JOIN 
-         cont_puestos pue ON asig_req.asig_req_puesto = pue.pue_id
+         cont_puestos pue ON asig_pap.asig_pap_puesto = pue.pue_id
      WHERE 
-         pue.pue_id = $puestoId AND asig_req.asig_req_situacion = 1
-         ORDER BY requisito_nombre ASC";
+         pue.pue_id = $puestoId AND asig_pap.asig_pap_situacion = 1
+         ORDER BY documento_nombre ASC";
  
          // Ejecutar la consulta y obtener las misiones del contingente.
-         $asigrequisitos = AsigRequisito::fetchArray($sql);
+         $asigpapeleria = AsigPapeleria::fetchArray($sql);
  
-         echo json_encode($asigrequisitos);
+         echo json_encode($asigpapeleria);
      } catch (Exception $e) {
          echo json_encode([
              'detalle' => $e->getMessage(),
@@ -117,10 +116,10 @@ public static function buscarRequisito()
 public static function guardarAPI()
 {
     try {
-        $asigRequisitoData = $_POST;
+        $asigPapeleriaData = $_POST;
 
-        $asigRequisito = new AsigRequisito($asigRequisitoData);
-        $resultado = $asigRequisito->crear();
+        $asigPapeleria = new AsigPapeleria($asigPapeleriaData);
+        $resultado = $asigPapeleria->crear();
 
         if ($resultado['resultado'] == 1) {
             echo json_encode([
@@ -148,10 +147,10 @@ public static function guardarAPI()
  //!Funcion Eliminar
  public static function eliminarAPI(){
      try{
-         $asig_req_id = $_POST['asig_req_id'];
-         $asigRequisito = AsigRequisito::find($asig_req_id);
-         $asigRequisito->asig_req_situacion = 0;
-         $resultado = $asigRequisito->actualizar();
+         $asig_pap_id = $_POST['asig_pap_id'];
+         $asigPapeleria = AsigPapeleria::find($asig_pap_id);
+         $asigPapeleria->asig_pap_situacion = 0;
+         $resultado = $asigPapeleria->actualizar();
 
          if($resultado['resultado'] == 1){
              echo json_encode([
@@ -173,4 +172,6 @@ public static function guardarAPI()
      }
  }
 
+
+ 
 }

@@ -1,10 +1,9 @@
 //?--------------------------------------------------------------
-import { Dropdown } from "bootstrap";
+
 import Datatable from "datatables.net-bs5";
 import { lenguaje } from "../lenguaje"
 import { validarFormulario, Toast } from "../funciones"
 import Swal from "sweetalert2";
-
 //?--------------------------------------------------------------
 
 const formulario = document.querySelector('form');
@@ -13,40 +12,40 @@ const btnModificar = document.getElementById('btnModificar');
 const btnGuardar = document.getElementById('btnGuardar');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnCancelar = document.getElementById('btnCancelar');
-const tablaAsigGradosContainer = document.getElementById('tablaAsigGradosContainer');
+const btnCerrar = document.getElementById('btnCerrar');
+const tablaRequisitosContainer = document.getElementById('tablaRequisitosContainer');
 
 
 //?--------------------------------------------------------------
-
-
 let contenedor = 1;
 let contenedorr = 1;
 
-const datatable = new Datatable('#tablaAsigGrados', {
-    language: lenguaje,
-    data: null,
-    columns: [
+const datatable = new Datatable('#tablaPuestos', {
+    language : lenguaje,
+    data : null,
+    columns : [
         {
-            title: 'NO',
-            render: () => contenedor++
+            title : 'NO',
+            render: () => contenedor++ 
+            
         },
         {
-            title: 'PUESTOS',
+            title : 'PUESTOS',
             data: 'pue_nombre'
         },
         {
-            title: 'GRADOS QUE DESEMPEÑA CADA PUESTO',
+            title : 'VER REQUISITOS',
             data: 'pue_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-info ver-grados-btn" data-bs-toggle='modal' data-bs-target='#modalGrados' data-id='${data}'>Ver Grados</button>`
-        },
+            render: (data, type, row, meta) => `<button class="btn btn-info ver-requisitos-btn" data-bs-toggle='modal' data-bs-target='#modalRequisito' data-id='${data}'>Ver Documentacion Necesarios para este Puesto</button>`
+        }
     ]
-});
+})
 
+//?--------------------------------------------------------------
 
-
-let tablaGrados = new Datatable('#tablaGrados', {
+let tablaRequisitos = new Datatable('#tablaRequisitos', {
     language: lenguaje,
     data: null,
     columns: [
@@ -55,37 +54,37 @@ let tablaGrados = new Datatable('#tablaGrados', {
             render: () => contenedorr++
         },
         {
-            title: 'GRADOS ASIGNADAS',
-            data: 'gra_desc_lg'
+            title: 'DOCUMENTO ASIGNADOS PARA EL PUESTO',
+            data: 'documento_nombre'
         },
         {
-            title: 'REMOVER GRADO ASIGNADO PARA ESTE PUESTO',
-            data: 'asig_grado_id',
+            title: 'ELIMINAR',
+            data: 'asig_pap_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Remover Grado</button>`
+            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Remover Requisito</button>`
         }
     ]
 });
 
-let pue_id;
 
-$('#tablaAsigGrados').on('click', '.ver-grados-btn', function () {
+let pue_id;
+$('#tablaPuestos').on('click', '.ver-requisitos-btn', function () {
     pue_id = parseInt($(this).data('id'));
-    buscarGradosPuestosAPI(pue_id);
+    buscarRequisitoPuestoAPI(pue_id);
 });
 
 
 // Agregar un manejador de eventos para el cierre del modal
-$('#modalGrados').on('hidden.bs.modal', function (e) {
-    // Restablecer el contador y limpiar la tabla de grados cuando se cierra el modal
-   
+$('#modalRequisito').on('hidden.bs.modal', function (e) {
+    // Restablecer el contador y limpiar la tabla de misiones cuando se cierra el modal
 });
 
-const buscarGradosPuestosAPI = async (pue_id) => {
-    contenedor = 1;
-    contenedorr = 1;
-    const url = `/dopaz/API/asiggrados/buscarGradosPuestos?pue_id=${pue_id}`;
+const buscarRequisitoPuestoAPI = async (pue_id) => {
+        // Reiniciar los contadores
+        contenedor = 1;
+        contenedorr = 1;
+    const url = `API/asigpapeleria/buscarPapeleriaPuesto?pue_id=${pue_id}`;
     console.log(url);
 
     const config = {
@@ -97,9 +96,9 @@ const buscarGradosPuestosAPI = async (pue_id) => {
         if (respuesta.ok) {
             const data = await respuesta.json();
             console.log(data);
-            tablaGrados.clear().draw();
+            tablaRequisitos.clear().draw();
             if (data) {
-                tablaGrados.rows.add(data).draw();
+                tablaRequisitos.rows.add(data).draw();
             }
         } else {
             console.error('Error en la solicitud: ' + respuesta.status);
@@ -109,13 +108,15 @@ const buscarGradosPuestosAPI = async (pue_id) => {
     }
 };
 
-//?--------------------------------------------------------------
 
+//?--------------------------------------------------------------
 //!Aca esta la funcion para buscar
 const buscar = async () => {
-    contenedor = 1;
 
-    const url = `API/asiggrados/buscar`;
+    contenedor = 1;
+    contenedorr = 1;
+
+    const url = `API/asigpapeleria/buscar`;
     const config = {
         method: 'GET'
     }
@@ -146,7 +147,7 @@ const buscar = async () => {
 // //!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
-    if (!validarFormulario(formulario, ['pue_id'])) {
+    if (!validarFormulario(formulario, ['asig_pap_id'])) {
         Toast.fire({
             icon: 'info',
             text: 'Debe llenar todos los datos'
@@ -155,8 +156,8 @@ const guardar = async (evento) => {
     }
 
     const body = new FormData(formulario);
-    body.delete('pue_id');
-    const url = 'API/asiggrados/guardar';
+    body.delete('asig_pap_id');
+    const url = 'API/asigpapeleria/guardar';
     const headers = new Headers();
     headers.append("X-Requested-With", "fetch");
     const config = {
@@ -179,7 +180,7 @@ const guardar = async (evento) => {
                 break;
 
             case 0:
-                icon = 'error';
+                icon = 'info';
                 console.log(detalle);
                 break;
 
@@ -202,8 +203,8 @@ const guardar = async (evento) => {
 const eliminar = async e => {
     const result = await Swal.fire({
         icon: 'question',
-        title: 'Remover Grado',
-        text: '¿Desea Remover este Grado?',
+        title: 'Remover Requisito',
+        text: '¿Desea Remover este Requisito?',
         showCancelButton: true,
         confirmButtonText: 'Remover',
         cancelButtonText: 'Cancelar'
@@ -215,9 +216,9 @@ const eliminar = async e => {
     
     if (result.isConfirmed) {
         const body = new FormData();
-        body.append('asig_grado_id', id);
+        body.append('asig_pap_id', id);
         
-        const url = `API/asiggrados/eliminar`;
+        const url = `API/asigpapeleria/eliminar`;
         const config = {
             method: 'POST',
             body,
@@ -232,7 +233,7 @@ const eliminar = async e => {
             let icon='info'
             switch (codigo) {
                 case 1:
-                    buscarGradosPuestosAPI(pue_id);
+                    buscarRequisitoPuestoAPI(pue_id);
                     Swal.fire({
                         icon: 'success',
                         title: 'Removido Exitosamente',
@@ -255,79 +256,24 @@ const eliminar = async e => {
 
 
 //?--------------------------------------------------------------
-
-//!Aca esta la funcion de modificar un registro
-const modificar = async () => {
-    const pue_id = formulario.pue_id.value;
-    const body = new FormData(formulario);
-    body.append('pue_id', pue_id);
-
-    const url = `/dopaz/API/asiggrados/modificar`;
-    const config = {
-        method: 'POST',
-        body,
-    };
-
-    try {
-        const respuesta = await fetch(url, config);
-        const data = await respuesta.json();
-        console.log(data);
-        const { codigo, mensaje, detalle } = data;
-
-        switch (codigo) {
-            case 1:
-                formulario.reset();
-                cancelarAccion(); 
-                buscar();
-
-                
-                ocultarFormulario(); 
-                
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Actualizado',
-                    text: mensaje,
-                    confirmButtonText: 'OK'
-                });
-                break;
-            case 0:
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Campo Vacio',
-                    text: mensaje,
-                    confirmButtonText: 'OK'
-                });
-                break;
-            default:
-                break;
-        }
-
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-
-
-//?--------------------------------------------------------------
 //?block es mostrar 
 //?none y ocultar
 
 //!Ocultar el Datatable al inicio
 formulario.style.display = 'block';
-tablaAsigGradosContainer.style.display = 'none'; 
+tablaRequisitosContainer.style.display = 'none'; 
 
 //!Mostrar el formulario, ocultar datatable
 const mostrarFormulario = () => {
     formulario.style.display = 'block';
-    tablaAsigGradosContainer.style.display = 'none'; 
+    tablaRequisitosContainer.style.display = 'none'; 
     };
 
 //!Ocultar el formulario, mostrar datatable
 const ocultarFormulario = () => {
     // formulario.reset();
     formulario.style.display = 'none';
-    tablaAsigGradosContainer.style.display = 'block';
+    tablaRequisitosContainer.style.display = 'block';
 };
 
 //?--------------------------------------------------------------
@@ -383,8 +329,8 @@ const traeDatos = (e) => {
 //?--------------------------------------------------------------
 
     //! Llenar el formulario con los datos obtenidos
-    formulario.pue_id.value = id;
-    formulario.pue_nombre.value = nombre;
+    formulario.asig_pap_id.value = id;
+    formulario.req_nombre.value = nombre;
 };
 
 //?--------------------------------------------------------------
@@ -392,7 +338,7 @@ const traeDatos = (e) => {
 //!Aca esta la funcino de cancelar la accion de modificar un registro.
 const cancelarAccion = () => {
     formulario.reset();
-    document.getElementById('tablaAsigGradosContainer').style.display = 'block'; 
+    document.getElementById('tablaRequisitosContainer').style.display = 'block'; 
 };
 //?--------------------------------------------------------------
 
@@ -416,7 +362,6 @@ btnCancelar.addEventListener('click', cancelarAccion);
 btnCancelar.addEventListener('click', ocultarBtnForumulario);
 btnCancelar.addEventListener('click', ocultarBtns);
 //?--------------------------------------------------------------
-btnModificar.addEventListener('click', modificar);
 btnModificar.addEventListener('click', () => {
     setTimeout(() => {
         btnGuardar.style.display = 'block';
@@ -439,9 +384,14 @@ datatable.on('click','.btn-warning', MostrarBtnForumulario)
 datatable.on('click','.btn-warning', mostrarBtns)
 datatable.on('click','.btn-warning', OcultarTodoForumulario)
 //?--------------------------------------------------------------
-tablaGrados.on('click','.btn-danger', eliminar)
+tablaRequisitos.on('click','.btn-danger', eliminar)
 //?--------------------------------------------------------------
 
+btnCerrar.addEventListener('click', function () {
+    // Limpiar la tabla y redibujarla
+    tablaRequisitos.clear().draw();
+});
+buscar();
 
 
 

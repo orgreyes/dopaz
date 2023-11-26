@@ -19,6 +19,7 @@ use Controllers\AsigGradoController;
 use Controllers\AsigMisionController;
 use Controllers\AsigRequisitoController;
 use Controllers\AsigEvaluacionController;
+use Controllers\AsigPapeleriaController;
 
 
 $router = new Router();
@@ -94,7 +95,6 @@ $router->get('/asigrequisitos', [AsigRequisitoController::class,'index']);
 $router->get('/API/asigrequisitos/buscar', [AsigRequisitoController::class,'buscarAPI']);
 $router->get('/API/asigrequisitos/buscarRequisitoPuesto', [AsigRequisitoController::class,'buscarRequisitoPuestoAPI']);
 $router->post('/API/asigrequisitos/eliminar', [AsigRequisitoController::class,'eliminarAPI']);
-$router->post('/API/asigrequisitos/modificar', [AsigRequisitoController::class,'modificarAPI']);
 $router->post('/API/asigrequisitos/guardar', [AsigRequisitoController::class,'guardarAPI']);
 
 //!Rutas para Asignar Evaluaciones a cada Puesto
@@ -102,8 +102,14 @@ $router->get('/asigevaluaciones', [AsigEvaluacionController::class,'index']);
 $router->get('/API/asigevaluaciones/buscar', [AsigEvaluacionController::class,'buscarAPI']);
 $router->get('/API/asigevaluaciones/buscarEvaluacionPuesto', [AsigEvaluacionController::class,'buscarEvaluacionPuestoAPI']);
 $router->post('/API/asigevaluaciones/eliminar', [AsigEvaluacionController::class,'eliminarAPI']);
-$router->post('/API/asigevaluaciones/modificar', [AsigEvaluacionController::class,'modificarAPI']);
 $router->post('/API/asigevaluaciones/guardar', [AsigEvaluacionController::class,'guardarAPI']);
+
+//!Rutas para Asignar Ducuntacion a cada Puesto
+$router->get('/asigpapeleria', [AsigPapeleriaController::class,'index']);
+$router->get('/API/asigpapeleria/buscar', [AsigPapeleriaController::class,'buscarAPI']);
+$router->get('/API/asigpapeleria/buscarPapeleriaPuesto', [AsigPapeleriaController::class,'buscarPapeleriaPuestoAPI']);
+$router->post('/API/asigpapeleria/eliminar', [AsigPapeleriaController::class,'eliminarAPI']);
+$router->post('/API/asigpapeleria/guardar', [AsigPapeleriaController::class,'guardarAPI']);
 
 //!Rutas para Primer Ingreso del Personal
 $router->get('/usuarios', [UsuarioController::class,'index']);
