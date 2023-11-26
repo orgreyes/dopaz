@@ -86,7 +86,7 @@
 <!-- //? ------------------------------------------------------------------------------------------>
 <!-- //? ------------------------------------------------------------------------------------------>
 <div class="container"  id="containerBtn2">
-<center><h1>Listado de Puestos2</h1></center>
+<center><h1>Seleccion el Puesto que Desea Calificar</h1></center>
     <div id="contenedorBotones2" class="row justify-content-center mt-4">
         <!-- Aquí se añadirán los botones dinámicamente -->
     </div>
@@ -98,7 +98,7 @@
                 <div class="col-12 p-4 shadow"> 
                     <div class="text-center">
                         <h1>
-                            Fase 1, Seleccion por notas.
+                            Fase 1, Seleccion de Personal por notas.
                         </h1>
                     </div>
                     <table id="tablaNotas" class="table table-bordered table-hover">

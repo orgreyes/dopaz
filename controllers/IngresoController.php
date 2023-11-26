@@ -9,14 +9,13 @@ use Model\RequisitoAprovado;
 use MVC\Router;
 
 class IngresoController {
-    public static function index(Router $router){
+public static function index(Router $router){
 
         $ingresos = Ingreso::all();
 
         $router->render('ingresos/index', []);
-    }
+}
     
-
 //!Funcion Buscar Notas
 public static function buscarNotasAPI()
    {
@@ -85,8 +84,8 @@ public static function buscarNotasAPI()
            ]);
        }
    }
-// Función para construir las declaraciones MAX(CASE WHEN ...)
-private static function buildMaxCaseStatements($evaluacionesArray){
+ // Función para construir las declaraciones MAX(CASE WHEN ...)
+ private static function buildMaxCaseStatements($evaluacionesArray){
     $maxCaseStatements = '';
     foreach ($evaluacionesArray as $puestoId => $evaluaciones) {
         foreach ($evaluaciones as $evaluacion) {
@@ -96,8 +95,8 @@ private static function buildMaxCaseStatements($evaluacionesArray){
 
     return rtrim($maxCaseStatements, ",\n");
  }
-// Función para construir la cláusula ORDER BY
-private static function buildOrderByStatements($evaluacionesArray){
+ // Función para construir la cláusula ORDER BY
+ private static function buildOrderByStatements($evaluacionesArray){
     $orderByStatements = '';
     foreach ($evaluacionesArray as $puestoId => $evaluaciones) {
         foreach ($evaluaciones as $evaluacion) {
@@ -109,19 +108,19 @@ private static function buildOrderByStatements($evaluacionesArray){
     }
 
 
-//!Funcion Buscar todos los puestos solicitados.
-public static function buscarPuestosAPI()
-{
+ //!Funcion Buscar todos los puestos solicitados.
+ public static function buscarPuestosAPI()
+ {
     $sql = "SELECT DISTINCT
-    pue_id AS ing_puesto,
-    pue_nombre AS puesto_nombre
-FROM
-    cont_ingresos 
-JOIN
-    cont_puestos ON ing_puesto = pue_id
-WHERE
-    ing_situacion = 1
-    AND (YEAR(ing_fecha_cont) = YEAR(TODAY) OR YEAR(ing_fecha_cont) = YEAR(TODAY) + 1)";
+                pue_id AS ing_puesto,
+                pue_nombre AS puesto_nombre
+            FROM
+                cont_ingresos 
+            JOIN
+                cont_puestos ON ing_puesto = pue_id
+            WHERE
+                ing_situacion = 1
+                AND (YEAR(ing_fecha_cont) = YEAR(TODAY) OR YEAR(ing_fecha_cont) = YEAR(TODAY) + 1)";
     
     try {
         $ingresos = Ingreso::fetchArray($sql);
@@ -136,20 +135,20 @@ WHERE
     }
 }
 
-//!Funcion Buscar todos los puestos solicitados.
+//!Funcion Buscar todos los puestos en la fase dos, donde estan las notas.
 public static function buscarPuestosNotasAPI()
 {
     $sql = "SELECT DISTINCT
-    pue_id AS ing_puesto,
-    pue_nombre AS puesto_nombre
-FROM
-    cont_ingresos 
-JOIN
-    cont_puestos ON ing_puesto = pue_id
-WHERE
-    ing_situacion = 1
-    AND (YEAR(ing_fecha_cont) = YEAR(TODAY) OR YEAR(ing_fecha_cont) = YEAR(TODAY) + 1)";
-    
+                pue_id AS ing_puesto,
+                pue_nombre AS puesto_nombre
+            FROM
+                cont_ingresos 
+            JOIN
+                cont_puestos ON ing_puesto = pue_id
+            WHERE
+                ing_situacion = 2
+                AND (YEAR(ing_fecha_cont) = YEAR(TODAY) OR YEAR(ing_fecha_cont) = YEAR(TODAY) + 1)";
+                
     try {
         $ingresos = Ingreso::fetchArray($sql);
         header('Content-Type: application/json');
@@ -164,18 +163,17 @@ WHERE
 }
 
 //!Funcion Buscar todos los puestos solicitados.
-public static function buscarPuestosRequisitosAPI()
-{
+public static function buscarPuestosRequisitosAPI(){
     $sql = "SELECT DISTINCT
-    pue_id AS ing_puesto,
-    pue_nombre AS puesto_nombre
-FROM
-    cont_ingresos 
-JOIN
-    cont_puestos ON ing_puesto = pue_id
-WHERE
-    ing_situacion = 1
-    AND (YEAR(ing_fecha_cont) = YEAR(TODAY) OR YEAR(ing_fecha_cont) = YEAR(TODAY) + 1)";
+                pue_id AS ing_puesto,
+                pue_nombre AS puesto_nombre
+            FROM
+                cont_ingresos 
+            JOIN
+                cont_puestos ON ing_puesto = pue_id
+            WHERE
+                ing_situacion = 1
+                AND (YEAR(ing_fecha_cont) = YEAR(TODAY) OR YEAR(ing_fecha_cont) = YEAR(TODAY) + 1)";
     
     try {
         $ingresos = Ingreso::fetchArray($sql);
@@ -189,27 +187,27 @@ WHERE
         ]);
     }
 }
+
 //!Funcion Buscar a Personal que Solicita iniciar proceso de seleccion.
-public static function buscarTodoAPI()
-   {
+public static function buscarTodoAPI(){
        try {
        
        $sql = "SELECT
-       TRIM(asp_nom1 || ' ' || NVL(asp_nom2, '') || ' ' || asp_ape1 || ' ' || NVL(asp_ape2, '')) AS nombre_aspirante,
-       cp.pue_nombre AS nombre_puesto,
-       c.cont_nombre AS nombre_contingente,
-       ci.ing_id
-   FROM
-       cont_ingresos ci
-   JOIN
-       cont_aspirantes a ON ci.ing_aspirante = a.asp_id
-   JOIN
-       cont_puestos cp ON ci.ing_puesto = cp.pue_id
-   JOIN
-       contingentes c ON ci.ing_contingente = c.cont_id
-   WHERE
-       ci.ing_situacion = 1
-       AND YEAR(ci.ing_fecha_cont) IN (YEAR(CURRENT), YEAR(CURRENT) + 1)";
+                    TRIM(asp_nom1 || ' ' || NVL(asp_nom2, '') || ' ' || asp_ape1 || ' ' || NVL(asp_ape2, '')) AS nombre_aspirante,
+                    cp.pue_nombre AS nombre_puesto,
+                    c.cont_nombre AS nombre_contingente,
+                    ci.ing_id
+                FROM
+                    cont_ingresos ci
+                JOIN
+                    cont_aspirantes a ON ci.ing_aspirante = a.asp_id
+                JOIN
+                    cont_puestos cp ON ci.ing_puesto = cp.pue_id
+                JOIN
+                    contingentes c ON ci.ing_contingente = c.cont_id
+                WHERE
+                    ci.ing_situacion = 1
+                    AND YEAR(ci.ing_fecha_cont) IN (YEAR(CURRENT), YEAR(CURRENT) + 1)";
   
   
            $ingresos = Ingreso::fetchArray($sql);
@@ -222,11 +220,10 @@ public static function buscarTodoAPI()
                'codigo' => 0
            ]);
        }
-   }
+}
 
-//!Funcion Buscar a Personal que Solicita iniciar proceso de seleccion.
-public static function buscarSolicitudesAPI()
-   {
+//!Funcion Buscar a Personal que Solicita al pulsar uno de los botones de los puestos
+public static function buscarSolicitudesAPI(){
     $puestoId = $_GET['ing_puesto'];
        try {
       
@@ -259,12 +256,11 @@ public static function buscarSolicitudesAPI()
                'codigo' => 0
            ]);
        }
-   }
+}
 
 
-//!Funcion Buscar
- public static function buscarAPI()
-    {
+//!Funcion Buscar Personal a seleccionar cuando Apruebe los REQUISITOS
+public static function buscarAPI(){
     
      $sql = "SELECT 
                 ci.ing_id,
@@ -277,7 +273,7 @@ public static function buscarSolicitudesAPI()
             JOIN cont_aspirantes asp ON ci.ing_aspirante = asp.asp_id
             JOIN cont_puestos pue ON ci.ing_puesto = pue.pue_id
             JOIN contingentes cont ON ci.ing_contingente = cont.cont_id
-            WHERE ci.ing_situacion IN (1,2,3)";
+            WHERE ci.ing_situacion = 3";
 
      try {
 
@@ -291,10 +287,10 @@ public static function buscarSolicitudesAPI()
              'codigo' => 0
          ]);
      }
-    }
+}
 
 //!Funcion Buscar Los requisitos que se deben cumplir
- public static function buscarRequisitoPuestoAPI(){
+public static function buscarRequisitoPuestoAPI(){
      $puestoId = $_GET['ing_puesto'];
      $ingId = $_GET['ing_id'];
      
@@ -339,10 +335,10 @@ public static function buscarSolicitudesAPI()
              'detalle' => $e->getMessage(),
              'mensaje' => 'Ocurrió un error al obtener los Requisitos del puesto',
              'codigo' => 0
-         ]);
-     }}
+         ]);}
+}
  
- //!Funcion Guardar
+ //!Funcion Para Aprovar los requisitos por primera vez
 public static function guardarAPI() {
     try {
         $Id_Ingreso = $_GET['ing_id'];
@@ -379,10 +375,8 @@ public static function guardarAPI() {
     }
 }
 
-
- //!Funcion desaprovar
- public static function desaprovarAPI()
- {
+ //!Funcion desaprovar Requisitos
+ public static function desaprovarAPI(){
      $apro_id = $_POST['apro_id'];
      try {
          $requisito = RequisitoAprovado::find($apro_id);
@@ -418,9 +412,8 @@ public static function guardarAPI() {
      }
  }
  
- //!Funcion reaprovar
- public static function aprovarAPI()
- {
+ //!Funcion reaprovar Requisitos
+ public static function aprovarAPI(){
      $apro_id = $_POST['apro_id'];
      try {
          $requisito = RequisitoAprovado::find($apro_id);
@@ -456,8 +449,8 @@ public static function guardarAPI() {
      }
  }
 
-  //!Funcion Eliminar
-  public static function iniciarProcesoAPI(){
+  //!Funcion Para Iniciar el proceso del aspiratne y que pase al proceso de seleccion por notas
+public static function iniciarProcesoAPI(){
     try{
         $ing_id = $_GET['ing_id'];
         $evaluacion = Ingreso::find($ing_id);
@@ -483,4 +476,5 @@ public static function guardarAPI() {
     ]);
     }
 }
+
 }

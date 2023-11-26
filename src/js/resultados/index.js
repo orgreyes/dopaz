@@ -85,10 +85,13 @@ const datatableRequisitos = new Datatable('#tablaRequisitos', {
             render: (data, type, row) => {
                 if (type === 'display' && (data === null || data === '')) {
                     return '<span style="color: red;">NOTA PENDIENTE</span>';
+                } else {
+                    const color = parseFloat(data) < 60 ? 'red' : 'black';
+                    return `<span style="color: ${color};">${data}</span>`;
                 }
-                return data;
             },
         },
+        
         {
             title: 'ACCIONES',
             data: 'eva_id',

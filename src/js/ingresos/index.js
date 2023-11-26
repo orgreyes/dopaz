@@ -88,7 +88,7 @@ const buscarPuestosSolicitudes = async () => {
         console.error('Error al buscar puestos:', error);
     }
 };
-buscarPuestosSolicitudes();
+
 
                                         //!DATATABLES!\\
 // !Tabla de Solicitudes
@@ -255,7 +255,6 @@ const inicializarDataTable = async (ing_puesto) => {
     }
 };
 
-buscarPuestosNotas();
 
 
 //? ------------------------------------------------------------------------------------------>
@@ -329,7 +328,6 @@ const buscarPuestosRequisitos = async () => {
         console.error('Error al buscar puestos:', error);
     }
 };
-buscarPuestosRequisitos();
 let contenedor = 1;
 const datatableIngresos = new Datatable('#tablaIngesos', {
     language: lenguaje,
@@ -729,7 +727,7 @@ const iniciarProcesoAPI = async (ing_id) => {
             let icon = 'info';
             switch (codigo) {
                 case 1:
-                    buscar();
+                    buscarPuestosSolicitudes();
                     buscarTodo();  // Esto puede cambiar según lo que necesites hacer después de iniciar el proceso
                     Toast.fire({
                         icon: 'success',
@@ -822,6 +820,19 @@ btnRegresarFase1.addEventListener('click', mostrarfase1)
 btnFaseFinal.addEventListener('click', mostrarFaseFinal)
 btnRegresar.addEventListener('click', mostrarFaseInicio)
 btnInicio.addEventListener('click', mostrarFase1)
-buscarTodo();
 
-buscar();
+const ejecutarBusquedasSecuenciales = async () => {
+    try {
+        await buscarPuestosSolicitudes();
+        await buscarTodo();
+        await buscarPuestosNotas();
+        await buscarPuestosRequisitos();
+        await buscar();
+    } catch (error) {
+        console.error('Error en las búsquedas secuenciales:', error);
+    }
+};
+
+// Luego puedes llamar a la función principal
+ejecutarBusquedasSecuenciales();
+
