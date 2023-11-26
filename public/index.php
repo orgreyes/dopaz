@@ -7,15 +7,16 @@ use MVC\Router;
 use Controllers\AppController;
 use Controllers\EvaluacionController;
 use Controllers\PuestoController;
-use Controllers\AsigGradoController;
 use Controllers\MisionController;
 use Controllers\UsuarioController;
 use Controllers\AspiranteController;
 use Controllers\ContingenteController;
-use Controllers\AsigMisionController;
 use Controllers\IngresoController;
 use Controllers\ResultadoController;
 use Controllers\RequisitoController;
+use Controllers\PapeleriaController;
+use Controllers\AsigGradoController;
+use Controllers\AsigMisionController;
 use Controllers\AsigRequisitoController;
 use Controllers\AsigEvaluacionController;
 
@@ -41,6 +42,13 @@ $router->get('/API/requisitos/buscar', [RequisitoController::class,'buscarAPI'])
 $router->post('/API/requisitos/eliminar', [RequisitoController::class,'eliminarAPI']);
 $router->post('/API/requisitos/modificar', [RequisitoController::class,'modificarAPI']);
 $router->post('/API/requisitos/guardar', [RequisitoController::class,'guardarAPI']);
+
+//!Rutas para Papeleria
+$router->get('/papeleria', [PapeleriaController::class,'index']);
+$router->get('/API/papeleria/buscar', [PapeleriaController::class,'buscarAPI']);
+$router->post('/API/papeleria/eliminar', [PapeleriaController::class,'eliminarAPI']);
+$router->post('/API/papeleria/modificar', [PapeleriaController::class,'modificarAPI']);
+$router->post('/API/papeleria/guardar', [PapeleriaController::class,'guardarAPI']);
 
 //!Rutas para Puestos
 $router->get('/puestos', [PuestoController::class,'index']);

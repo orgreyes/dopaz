@@ -26,19 +26,6 @@ function generarCodigoAleatorio(longitud) {
 }
 //?--------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
@@ -125,20 +112,6 @@ const guardar = async (evento) => {
         console.log(error);
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //?--------------------------------------------------------------
@@ -284,8 +257,6 @@ const buscar = async () => {
         contenedorDocumentos.innerHTML = '';
     });
 };
-
-
 
 
 //!Funcion OBTENER REQUISITOS, ACA SE GENERAN LOS INPUTS DE LOS PDF DINAMICAMENTE
