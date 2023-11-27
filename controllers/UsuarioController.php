@@ -71,6 +71,7 @@ public static function buscaContingentes()
                 JOIN asig_grado_puesto agp ON p.pue_id = agp.asig_puesto
                 JOIN grados g ON agp.asig_grado = g.gra_codigo
                 WHERE p.pue_situacion = 1
+                AND agp.asig_grado_situacion = 1
                 AND g.gra_codigo = $grado";
 
             $puestos = Puesto::fetchArray($sql);
@@ -107,6 +108,7 @@ public static function buscarAPI()
             INNER JOIN grados ON mper.per_grado = grados.gra_codigo
             INNER JOIN armas ON mper.per_arma = armas.arm_codigo
             where per_catalogo = $catalogo
+            AND per_situacion = 11
             ";
             $usuarios = Usuario::fetchArray($sql);
         
@@ -132,7 +134,8 @@ public static function guardarAPI() {
     try {
         // echo json_encode(['POST' => $_POST, 'FILES' => $_FILES]);
         $catalogo_doc = $_POST['asp_catalogo'];
-        $codigo = $_POST['ing_codigo'];
+        $ing_codigo = $_POST['ing_codigo'];
+        $codigo = $ing_codigo . '_' . uniqid();
         $puesto = $_POST['ing_puesto'];
         $contingente = $_POST['asig_contingente'];
         $fecha_hoy = date("d/m/Y");

@@ -4,6 +4,7 @@ namespace Controllers;
 
 use Exception;
 use Model\Ingreso;
+use Model\Pdf;
 use Model\AsigRequisito;
 use Model\RequisitoAprovado;
 use MVC\Router;
@@ -51,6 +52,7 @@ public static function buscarNotasAPI()
                                 c.cont_nombre AS Contingente,
                                 p.pue_nombre AS puesto_nombre,
                                 i.ing_id,
+                                i.ing_codigo,
                                 " . self::buildMaxCaseStatements($evaluacionesArray) . "
                             FROM
                                 cont_ingresos i
@@ -68,7 +70,7 @@ public static function buscarNotasAPI()
                                 i.ing_puesto = $pue_id
                             AND i.ing_situacion = 2
                             AND YEAR(i.ing_fecha_cont) IN (YEAR(CURRENT), YEAR(CURRENT) + 1)
-                            GROUP BY i.ing_id, i.ing_aspirante, i.ing_puesto, c.cont_nombre, p.pue_nombre
+                            GROUP BY i.ing_id, i.ing_codigo, i.ing_aspirante, i.ing_puesto, c.cont_nombre, p.pue_nombre
                             ORDER BY
                                 " . self::buildOrderByStatements($evaluacionesArray);
                             
@@ -172,7 +174,7 @@ public static function buscarPuestosRequisitosAPI(){
             JOIN
                 cont_puestos ON ing_puesto = pue_id
             WHERE
-                ing_situacion = 1
+                ing_situacion = 3
                 AND (YEAR(ing_fecha_cont) = YEAR(TODAY) OR YEAR(ing_fecha_cont) = YEAR(TODAY) + 1)";
     
     try {
@@ -258,10 +260,9 @@ public static function buscarSolicitudesAPI(){
        }
 }
 
-
 //!Funcion Buscar Personal a seleccionar cuando Apruebe los REQUISITOS
 public static function buscarAPI(){
-    
+
      $sql = "SELECT 
                 ci.ing_id,
                 ci.ing_codigo,
@@ -287,6 +288,66 @@ public static function buscarAPI(){
              'codigo' => 0
          ]);
      }
+}
+//!Funcion Buscar Personal a seleccionar cuando Apruebe los REQUISITOS
+public static function buscarRequisitosPorPuestoAPI(){
+    $puestoId = $_GET['ing_puesto'];
+
+     $sql = "SELECT 
+                ci.ing_id,
+                ci.ing_codigo,
+                ci.ing_puesto,
+                pue.pue_nombre,
+                cont.cont_nombre,
+                ci.ing_situacion
+            FROM cont_ingresos ci
+            JOIN cont_aspirantes asp ON ci.ing_aspirante = asp.asp_id
+            JOIN cont_puestos pue ON ci.ing_puesto = pue.pue_id
+            JOIN contingentes cont ON ci.ing_contingente = cont.cont_id
+            WHERE ci.ing_situacion = 3
+            AND ci.ing_puesto = $puestoId";
+
+     try {
+
+         $ingresos = Ingreso::fetchArray($sql);
+
+         echo json_encode($ingresos);
+     } catch (Exception $e) {
+         echo json_encode([
+             'detalle' => $e->getMessage(),
+             'mensaje' => 'Ocurrió un error',
+             'codigo' => 0
+         ]);
+     }
+}
+
+//!Funcion Buscar Los requisitos que se deben cumplir
+public static function buscarDocumentacionAPI(){
+    $ingId = $_GET['ing_id'];
+    
+    try {
+        if ($ingId === null) {
+            echo json_encode([
+                'mensaje' => 'Falta el ID del Puesto',
+                'codigo' => 0
+            ]);
+            return;
+        }
+
+        $sql = "SELECT pdf_ruta AS nombre_pdf, 
+                        pdf_ingreso AS ing_id
+                FROM cont_pdf
+                WHERE pdf_ingreso = $ingId";
+
+        $Pdf = Pdf::fetchArray($sql);
+
+        echo json_encode($Pdf);
+    } catch (Exception $e) {
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'Ocurrió un error al obtener los Requisitos del puesto',
+            'codigo' => 0
+        ]);}
 }
 
 //!Funcion Buscar Los requisitos que se deben cumplir
@@ -344,7 +405,6 @@ public static function guardarAPI() {
         $Id_Ingreso = $_GET['ing_id'];
         $Id_Requisito = $_GET['asig_req_id'];
 
-        
         
         // ! Aca se recibe los datos que se guardaran en otra tabla.
         $datos['apro_ingreso'] = $Id_Ingreso;
@@ -504,4 +564,14 @@ public static function seleccionPorNotaAPI(){
     ]);
     }
 }
+
+//!Funcion Para Ver PDF
+public static function VerPdf(Router $router)
+    {
+
+        $ruta = $_GET['ruta'];
+        // echo json_encode([$ruta]);
+        // exit;
+        $router->printPDF($ruta);
+    }
 }

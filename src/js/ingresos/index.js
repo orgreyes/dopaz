@@ -44,9 +44,9 @@ const buscarPuestosSolicitudes = async () => {
         const data = await respuesta.json();
 
         console.log(data);
-        if (data) {
-            const contenedorBotones = document.getElementById('contenedorBotones'); // Cambia 'contenedorBotones' por el ID de tu contenedor en el formulario
+        const contenedorBotones = document.getElementById('contenedorBotones'); // Cambia 'contenedorBotones' por el ID de tu contenedor en el formulario
 
+        if (data && data.length > 0) {
             data.forEach(puesto => {
                 const divBoton = document.createElement('div');
                 divBoton.classList.add('col-md-3', 'mb-3'); // Clases de Bootstrap para columnas y margen inferior
@@ -94,11 +94,21 @@ const buscarPuestosSolicitudes = async () => {
                 divBoton.appendChild(boton);
                 contenedorBotones.appendChild(divBoton);
             });
+        } else {
+            const mensajeNoSolicitudes = document.createElement('p');
+            mensajeNoSolicitudes.textContent = 'No se encuentran Solicitudes Actualmente';
+            mensajeNoSolicitudes.style.color = 'red'; 
+            mensajeNoSolicitudes.style.fontSize = '18px';  
+            mensajeNoSolicitudes.style.fontWeight = 'bold'; 
+            mensajeNoSolicitudes.style.textAlign = 'center'; 
+        
+            contenedorBotones.appendChild(mensajeNoSolicitudes);
         }
     } catch (error) {
         console.error('Error al buscar puestos:', error);
     }
 };
+
 
 
                                         //!DATATABLES!\\
@@ -159,9 +169,9 @@ const buscarPuestosNotas = async () => {
         const data = await respuesta.json();
 
         console.log(data);
-        if (data) {
-            const contenedorBotones = document.getElementById('contenedorBotones2');
+        const contenedorBotones = document.getElementById('contenedorBotones2');
 
+        if (data && data.length > 0) {
             data.forEach(puesto => {
                 const divBoton = document.createElement('div');
                 divBoton.classList.add('col-md-3', 'mb-3');
@@ -174,7 +184,7 @@ const buscarPuestosNotas = async () => {
                 boton.addEventListener('click', async () => {
                     // Captura el ing_puesto seleccionado y almacénalo en la variable ingPuesto
                     ingPuesto = puesto.ing_puesto;
-                    
+
                     const ing_puesto = puesto.ing_puesto;
                     if (ing_puesto !== ingPuestoActual) {
                         limpiarDataTable();
@@ -187,6 +197,15 @@ const buscarPuestosNotas = async () => {
                 divBoton.appendChild(boton);
                 contenedorBotones.appendChild(divBoton);
             });
+        } else {
+            const mensajeNoSolicitudes = document.createElement('p');
+            mensajeNoSolicitudes.textContent = 'No se encuentran Personal Para Revision de Notas';
+            mensajeNoSolicitudes.style.color = 'red'; 
+            mensajeNoSolicitudes.style.fontSize = '18px';  
+            mensajeNoSolicitudes.style.fontWeight = 'bold'; 
+            mensajeNoSolicitudes.style.textAlign = 'center'; 
+        
+            contenedorBotones.appendChild(mensajeNoSolicitudes);
         }
     } catch (error) {
         console.error('Error al buscar puestos:', error);
@@ -218,9 +237,9 @@ const inicializarDataTable = async (ing_puesto) => {
             limpiarDataTable();
 
 
-            const columnasDinamicas = Object.keys(data[0]).filter(columna => columna !== 'puesto_nombre' && columna !== 'ing_contingente' && columna !== 'ing_id');
+            const columnasDinamicas = Object.keys(data[0]).filter(columna => columna !== 'puesto_nombre' && columna !== 'ing_contingente' && columna !== 'ing_id' && columna !== 'ing_codigo');
 
-const columnas = [
+ const columnas = [
     {
         title: 'NO',
         render: () => contenedornotas++
@@ -236,7 +255,12 @@ const columnas = [
             if (type === 'display' && (data === null || data === undefined || data === '')) {
                 return '<span class="nota-pendiente text-danger">NOTA PENDIENTE</span>';
             } else {
-                return data;
+                // Verificar si es un número y si es menor a 60
+                if (!isNaN(data) && parseFloat(data) < 60) {
+                    return '<span style="color: red;">' + data + '</span>';
+                } else {
+                    return data;
+                }
             }
         }
     })),
@@ -267,7 +291,7 @@ const columnas = [
             }
         }
     }
-];
+ ];
 
             datatableNotas = $('#tablaNotas').DataTable({
                 data: data,
@@ -280,7 +304,6 @@ const columnas = [
     }
 };
 
-
 let ing_id;
 // Agregar manejador de eventos para los botones de aprobación de requisitos
 $('#tablaNotas').on('click', '.btn-aprobar-fase1', function () {
@@ -289,11 +312,9 @@ $('#tablaNotas').on('click', '.btn-aprobar-fase1', function () {
     seleccionPorNota(ing_id);
 });
 
-
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
-// !Tabla de ingresos
 //!Función para buscar al personal que solicita iniciar proceso de selección.
 const buscarPuestosRequisitos = async () => {
     const url = `API/ingresos/buscarPuestosRequisitos`;
@@ -306,9 +327,9 @@ const buscarPuestosRequisitos = async () => {
         const data = await respuesta.json();
 
         console.log(data);
-        if (data) {
-            const contenedorBotones = document.getElementById('contenedorBotones3'); // Cambia 'contenedorBotones' por el ID de tu contenedor en el formulario
+        const contenedorBotones = document.getElementById('contenedorBotones3'); // Cambia 'contenedorBotones' por el ID de tu contenedor en el formulario
 
+        if (data !== null && data.length > 0) {
             data.forEach(puesto => {
                 const divBoton = document.createElement('div');
                 divBoton.classList.add('col-md-3', 'mb-3'); // Clases de Bootstrap para columnas y margen inferior
@@ -323,7 +344,7 @@ const buscarPuestosRequisitos = async () => {
                     console.log(`Clic en el botón de ${puesto.puesto_nombre}. ing_puesto: ${ing_puesto}`);
 
                     // Realizar la solicitud a la API sin redirigir
-                    const url = `API/ingresos/buscarSolicitudes?ing_puesto=${ing_puesto}`;
+                    const url = `API/ingresos/buscarRequisitosPorPuesto?ing_puesto=${ing_puesto}`;
                     const config = {
                         method: 'GET'
                     };
@@ -338,10 +359,10 @@ const buscarPuestosRequisitos = async () => {
                         // Aquí puedes agregar más lógica para trabajar con la respuesta, por ejemplo, mostrar datos en el mismo formulario.
                         if (data) {
                             // Limpia la tabla de solicitudes
-                            datatableSolicitudes.clear();
-                            contenedorsolicitudes = 1;
+                            datatableIngresos.clear();
+                            contenedor = 1;
                             // Agrega las nuevas filas con los datos obtenidos de la API
-                            datatableSolicitudes.rows.add(data).draw();
+                            datatableIngresos.rows.add(data).draw();
                         } else {
                             Toast.fire({
                                 title: 'No se encontraron registros',
@@ -356,11 +377,21 @@ const buscarPuestosRequisitos = async () => {
                 divBoton.appendChild(boton);
                 contenedorBotones.appendChild(divBoton);
             });
+        } else {
+            const mensajeNoSolicitudes = document.createElement('p');
+            mensajeNoSolicitudes.textContent = 'No se encuentran Personal Para Revision de Documentacion';
+            mensajeNoSolicitudes.style.color = 'red'; 
+            mensajeNoSolicitudes.style.fontSize = '18px';  
+            mensajeNoSolicitudes.style.fontWeight = 'bold'; 
+            mensajeNoSolicitudes.style.textAlign = 'center'; 
+        
+            contenedorBotones.appendChild(mensajeNoSolicitudes);
         }
     } catch (error) {
         console.error('Error al buscar puestos:', error);
     }
 };
+
 let contenedor = 1;
 const datatableIngresos = new Datatable('#tablaIngesos', {
     language: lenguaje,
@@ -383,6 +414,13 @@ const datatableIngresos = new Datatable('#tablaIngesos', {
             data: 'ing_codigo'
         },
         {
+            title: 'DOCUMENTACION',
+            data: 'ing_puesto',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row) => `<button class="btn btn-info ver-documentacion-btn" data-bs-toggle='modal' data-bs-target='#modalDocumentacion' data-ingid='${row["ing_id"]}' data-nombre='${row["eva_nombre"]}'>Ver Documentacion</button>`
+        },
+        {
             title: 'REQUISITOS',
             data: 'ing_puesto',
             searchable: false,
@@ -401,7 +439,52 @@ const datatableIngresos = new Datatable('#tablaIngesos', {
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
-// !Tabla de requisitos
+// !Tabla de para Revisar la Documentacion dentro del modal
+let contenedorrr = 1;
+const datatableDocumentacion = new Datatable('#tablaDocumentos', {
+    language: lenguaje,
+    data: null,
+    columns: [
+        {
+            title: 'No.',
+            render: () => contenedorrr++
+        },
+        {
+            title: 'Documentacion Del Aspirante',
+            data: 'nombre_pdf',
+            render: function (data, type, row) {
+                if (typeof data === 'string' && data.includes('/')) {
+                    const partes = data.split('/');
+                    const nombreArchivo = partes[partes.length - 1];
+                    const nombreSinCodigo = nombreArchivo.replace(/\.\w{16}\.pdf$/, '');
+                    return nombreSinCodigo;
+                }
+                return data;
+            }
+        },
+        {
+            title: 'PDF',
+            className: 'text-center',
+            data: 'nombre_pdf',
+            render: function (data) {
+                return `<button  class="btn btn-outline-info" data-ruta="${data.substr(10)}"><i class="bi bi-eye"></i>Ver PDF</button>`;
+            },
+            width: '150px'
+        },
+    ]
+});
+const verPDF = (e) => {
+
+    const boton = e.target
+    let ruta = boton.dataset.ruta
+
+    let pdf = (ruta);
+console.log(pdf)
+
+    window.open(`API/ingresos/pdf?ruta=${pdf}`)
+
+}
+// !Tabla de para aprovar requisitos dentro del modal
 let contenedorr = 1;
 const datatableRequisitos = new Datatable('#tablaRequisitos', {
     language: lenguaje,
@@ -464,6 +547,18 @@ const datatableRequisitos = new Datatable('#tablaRequisitos', {
 
 //!Aca se Capturan los Id de las DataTables, necesarios para correro ciertos querys en el controlador.
 // Agregar manejador de eventos para los botones "Ver Misiones"
+$('#tablaIngesos').on('click', '.ver-documentacion-btn', function () {
+    const ing_id = parseInt($(this).data('ingid'));
+    buscarDocumentacionAPI(ing_id);
+});
+// Agregar manejador de eventos para el cierre del modal
+$('#modalDocumentacion').on('hidden.bs.modal', function (e) {
+});
+
+
+
+//!Aca se Capturan los Id de las DataTables, necesarios para correro ciertos querys en el controlador.
+// Agregar manejador de eventos para los botones "Ver Misiones"
 $('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
     const ing_puesto = parseInt($(this).data('ingpuesto'));
     const ing_id = parseInt($(this).data('ingid'));
@@ -492,7 +587,32 @@ $('#tablaIngesos').on('click', '.ver-requisitos-btn', function () {
 
                                         //!FUNCIONES!//
 
+//!Función para buscar requisitos por puesto
+const buscarDocumentacionAPI = async (ing_id) => {
+    contenedorrr = 1;
+    const url = `API/ingresos/buscarDocumentacion?ing_id=${ing_id}`;
+    console.log(url);
 
+    const config = {
+        method: 'GET'
+    };
+
+    try {
+        const respuesta = await fetch(url, config);
+        if (respuesta.ok) {
+            const data = await respuesta.json();
+            console.log(data);
+            datatableDocumentacion.clear().draw();
+            if (data) {
+                datatableDocumentacion.rows.add(data).draw();
+            }
+        } else {
+            console.error('Error en la solicitud: ' + respuesta.status);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
@@ -555,7 +675,6 @@ const buscar = async () => {
 //? ------------------------------------------------------------------------------------------>
 //!Función para buscar requisitos por puesto
 const buscarRequisitoPuestoAPI = async (ing_puesto, ing_id) => {
-    //*Aca se agregaron los contadors para la busqueda iniciara de 1 en adelante y no de forma desordenada.
     contenedor = 1;
     contenedorr = 1;
     const url = `API/ingresos/buscarRequisitoPuesto?ing_puesto=${ing_puesto}&ing_id=${ing_id}`;
@@ -911,6 +1030,7 @@ btnRegresarFase1.addEventListener('click', mostrarfase1)
 btnFaseFinal.addEventListener('click', mostrarFaseFinal)
 btnRegresar.addEventListener('click', mostrarFaseInicio)
 btnInicio.addEventListener('click', mostrarFase1)
+datatableDocumentacion.on('click', '.btn-outline-info', verPDF);
 
 const ejecutarBusquedasSecuenciales = async () => {
     try {

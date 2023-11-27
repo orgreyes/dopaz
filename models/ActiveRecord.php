@@ -216,12 +216,4 @@ class ActiveRecord {
             }
         }
     }
-    
-    public function printPDF($ruta){
-
-        header("Content-type: application/pdf");
-        header("Content-Disposition: inline; filename=filename.pdf");
-        @readfile(_DIR_  . '/storage/' . $ruta );
-    
-    }
 }

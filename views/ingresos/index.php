@@ -24,6 +24,15 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
         }
+        #containerBtn3 {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
         #containerBtn h1 {
             text-align: center;
             color: #333;
@@ -112,7 +121,7 @@
 <!-- //? ------------------------------------------------------------------------------------------>
 <!-- //? ------------------------------------------------------------------------------------------>
 <div class="container"  id="containerBtn3">
-<center><h1>Listado de Puestos2</h1></center>
+<center><h1>Listado de Puestos De Requisitos</h1></center>
     <div id="contenedorBotones3" class="row justify-content-center mt-4">
         <!-- Aquí se añadirán los botones dinámicamente -->
     </div>
@@ -134,7 +143,7 @@
             </div>
         </div>
 </div>
-<!-- //!Modal -->
+<!-- //!Modal Para aprovar Requisitos -->
 <div class="modal fade" id="modalRequisito" tabindex="-1" role="dialog" aria-labelledby="modalRequisitoLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -153,6 +162,28 @@
         </div>
     </div>
 </div>
+
+<!-- //!Modal Para Ver la Documentacion-->
+<div class="modal fade" id="modalDocumentacion" tabindex="-1" role="dialog" aria-labelledby="modalDocumentacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title " id="modalDocumentacionLabel">Documentacion del Aspirante</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body container text-center">
+                <table id="tablaDocumentos" class="table table-hover table-condensed table-bordered w-100">
+                              <!-- Contenido de la tabla -->
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>  
+</div>
+
+
 <!-- //? ------------------------------------------------------------------------------------------>
 <!-- //? ------------------------------------------------------------------------------------------>
 <!-- //? ------------------------------------------------------------------------------------------>
