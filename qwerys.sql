@@ -201,22 +201,6 @@ CREATE TABLE cont_aprovados (
 );
 
 
-CREATE TABLE cont_plazas (
-    plaz_id SERIAL PRIMARY KEY,
-    plaz_codigo CHAR(30) UNIQUE,
-    plaz_situacion SMALLINT
-);
-
-CREATE TABLE cont_asig_plazas(
-    asig_id SERIAL PRIMARY KEY,
-    asig_contingente INT,
-    asig_puesto INT,
-    asig_plaza INT, 
-    asig_situacion SMALLINT,
-    FOREIGN KEY (asig_contingente) REFERENCES contingentes (cont_id),
-    FOREIGN KEY (asig_puesto) REFERENCES cont_puestos (pue_id),
-    FOREIGN KEY (asig_plaza) REFERENCES cont_plazas (plaz_id)
-);
 
 
 CREATE TABLE cont_resultados (
@@ -246,9 +230,26 @@ DROP TABLE cont_resultados
 DROP TABLE cont_asig_misiones
 DROP TABLE cont_misiones_contingente
 
+
 DROP TABLE cont_plazas
 DROP TABLE cont_asig_plazas
 
+CREATE TABLE cont_plazas (
+    plaz_id SERIAL PRIMARY KEY,
+    plaz_codigo CHAR(30) UNIQUE,
+    plaz_situacion SMALLINT
+);
+
+CREATE TABLE cont_asig_plazas(
+    asig_id SERIAL PRIMARY KEY,
+    asig_contingente INT,
+    asig_puesto INT,
+    asig_plaza INT, 
+    asig_situacion SMALLINT,
+    FOREIGN KEY (asig_contingente) REFERENCES contingentes (cont_id),
+    FOREIGN KEY (asig_puesto) REFERENCES cont_puestos (pue_id),
+    FOREIGN KEY (asig_plaza) REFERENCES cont_plazas (plaz_id)
+);
 
 --!Datos
 

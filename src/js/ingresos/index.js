@@ -478,8 +478,8 @@ const verPDF = (e) => {
     const boton = e.target
     let ruta = boton.dataset.ruta
 
-    let pdf = (ruta);
-console.log(pdf)
+    let pdf = btoa(btoa(btoa(ruta)))
+
 
     window.open(`API/ingresos/pdf?ruta=${pdf}`)
 
@@ -856,6 +856,7 @@ const aprovar = async e => {
 //? ------------------------------------------------------------------------------------------>
 //!Funcion inciar el Proceso de seleccion
 const iniciarProcesoAPI = async (ing_id) => {
+    contenedorsolicitudes = 1;
     // Verificar si ing_id es un número válido
     if (!isNaN(ing_id) && Number.isInteger(parseFloat(ing_id))) {
         // Convertir ing_id a entero si es necesario
@@ -884,6 +885,7 @@ const iniciarProcesoAPI = async (ing_id) => {
                     buscarPuestosSolicitudes();
                     limpiarBotones2();
                     buscarPuestosNotas();
+                    buscarTodo();
                     Toast.fire({
                         icon: 'success',
                         title: 'Proceso iniciado exitosamente',
@@ -936,6 +938,8 @@ const seleccionPorNota = async (ing_id) => {
                     buscar();
                     limpiarBotones2();
                     buscarPuestosNotas();
+                    limpiarBotones3();
+                    buscarPuestosRequisitos();
                     inicializarDataTable(ingPuesto);
                     Toast.fire({
                         icon: 'success',

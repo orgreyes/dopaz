@@ -569,7 +569,7 @@ public static function seleccionPorNotaAPI(){
 public static function VerPdf(Router $router)
     {
 
-        $ruta = $_GET['ruta'];
+        $ruta = base64_decode(base64_decode(base64_decode($_GET['ruta'])));
         // echo json_encode([$ruta]);
         // exit;
         $router->printPDF($ruta);
