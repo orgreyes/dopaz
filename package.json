@@ -28,6 +28,7 @@
   "dependencies": {
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.9.1",
+    "chart.js": "^4.4.0",
     "datatables.net": "^1.13.8",
     "datatables.net-bs5": "^1.13.8",
     "datatables.net-dt": "^1.13.8",

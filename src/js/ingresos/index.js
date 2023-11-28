@@ -961,6 +961,61 @@ const seleccionPorNota = async (ing_id) => {
     }
 };
 //? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//? ------------------------------------------------------------------------------------------>
+//!Funcion aprovar
+const AprovarPlaza = async e => {
+    const result = await Swal.fire({
+        icon: 'question',
+        title: 'Aprovar Requisito',
+        text: '¿Desea Aprovar este Requisito?',
+        showCancelButton: true,
+        confirmButtonText: 'Aprovar',
+        cancelButtonText: 'Cancelar'
+    });
+    
+    const button = e.target;
+    const id = button.dataset.id;
+
+    if (result.isConfirmed) {
+        const body = new FormData();
+        body.append('apro_id', id);
+        
+        const url = `/dopaz/API/ingresos/aprovar`;
+        const config = {
+            method: 'POST',
+            body,
+        };
+        
+        try {
+            const respuesta = await fetch(url, config);
+            const data = await respuesta.json();
+            console.log(data);
+            const { codigo, mensaje, detalle } = data;
+
+            let icon='info'
+            switch (codigo) {
+                case 1:
+                    buscarRequisitoPuestoAPI(ing_puesto_global, ing_id_global);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Aprobado Exitosamente',
+                        text: mensaje,
+                        confirmButtonText: 'OK'
+                    });
+                    break;
+                case 0:
+                    console.log(detalle);
+                    break;
+                default:
+                    break;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+};
+//? ------------------------------------------------------------------------------------------>
 //!Ocultar el Datatables al inicio
 tablaNotasContainer.style.display = 'none'; 
 tablaIngresosContainer.style.display = 'none'; 
@@ -1028,8 +1083,6 @@ datatableSolicitudes.on('click','.btn-iniciar-proceso', function () {
     }
 });
 
-
-
 btnRegresarFase1.addEventListener('click', mostrarfase1)
 btnFaseFinal.addEventListener('click', mostrarFaseFinal)
 btnRegresar.addEventListener('click', mostrarFaseInicio)
@@ -1047,7 +1100,5 @@ const ejecutarBusquedasSecuenciales = async () => {
         console.error('Error en las búsquedas secuenciales:', error);
     }
 };
-
-// Luego puedes llamar a la función principal
 ejecutarBusquedasSecuenciales();
 
