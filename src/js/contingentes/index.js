@@ -74,14 +74,14 @@ const datatable = new Datatable('#tablaContingente', {
             data: 'cont_id',
             searchable: false,
             orderable: false,
-            render : (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}' data-nombre='${row["cont_nombre"]}' data-fecha_pre='${row["cont_fecha_pre"]}' data-fecha_inicio='${row["cont_fecha_inicio"]}' data-fecha_final='${row["cont_fecha_final"]}' data-fecha_post='${row["cont_fecha_post"]}'>Actualizar Fechas</button>`
+            render : (data, type, row, meta) => `<button class="btn bi bi-pen custom-btn-warning" data-id='${data}' data-nombre='${row["cont_nombre"]}' data-fecha_pre='${row["cont_fecha_pre"]}' data-fecha_inicio='${row["cont_fecha_inicio"]}' data-fecha_final='${row["cont_fecha_final"]}' data-fecha_post='${row["cont_fecha_post"]}'>Actualizar Fechas</button>`
         },
         {
             title : 'ELIMINAR',
             data: 'cont_id',
             searchable: false,
             orderable: false,
-            render : (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+            render : (data, type, row, meta) => `<button class="btn bi bi-trash custom-btn-danger" data-id='${data}'>Eliminar</button>`
         }
     ]
 })
@@ -434,14 +434,14 @@ btnModificar.addEventListener('click', () => {
 });
 
 //?--------------------------------------------------------------
-datatable.on('click','.btn-warning', traeDatos)
-datatable.on('click','.btn-warning', mostrarFechas)
-datatable.on('click','.btn-warning', mostrarFormulario)
-datatable.on('click','.btn-warning', MostrarBtnForumulario)
-datatable.on('click','.btn-warning', mostrarBtns)
-datatable.on('click','.btn-warning', OcultarTodoForumulario)
+datatable.on('click','.custom-btn-warning', traeDatos)
+datatable.on('click','.custom-btn-warning', mostrarFechas)
+datatable.on('click','.custom-btn-warning', mostrarFormulario)
+datatable.on('click','.custom-btn-warning', MostrarBtnForumulario)
+datatable.on('click','.custom-btn-warning', mostrarBtns)
+datatable.on('click','.custom-btn-warning', OcultarTodoForumulario)
 //?--------------------------------------------------------------
-datatable.on('click','.btn-danger', eliminar)
+datatable.on('click','.custom-btn-danger', eliminar)
 //?--------------------------------------------------------------
 
 

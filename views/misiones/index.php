@@ -21,7 +21,28 @@
             padding: 5px 15px;
             cursor: pointer;
         }
-    </style>
+
+        .custom-btn {
+            font-size: 14px;
+            padding: 7px;
+        }
+
+        .custom-btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .custom-btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .custom-btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+</style>
 <div class="container">
   <div class="row justify-content-center">
             <form class="col-lg-8 border bg-light p-3">
@@ -57,24 +78,24 @@
 
 
                 <div class="row mb-3">
-                    <div class="col-12">
-                        <button type="button" id="btnGuardar" class="btn btn-info w-100">Guardar</button>
+                <div class="col-8 mx-auto" style="margin-to:10px">
+                        <button type="button" id="btnGuardar" class="btn custom-btn custom-btn-primary w-100 bi bi-save">  Guardar</button>
                     </div>
                     <div class="col-6">
-                        <button type="button" id="btnModificar" class="btn btn-warning w-100">Modificar</button>
+                        <button type="button" id="btnModificar" class="btn bi bi-pen custom-btn custom-btn-warning w-100">Modificar</button>
                     </div>
                     <div class="col-6">
-                        <button type="button" id="btnCancelar" class="btn btn-danger w-100">Cancelar</button>
+                        <button type="button" id="btnCancelar" class="btn custom-btn bi bi-x custom-btn-danger w-100">Cancelar</button>
                     </div>
                 </div>
             </form>
 
             <div style="margin-top:30px; margin-left:32%" class="row mb-3">
                     <div class="col-8">
-                        <button type="button" id="btnFormulario" class="btn btn-info w-100">Agregar Misión</button>
+                        <button type="button" id="btnFormulario" class="btn custom-btn bi bi-save btn-primary w-100"> Agregar Misión</button>
                     </div>
                     <div style="margin-top:8px;" class="col-8">
-                        <button type="button" id="btnBuscar" class="btn btn-info w-100">Ver Lista de Misiones</button>
+                        <button type="button" id="btnBuscar" class="btn custom-btn bi bi-eye btn-primary w-100">  Ver Lista de Misiones</button>
                     </div>
                 </div>
 

@@ -38,14 +38,16 @@ const datatable = new Datatable('#tablaPuestos', {
             data: 'pue_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}' data-nombre='${row["pue_nombre"]}'>Modificar</button>`
+            render: (data, type, row, meta) => `<button class="btn custom-btn custom-btn-warning w-100 btn-lg" data-id='${data}' data-nombre='${row["pue_nombre"]}'>
+                <i class="bi bi-pen"></i> Modificar Nombre del Puesto</button>`
         },
         {
             title: 'ELIMINAR',
             data: 'pue_id',
             searchable: false,
             orderable: false,
-            render: (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+            render: (data, type, row, meta) => `<button class="btn custom-btn-danger w-60" data-id='${data}'>
+                <i class="bi bi-trash"></i> Eliminar</button>`
         }
     ]
 });

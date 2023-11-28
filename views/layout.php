@@ -28,114 +28,113 @@
                     </li>
   
                     <div class="nav-item dropdown " >
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Seleccion de Personal
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-people me-2"></i>Selección de Personal
                         </a>
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
-                           
-                            
-                            
-                            
-
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/ingresos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Seleccion de Personal</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/ingresos"><i class="ms-lg-0 ms-2 bi me-2"></i>Seleccion de Personal</a>
                             </li>
                             
                         </ul>
                     </div> 
 
                     <div class="nav-item dropdown " >
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Ingreso de Personal
-                        </a>
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-person me-2"></i>Ingreso de Personal
+                    </a>
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/aspirantes"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Personal Que Viaja Por Segunda Vez a Contingente</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/aspirantes"><i class="ms-lg-0 ms-2 bi me-2"></i>Ingreso de Personal Que Viaja Por Segunda Vez a Contingente</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/usuarios"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Personal nuevo</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/usuarios"><i class="ms-lg-0 ms-2 bi me-2"></i>Ingreso de Personal nuevo</a>
                             </li>
                         </ul>
                     </div> 
 
                     <div class="nav-item dropdown " >
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Puestos
-                        </a>
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-building me-2"></i>Puestos
+                    </a>
+
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/puestos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Puestos</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/puestos"><i class="ms-lg-0 ms-2 bi me-2"></i>Ingreso de Puestos</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/asiggrados"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>asignacion de grados a los puestos</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/asiggrados"><i class="ms-lg-0 ms-2 bi me-2"></i>asignacion de grados a los puestos</a>
                             </li>
                            
                         </ul>
                     </div> 
 
                     <div class="nav-item dropdown " >
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Contingentes
-                        </a>
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-globe me-2"></i>Contingentes
+                    </a>
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/contingentes"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Contingentes</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/contingentes"><i class="ms-lg-0 ms-2 bi me-2"></i>Contingentes</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/misiones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Mapa de Misiones</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/misiones"><i class="ms-lg-0 ms-2 bi me-2"></i>Mapa de Misiones</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigmisiones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Asignacion de Misiones a Contingentes</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigmisiones"><i class="ms-lg-0 ms-2 bi me-2"></i>Asignacion de Misiones a Contingentes</a>
                             </li>
                         </ul>
                     </div> 
 
                     <div class="nav-item dropdown " >
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Evaluciones
-                        </a>
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-bar-chart me-2"></i>Evaluaciones
+                    </a>
+
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/evaluaciones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Evaluaciones</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/resultados"><i class="ms-lg-0 ms-2 bi me-2"></i>Ingreso de Notas Al Personal Aspirante</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/resultados"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Ingreso de Notas Al Personal Aspirante</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigevaluaciones"><i class="ms-lg-0 ms-2 bi me-2"></i>asignacion de Evaluaciones a los puestos</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigevaluaciones"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>asignacion de Evaluaciones a los puestos</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/evaluaciones"><i class="ms-lg-0 ms-2 bi me-2"></i>Creacion de Evaluaciones</a>
                             </li>
                         </ul>
                     </div> 
 
                     <div class="nav-item dropdown " >
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Requisitos
-                        </a>
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-file-earmark-text me-2"></i>Requisitos
+                    </a>
+
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigrequisitos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Asignacion de Requisitos Por Puesto</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/asigrequisitos"><i class="ms-lg-0 ms-2 bi me-2"></i>Asignacion de Requisitos Por Puesto</a>
                             </li>
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/requisitos"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Creacion de Requisitos</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/requisitos"><i class="ms-lg-0 ms-2 bi me-2"></i>Creacion de Requisitos</a>
                             </li>
                         </ul>
                     </div> 
 
                     <div class="nav-item dropdown " >
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear me-2"></i>Estadisticas
-                        </a>
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-bar-chart-line me-2"></i>Estadísticas
+                    </a>
+
                         <ul class="dropdown-menu  dropdown-menu-dark "id="dropwdownRevision" style="margin: 0;">
                             <!-- <h6 class="dropdown-header">Información</h6> -->
                             <li>
-                                <a class="dropdown-item nav-link text-white " href="/dopaz/estadisticas"><i class="ms-lg-0 ms-2 bi bi-plus-circle me-2"></i>Estadisticas</a>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/estadisticas"><i class="ms-lg-0 ms-2 bi me-2"></i>Estadisticas</a>
                             </li>
 
                         </ul>

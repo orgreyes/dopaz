@@ -38,14 +38,14 @@ const datatable = new Datatable('#tablaEvaluacion', {
             data: 'eva_id',
             searchable: false,
             orderable: false,
-            render : (data, type, row, meta) => `<button class="btn btn-warning" data-id='${data}'data-nombre='${row["eva_nombre"]}'>Modificar</button>`
+            render : (data, type, row, meta) => `<button class="btn custom-btn-warning bi bi-pen w-100" data-id='${data}'data-nombre='${row["eva_nombre"]}'>Modificar</button>`
         },
         {
             title : 'ELIMINAR',
             data: 'eva_id',
             searchable: false,
             orderable: false,
-            render : (data, type, row, meta) => `<button class="btn btn-danger" data-id='${data}'>Eliminar</button>`
+            render : (data, type, row, meta) => `<button class="btn custom-btn-danger bi bi-trash" data-id='${data}'>Eliminar</button>`
         }
     ]
 })
@@ -375,13 +375,13 @@ btnModificar.addEventListener('click', () => {
 });
 
 //?--------------------------------------------------------------
-datatable.on('click','.btn-warning', traeDatos)
-datatable.on('click','.btn-warning', mostrarFormulario)
-datatable.on('click','.btn-warning', MostrarBtnForumulario)
-datatable.on('click','.btn-warning', mostrarBtns)
-datatable.on('click','.btn-warning', OcultarTodoForumulario)
+datatable.on('click','.custom-btn-warning', traeDatos)
+datatable.on('click','.custom-btn-warning', mostrarFormulario)
+datatable.on('click','.custom-btn-warning', MostrarBtnForumulario)
+datatable.on('click','.custom-btn-warning', mostrarBtns)
+datatable.on('click','.custom-btn-warning', OcultarTodoForumulario)
 //?--------------------------------------------------------------
-datatable.on('click','.btn-danger', eliminar)
+datatable.on('click','.custom-btn-danger', eliminar)
 //?--------------------------------------------------------------
 buscar();
 
