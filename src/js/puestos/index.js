@@ -378,13 +378,13 @@ btnModificar.addEventListener('click', () => {
 });
 
 //?--------------------------------------------------------------
-datatable.on('click','.btn-warning', traeDatos)
-datatable.on('click','.btn-warning', mostrarFormulario)
-datatable.on('click','.btn-warning', MostrarBtnForumulario)
-datatable.on('click','.btn-warning', mostrarBtns)
-datatable.on('click','.btn-warning', OcultarTodoForumulario)
+datatable.on('click','.custom-btn-warning', traeDatos)
+datatable.on('click','.custom-btn-warning', mostrarFormulario)
+datatable.on('click','.custom-btn-warning', MostrarBtnForumulario)
+datatable.on('click','.custom-btn-warning', mostrarBtns)
+datatable.on('click','.custom-btn-warning', OcultarTodoForumulario)
 //?--------------------------------------------------------------
-datatable.on('click','.btn-danger', eliminar)
+datatable.on('click','.custom-btn-danger', eliminar)
 //?--------------------------------------------------------------
 buscar();
 

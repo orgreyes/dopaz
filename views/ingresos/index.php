@@ -207,10 +207,7 @@
 <!-- //? ------------------------------------------------------------------------------------------>
                 <div name="btnFase2">
                 <div id="containerBtn2"  style="margin-top:50px" class="row mb-3 d-flex">
-                    <div class="col-6">
-                        <button type="button" id="btnFase2" class="btn btn-info w-100">SIGUIENTE FASE</button>
-                    </div>
-                    <div class="col-6">
+                    <div class="col-12">
                         <button type="button" id="btnRegresarFase1" class="btn btn-danger w-100">REGRESAR A FASE ANTERIOR</button>
                     </div>
                 </div>

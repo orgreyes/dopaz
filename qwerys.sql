@@ -189,6 +189,7 @@ CREATE TABLE cont_req_aprovado (
     apro_id SERIAL PRIMARY KEY,
     apro_ingreso INT,
     apro_requisito INT,
+    apro_id_requisito INT,
     apro_situacion SMALLINT,
     FOREIGN KEY (apro_ingreso) REFERENCES cont_ingresos(ing_id)
 );
@@ -199,9 +200,6 @@ CREATE TABLE cont_aprovados (
     apro_situacion SMALLINT,
     FOREIGN KEY (apro_asp) REFERENCES cont_ingresos(ing_id)
 );
-
-
-
 
 CREATE TABLE cont_resultados (
     res_id SERIAL PRIMARY KEY,

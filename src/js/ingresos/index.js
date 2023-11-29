@@ -425,17 +425,24 @@ const datatableIngresos = new Datatable('#tablaIngesos', {
             data: 'ing_puesto',
             searchable: false,
             orderable: false,
-            render: (data, type, row) => `<button class="btn btn-info ver-requisitos-btn" data-bs-toggle='modal' data-bs-target='#modalRequisito' data-ingpuesto='${data}' data-ingid='${row["ing_id"]}' data-nombre='${row["eva_nombre"]}'>Validar Requisitos</button>`
+            render: (data, type, row) => `<button class="btn btn-primary ver-requisitos-btn" data-bs-toggle='modal' data-bs-target='#modalRequisito' data-ingpuesto='${data}' data-ingid='${row["ing_id"]}'>Validar Requisitos</button>`
         },
         {
-            title: 'ELIMINAR',
-            data: 'asig_req_id',
+            title: 'APROBAR PLAZA',
+            data: 'ing_id',
             searchable: false,
             orderable: false,
-            render: (data) => `<button class="btn btn-success btn-aprobar-requisito" data-asig-req-id='${data}'>Aprobar Plaza</button>`
+            render: (data, type, row) => `<button class="btn btn-success btn-aprobar-plaza" data-ing-id='${data}' data-ing-situacion='${row["ing_situacion"]}'>Aprobar Plaza</button>`
         }
+        
     ]
 });
+//!Aca se Capturan los Id de las DataTables, necesarios para correr ciertos querys en el controlador.
+$('#tablaIngesos').on('click', '.btn-aprobar-plaza', function () {
+    const ing_id = parseInt($(this).data('ing-id'));
+    aprobarPlaza(ing_id);
+});
+
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
@@ -485,14 +492,14 @@ const verPDF = (e) => {
 
 }
 // !Tabla de para aprovar requisitos dentro del modal
-let contenedorr = 1;
+let contadorr = 1;
 const datatableRequisitos = new Datatable('#tablaRequisitos', {
     language: lenguaje,
     data: null,
     columns: [
         {
             title: 'No.',
-            render: () => contenedorr++
+            render: () => contadorr++
         },
         {
             title: 'REQUISITOS ASIGNADOS PARA EL PUESTO',
@@ -528,17 +535,20 @@ const datatableRequisitos = new Datatable('#tablaRequisitos', {
             render: (data, type, row) => {
                 if (type === 'display') {
                     if (row.apro_situacion === "1") {
-                        return `<button class="btn btn-danger btn-desaprobar-requisito" data-id="${row.apro_id}" data-ing-id="${data}" data-asig-req-id="${row.asig_req_id}">Desaprobar Requisito</button>`;
+                        return `<button class="btn btn-danger btn-desaprobar-requisito" data-id="${row.apro_id}" data-ing-id="${data}" data-asig-req-id="${row.asig_req_id} data-req-id="${row.req_id}">Desaprobar Requisito</button>`;
                     } else if(row.apro_situacion === "0"){
                         return `<button class="btn btn-success btn-reaprobar-requisito" data-id="${row.apro_id}">Aprobar Requisito</button>`;
                     } else {
-                        return `<button class="btn btn-success btn-aprobar-requisito" data-ing-id="${data}" data-asig-req-id="${row.asig_req_id}">Aprobar Requisito</button>`;
+                        return `<button class="btn btn-success btn-aprobar-requisito" data-ing-id="${data}" data-asig-req-id="${row.asig_req_id}" data-req_id="${row.req_id}">Aprobar Requisito</button>`;
                     }
                 }
                 return data;
             }
         }
     ]
+});
+datatableRequisitos.on('draw.dt', () => {
+    contadorr = 1;
 });
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
@@ -569,10 +579,11 @@ $('#modalRequisito').on('hidden.bs.modal', function (e) {
 });
 // Agregar manejador de eventos para los botones de aprobación de requisitos
 $('.dataTable').on('click', '.btn-aprobar-requisito', function () {
-    const asig_req_id = $(this).data('asig-req-id');
     const ing_id = $(this).data('ing-id');
+    const asig_req_id = $(this).data('asig-req-id');
+    const req_id = $(this).data('req_id');
     // Llamar a la función guardarAPI con los datos capturados
-    guardarAPI(ing_id, asig_req_id);
+    guardarAPI(ing_id, asig_req_id, req_id);
     buscarRequisitoPuestoAPI(ing_puesto_global, ing_id_global);
 });
 let ing_puesto_global;
@@ -648,8 +659,10 @@ const buscarTodo = async () => {
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //!Función para buscar al personal antes de buscar los requisitos.
+
 const buscar = async () => {
-    contenedor = 1;
+    contenedorrr = 1;
+    contador = 1;
 
     const url = `API/ingresos/buscar`;
     const config = {
@@ -674,11 +687,13 @@ const buscar = async () => {
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //!Función para buscar requisitos por puesto
+let contador = 1;
 const buscarRequisitoPuestoAPI = async (ing_puesto, ing_id) => {
-    contenedor = 1;
-    contenedorr = 1;
+
+    contador = 1;
+
     const url = `API/ingresos/buscarRequisitoPuesto?ing_puesto=${ing_puesto}&ing_id=${ing_id}`;
-    console.log(url);
+
 
     const config = {
         method: 'GET'
@@ -704,10 +719,10 @@ const buscarRequisitoPuestoAPI = async (ing_puesto, ing_id) => {
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //!Función Para Aprovar un requisito por primera Vez.
-const guardarAPI = async (ing_id, asig_req_id) => {
-    const url = `API/ingresos/guardar?ing_id=${ing_id}&asig_req_id=${asig_req_id}`;
+const guardarAPI = async (ing_id,asig_req_id, req_id) => {
+    contadorBuscarTodo = 1;
+    const url = `API/ingresos/guardar?ing_id=${ing_id}&asig_req_id=${asig_req_id}&req_id=${req_id}`;
     console.log(url);
-
     const config = {
         method: 'GET',
     };
@@ -715,7 +730,6 @@ const guardarAPI = async (ing_id, asig_req_id) => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
-
         const { codigo, mensaje, detalle } = data;
         let icon = 'info';
         switch (codigo) {
@@ -963,59 +977,70 @@ const seleccionPorNota = async (ing_id) => {
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
 //? ------------------------------------------------------------------------------------------>
-//!Funcion aprovar
-const AprovarPlaza = async e => {
-    const result = await Swal.fire({
-        icon: 'question',
-        title: 'Aprovar Requisito',
-        text: '¿Desea Aprovar este Requisito?',
-        showCancelButton: true,
-        confirmButtonText: 'Aprovar',
-        cancelButtonText: 'Cancelar'
-    });
-    
-    const button = e.target;
-    const id = button.dataset.id;
-
-    if (result.isConfirmed) {
-        const body = new FormData();
-        body.append('apro_id', id);
-        
-        const url = `/dopaz/API/ingresos/aprovar`;
-        const config = {
-            method: 'POST',
-            body,
-        };
-        
-        try {
-            const respuesta = await fetch(url, config);
-            const data = await respuesta.json();
-            console.log(data);
-            const { codigo, mensaje, detalle } = data;
-
-            let icon='info'
-            switch (codigo) {
-                case 1:
-                    buscarRequisitoPuestoAPI(ing_puesto_global, ing_id_global);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Aprobado Exitosamente',
-                        text: mensaje,
-                        confirmButtonText: 'OK'
-                    });
-                    break;
-                case 0:
-                    console.log(detalle);
-                    break;
-                default:
-                    break;
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-};
 //? ------------------------------------------------------------------------------------------>
+//!Funcion para aprovar plaza
+const aprobarPlaza = async (ing_id) => {
+    const url = `API/ingresos/aprobarPlaza?ing_id=${ing_id}`;
+    console.log(url);
+    try {
+        const respuesta = await fetch(url);
+        const data = await respuesta.json();
+        console.log(data);
+
+         // Accede a los arrays específicos
+         const requisitosAsignados = data.requisitos_asignados;
+         const requisitosAprobados = data.requisitos_aprobados;
+
+         console.log(requisitosAsignados);
+         console.log(requisitosAprobados);
+           // Comparación de los requisitos
+        const sonIguales = JSON.stringify(requisitosAsignados) === JSON.stringify(requisitosAprobados);
+
+        if (sonIguales && requisitosAsignados.length > 0 && requisitosAprobados.length > 0) {
+            // Realiza acciones necesarias
+            console.log('Proceso de Seleccion Finalizada');
+
+            // Realiza la solicitud para guardar la plaza
+            const urlGuardarPlaza = `API/ingresos/guardarPlaza?ing_id=${ing_id}`;
+            const respuestaGuardarPlaza = await fetch(urlGuardarPlaza);
+            const dataGuardarPlaza = await respuestaGuardarPlaza.json();
+
+            // Verifica la respuesta para realizar acciones adicionales si es necesario
+            console.log(dataGuardarPlaza);
+            
+        } else {
+            // No se cumplen las condiciones, mostrar mensaje o realizar otras acciones
+            console.log('No se cumplen las condiciones para aprobar la plaza');
+        }
+
+        const { codigo, mensaje } = data;
+
+        let icon = 'info';
+        switch (codigo) {
+            case 1:
+                // Plaza aprobada exitosamente
+                // Realizar acciones necesarias
+                break;
+
+            case 0:
+                // No se cumplen todos los requisitos
+                break;
+
+            default:
+                break;
+        }
+
+        Toast.fire({
+            icon,
+            text: mensaje
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//? ------------------------------------------------------------------------------------------>
+
 //!Ocultar el Datatables al inicio
 tablaNotasContainer.style.display = 'none'; 
 tablaIngresosContainer.style.display = 'none'; 

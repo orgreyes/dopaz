@@ -134,6 +134,8 @@ $router->get('/API/ingresos/buscarNotas', [IngresoController::class,'buscarNotas
 $router->post('/API/ingresos/desaprovar', [IngresoController::class,'desaprovarAPI']);
 $router->post('/API/ingresos/aprovar', [IngresoController::class,'aprovarAPI']);
 $router->get('/API/ingresos/pdf', [IngresoController::class,'VerPdf']);
+$router->get('/API/ingresos/aprobarPlaza', [IngresoController::class,'aprobarPlazaAPI']);
+$router->get('/API/ingresos/guardarPlaza', [IngresoController::class,'guardarPlazaAPI']);
 
 //!Rutas para Asignar Resultados
 $router->get('/resultados', [ResultadoController::class,'index']);

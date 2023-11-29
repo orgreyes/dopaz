@@ -5,6 +5,7 @@ namespace Controllers;
 use Exception;
 use Model\Ingreso;
 use Model\Pdf;
+use Model\Aprovado;
 use Model\AsigRequisito;
 use Model\RequisitoAprovado;
 use MVC\Router;
@@ -367,6 +368,7 @@ public static function buscarRequisitoPuestoAPI(){
          $sql = "SELECT 
                     ar.asig_req_id,
                     r.req_nombre,
+                    r.req_id,
                     p.pue_nombre,
                     ca.apro_id,
                     ca.apro_situacion,
@@ -404,11 +406,13 @@ public static function guardarAPI() {
     try {
         $Id_Ingreso = $_GET['ing_id'];
         $Id_Requisito = $_GET['asig_req_id'];
+        $req_id = $_GET['req_id'];
 
         
         // ! Aca se recibe los datos que se guardaran en otra tabla.
         $datos['apro_ingreso'] = $Id_Ingreso;
         $datos['apro_requisito'] = $Id_Requisito;
+        $datos['apro_id_requisito'] = $req_id;
         
         $Requisito_Aprovado = new RequisitoAprovado($datos);
         $result = $Requisito_Aprovado->guardar();
@@ -573,5 +577,105 @@ public static function VerPdf(Router $router)
         // echo json_encode([$ruta]);
         // exit;
         $router->printPDF($ruta);
+}
+
+// Función para aprobar plaza y obtener requisitos
+public static function aprobarPlazaAPI() {
+    try {
+        // Verifica si se ha proporcionado el parámetro 'ing_id' en la solicitud GET
+        if (!isset($_GET['ing_id'])) {
+            throw new Exception('El parámetro "ing_id" no se ha proporcionado.');
+        }
+
+        $ing_id = $_GET['ing_id'];
+
+        // Consulta para obtener los requisitos asignados al puesto
+        $sql = "SELECT req_nombre
+                FROM cont_asig_requisitos car
+                JOIN cont_requisitos cr ON car.asig_req_requisito = cr.req_id
+                JOIN cont_ingresos ci ON car.asig_req_puesto = ci.ing_puesto
+                WHERE ci.ing_id = $ing_id";
+
+        $requisitosAsignados = Ingreso::fetchArray($sql);
+
+        // Consulta para obtener los requisitos aprobados para el ingreso
+        $sql2 = "SELECT cr.req_nombre
+                FROM cont_req_aprovado cra
+                JOIN cont_requisitos cr ON cra.apro_id_requisito = cr.req_id
+                WHERE cra.apro_ingreso = $ing_id";
+
+        $requisitosAprobados = RequisitoAprovado::fetchArray($sql2);
+
+        // Combina los resultados en un solo array asociativo
+        $resultado = [
+            'requisitos_asignados' => $requisitosAsignados,
+            'requisitos_aprobados' => $requisitosAprobados,
+        ];
+
+        // Devuelve la respuesta como JSON
+        echo json_encode($resultado);
+        exit;
+    } catch (Exception $e) {
+        // Maneja las excepciones y devuelve un mensaje de error
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'Ocurrió un error',
+            'codigo' => 0
+        ]);
     }
 }
+
+public static function guardarPlazaAPI() {
+    try {
+
+        $ing_id = $_GET['ing_id'];
+        $ing_situacion = $_GET['ing_situacion'];
+        // ! Aca se recibe los datos que se guardaran en otra tabla.
+        $datos['apro_asp'] = $ing_id;
+
+        
+        $Aprovado = new Aprovado($datos);
+        $result = $Aprovado->guardar();
+
+        // ! Solo envía una respuesta JSON al final
+        if ($result['resultado'] == 1) {
+            echo json_encode([
+                'mensaje' => 'Requisito Provado',
+                'codigo' => 1
+            ]);
+        } else {
+            echo json_encode([
+                'mensaje' => 'Ocurrió un error',
+                'codigo' => 0
+            ]);
+        }
+
+
+            $aprovado = Ingreso::find($ing_id);
+    
+                $aprovado->ing_situacion = 4;
+                $resultado = $aprovado->actualizar();
+    
+                if ($resultado['resultado'] == 1) {
+                    echo json_encode([
+                        'mensaje' => 'Requisito Desaprovado correctamente',
+                        'codigo' => 1
+                    ]);
+                } else {
+                    echo json_encode([
+                        'mensaje' => 'Ocurrió un error al actualizar el Requisito',
+                        'codigo' => 0
+                    ]);
+                }
+
+    } catch (Exception $e) {
+        // ! Si hay una excepción, envía una respuesta JSON de error
+        echo json_encode([
+            'detalle' => $e->getMessage(),
+            'mensaje' => 'El Requisito ya fue Aprovado',
+            'codigo' => 2
+        ]);
+    }
+}
+}
+
