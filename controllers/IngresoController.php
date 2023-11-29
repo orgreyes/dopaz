@@ -614,7 +614,6 @@ public static function aprobarPlazaAPI() {
 
         // Devuelve la respuesta como JSON
         echo json_encode($resultado);
-        exit;
     } catch (Exception $e) {
         // Maneja las excepciones y devuelve un mensaje de error
         echo json_encode([
@@ -629,18 +628,19 @@ public static function guardarPlazaAPI() {
     try {
 
         $ing_id = $_GET['ing_id'];
-        $ing_situacion = $_GET['ing_situacion'];
-        // ! Aca se recibe los datos que se guardaran en otra tabla.
-        $datos['apro_asp'] = $ing_id;
 
+        $aprovado = Ingreso::find($ing_id);
+                $aprovado->ing_situacion = 4;
+                $resultado = $aprovado->actualizar();
         
+        $datos['apro_asp'] = $ing_id;
         $Aprovado = new Aprovado($datos);
         $result = $Aprovado->guardar();
 
         // ! Solo envía una respuesta JSON al final
         if ($result['resultado'] == 1) {
             echo json_encode([
-                'mensaje' => 'Requisito Provado',
+                'mensaje' => 'Aspirante Aprovado',
                 'codigo' => 1
             ]);
         } else {
@@ -649,25 +649,7 @@ public static function guardarPlazaAPI() {
                 'codigo' => 0
             ]);
         }
-
-
-            $aprovado = Ingreso::find($ing_id);
-    
-                $aprovado->ing_situacion = 4;
-                $resultado = $aprovado->actualizar();
-    
-                if ($resultado['resultado'] == 1) {
-                    echo json_encode([
-                        'mensaje' => 'Requisito Desaprovado correctamente',
-                        'codigo' => 1
-                    ]);
-                } else {
-                    echo json_encode([
-                        'mensaje' => 'Ocurrió un error al actualizar el Requisito',
-                        'codigo' => 0
-                    ]);
-                }
-
+        
     } catch (Exception $e) {
         // ! Si hay una excepción, envía una respuesta JSON de error
         echo json_encode([
@@ -677,5 +659,6 @@ public static function guardarPlazaAPI() {
         ]);
     }
 }
+
 }
 

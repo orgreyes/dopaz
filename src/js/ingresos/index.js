@@ -987,57 +987,48 @@ const aprobarPlaza = async (ing_id) => {
         const data = await respuesta.json();
         console.log(data);
 
-         // Accede a los arrays específicos
-         const requisitosAsignados = data.requisitos_asignados;
-         const requisitosAprobados = data.requisitos_aprobados;
+        // Accede a los arrays específicos
+        const requisitosAsignados = data.requisitos_asignados;
+        const requisitosAprobados = data.requisitos_aprobados;
 
-         console.log(requisitosAsignados);
-         console.log(requisitosAprobados);
-           // Comparación de los requisitos
+        console.log(requisitosAsignados);
+        console.log(requisitosAprobados);
+
+        // Comparación de los requisitos
         const sonIguales = JSON.stringify(requisitosAsignados) === JSON.stringify(requisitosAprobados);
 
         if (sonIguales && requisitosAsignados.length > 0 && requisitosAprobados.length > 0) {
             // Realiza acciones necesarias
             console.log('Proceso de Seleccion Finalizada');
 
-            // Realiza la solicitud para guardar la plaza
             const urlGuardarPlaza = `API/ingresos/guardarPlaza?ing_id=${ing_id}`;
             const respuestaGuardarPlaza = await fetch(urlGuardarPlaza);
-            const dataGuardarPlaza = await respuestaGuardarPlaza.json();
-
-            // Verifica la respuesta para realizar acciones adicionales si es necesario
-            console.log(dataGuardarPlaza);
             
+            // Mostrar mensaje de éxito al usuario
+            Toast.fire({
+                icon: 'success',
+                text: 'Proceso de Selección Finalizado'
+            });
+            limpiarBotones3();
+            buscarPuestosRequisitos();
+            buscar();
         } else {
-            // No se cumplen las condiciones, mostrar mensaje o realizar otras acciones
-            console.log('No se cumplen las condiciones para aprobar la plaza');
+            // No se cumplen las condiciones, mostrar mensaje de error al usuario
+            Toast.fire({
+                icon: 'error',
+                text: 'No se cumplen los Requisitos para aprobar la plaza'
+            });
         }
-
-        const { codigo, mensaje } = data;
-
-        let icon = 'info';
-        switch (codigo) {
-            case 1:
-                // Plaza aprobada exitosamente
-                // Realizar acciones necesarias
-                break;
-
-            case 0:
-                // No se cumplen todos los requisitos
-                break;
-
-            default:
-                break;
-        }
-
-        Toast.fire({
-            icon,
-            text: mensaje
-        });
     } catch (error) {
+        // Mostrar mensaje de error al usuario
+        Toast.fire({
+            icon: 'error',
+            text: 'Ocurrió un error'
+        });
         console.log(error);
     }
 }
+
 
 //? ------------------------------------------------------------------------------------------>
 
