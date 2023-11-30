@@ -19,6 +19,8 @@ use Controllers\AsigMisionController;
 use Controllers\AsigRequisitoController;
 use Controllers\AsigEvaluacionController;
 use Controllers\EstadisticaController;
+use Controllers\AprobadoController;
+use Controllers\ReporteController;
 
 
 
@@ -27,8 +29,15 @@ $router->setBaseURL('/' . $_ENV['APP_NAME']);
 
 $router->get('/', [AppController::class,'index']);
 
+$router->get('/pdf', [ReporteController::class,'pdf']);
+$router->get('/aprobado', [ReporteController::class, 'pdf']);
 
-//!MANTENIMIENTOS BASICOS.
+//!Rutas para Evaluaciones
+$router->get('/aprobados', [AprobadoController::class,'index']);
+$router->get('/API/aprobados/buscarPorContingente', [AprobadoController::class,'buscarPorContingenteAPI']);
+$router->post('/API/aprobados/eliminar', [AprobadoController::class,'eliminarAPI']);
+
+
 
 //!Rutas para Evaluaciones
 $router->get('/evaluaciones', [EvaluacionController::class,'index']);
@@ -118,9 +127,11 @@ $router->post('/API/aspirantes/guardar', [AspiranteController::class,'guardarAPI
 
 //!Rutas para Personal de que busca optar por una plaza
 $router->get('/ingresos', [IngresoController::class,'index']);
+$router->get('/API/ingresos/pdf', [IngresoController::class,'VerPdf']);
 $router->get('/API/ingresos/buscar', [IngresoController::class,'buscarAPI']);
 $router->get('/API/ingresos/guardar', [IngresoController::class,'guardarAPI']);
 $router->get('/API/ingresos/buscarTodo', [IngresoController::class,'buscarTodoAPI']);
+$router->get('/API/ingresos/aprobarPlaza', [IngresoController::class,'aprobarPlazaAPI']);
 $router->get('/API/ingresos/buscarPuestos', [IngresoController::class,'buscarPuestosAPI']);
 $router->get('/API/ingresos/buscarSolicitudes', [IngresoController::class,'buscarSolicitudesAPI']);
 $router->get('/API/ingresos/buscarPuestosRequisitos', [IngresoController::class,'buscarPuestosRequisitosAPI']);
@@ -130,12 +141,10 @@ $router->get('/API/ingresos/buscarDocumentacion', [IngresoController::class,'bus
 $router->get('/API/ingresos/buscarPuestosNotas', [IngresoController::class,'buscarPuestosNotasAPI']);
 $router->get('/API/ingresos/seleccionPorNota', [IngresoController::class,'seleccionPorNotaAPI']);
 $router->get('/API/ingresos/iniciarProceso', [IngresoController::class,'iniciarProcesoAPI']);
+$router->get('/API/ingresos/guardarPlaza', [IngresoController::class,'guardarPlazaAPI']);
 $router->get('/API/ingresos/buscarNotas', [IngresoController::class,'buscarNotasAPI']);
 $router->post('/API/ingresos/desaprovar', [IngresoController::class,'desaprovarAPI']);
 $router->post('/API/ingresos/aprovar', [IngresoController::class,'aprovarAPI']);
-$router->get('/API/ingresos/pdf', [IngresoController::class,'VerPdf']);
-$router->get('/API/ingresos/aprobarPlaza', [IngresoController::class,'aprobarPlazaAPI']);
-$router->get('/API/ingresos/guardarPlaza', [IngresoController::class,'guardarPlazaAPI']);
 
 //!Rutas para Asignar Resultados
 $router->get('/resultados', [ResultadoController::class,'index']);

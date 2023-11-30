@@ -336,24 +336,4 @@ const ocultarBtnGuardar = () => {
 btnBuscar.addEventListener('click', buscar);
 btnGuardar.addEventListener('click', guardar);
 
-//!ESTE IRA EN EL INDEX.JS DE INGRESOS.
-//!Aca esta el boton para que abra el PDF Despues de Haberlo Guardado. 
-//Aparecce en llaves porque estaba dentro de una columna de un datatable.
-// {
-//     title: 'PDF',
-//     className: 'text-center',
-//     data: 'pdf_ruta',
-//     render: function (data) {
-//         return `<button  class="btn btn-outline-info" data-ruta="${data.substr(10)}"><i class="bi bi-eye"></i>Ver PDF</button>`;
-//     },
-//     width: '150px'
-// },
-//!ESTE IRA EN EL INDEX.JS DE INGRESOS.
-//!Y aca esta la funcion que se ejecuta al darle click al boton para ver PDF.
-// const verPDF = (e) => {
-//     const boton = e.target
-//     let ruta = boton.dataset.ruta
-//     let pdf = btoa(btoa(btoa(ruta)))
-//     window.open(`/soliciudes_e/API/busquedasc/pdf?ruta=${pdf}`)
-// }
 

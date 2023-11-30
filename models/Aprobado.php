@@ -2,7 +2,7 @@
 
 namespace Model;
 
-class Aprovado extends ActiveRecord
+class Aprobado extends ActiveRecord
 {
     protected static $tabla = 'cont_aprovados';
     protected static $columnasDB = ['apro_asp','apro_situacion'];

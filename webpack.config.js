@@ -20,6 +20,7 @@ module.exports = {
     'js/asiggrados/index' : './src/js/asiggrados/index.js',
     'js/asigevaluaciones/index' : './src/js/asigevaluaciones/index.js',
     'js/estadisticas/index' : './src/js/estadisticas/index.js',
+    'js/aprobados/index' : './src/js/aprobados/index.js',
 
 
   },

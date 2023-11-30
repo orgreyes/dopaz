@@ -113,15 +113,15 @@
       <div class="col-12 p-4 shadow">
         <div class="text-center">
           <h1>Puestos</h1>
+          </div>
+            <table id="tablaPuestos" class="table table-bordered table-hover">
+              <!-- Contenido de la tabla -->
+            </table>
+          </div>
         </div>
-        <table id="tablaPuestos" class="table table-bordered table-hover">
-          <!-- Contenido de la tabla -->
-        </table>
       </div>
     </div>
   </div>
-</div>
-
 <!-- //!Modal -->
 <div class="modal fade" id="modalRequisito" tabindex="-1" role="dialog" aria-labelledby="modalRequisitoLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">

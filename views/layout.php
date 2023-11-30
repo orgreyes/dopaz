@@ -36,7 +36,9 @@
                             <li>
                                 <a class="dropdown-item nav-link text-white " href="/dopaz/ingresos"><i class="ms-lg-0 ms-2 bi me-2"></i>Seleccion de Personal</a>
                             </li>
-                            
+                            <li>
+                                <a class="dropdown-item nav-link text-white " href="/dopaz/aprobados"><i class="ms-lg-0 ms-2 bi me-2"></i>Lista de Personal Aprobado</a>
+                            </li>
                         </ul>
                     </div> 
 

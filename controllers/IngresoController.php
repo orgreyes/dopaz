@@ -5,7 +5,7 @@ namespace Controllers;
 use Exception;
 use Model\Ingreso;
 use Model\Pdf;
-use Model\Aprovado;
+use Model\Aprobado;
 use Model\AsigRequisito;
 use Model\RequisitoAprovado;
 use MVC\Router;
@@ -634,7 +634,7 @@ public static function guardarPlazaAPI() {
                 $resultado = $aprovado->actualizar();
         
         $datos['apro_asp'] = $ing_id;
-        $Aprovado = new Aprovado($datos);
+        $Aprovado = new Aprobado($datos);
         $result = $Aprovado->guardar();
 
         // ! Solo envía una respuesta JSON al final
