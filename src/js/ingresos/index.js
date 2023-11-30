@@ -233,77 +233,89 @@ const inicializarDataTable = async (ing_puesto) => {
 
         let contenedornotas = 1;
 
-        if (data && data.length > 0) {
+        // Verificar si data es nulo o está vacío
+        if (!data || data.length === 0) {
+            // Si no hay datos, limpiar la DataTable y salir de la función
             limpiarDataTable();
+            return;
+        }
 
+        // Resto del código para construir la DataTable
+        const columnasDinamicas = Object.keys(data[0]).filter(columna => columna !== 'puesto_nombre' && columna !== 'ing_contingente' && columna !== 'ing_id' && columna !== 'ing_codigo');
+        const columnas = [
+            {
+                title: 'NO',
+                render: () => contenedornotas++
+            },
+            {
+                title: 'Puesto',
+                data: 'puesto_nombre'
+            },
+            ...columnasDinamicas.map(columna => ({
+                title: columna,
+                data: columna,
+                render: function (data, type, row) {
+                    if (type === 'display' && (data === null || data === undefined || data === '')) {
+                        return '<span class="nota-pendiente text-danger">NOTA PENDIENTE</span>';
+                    } else {
+                        // Verificar si es un número y si es menor a 60
+                        if (!isNaN(data) && parseFloat(data) < 60) {
+                            return '<span style="color: red;">' + data + '</span>';
+                        } else {
+                            return data;
+                        }
+                    }
+                }
+            })),
+            {
+                title: 'Promedio',
+                data: null,
+                render: function (data, type, row) {
+                    const notas = columnasDinamicas.map(columna => row[columna]).filter(valor => valor !== null && !isNaN(valor));
+                    const sum = notas.reduce((acc, nota) => acc + parseFloat(nota || 0), 0);
+                    const promedio = notas.length > 0 ? sum / notas.length : 0;
+                    return type === 'display' ? promedio.toFixed(2) : promedio;
+                }
+            },
+            {
+                title: 'APROVAR FASE 1',
+                data: 'ing_id',
+                searchable: false,
+                orderable: false,
+                render: function (data, type, row) {
+                    const notasPendientes = columnasDinamicas.some(columna => row[columna] === null || row[columna] === undefined || row[columna] === '');
 
-            const columnasDinamicas = Object.keys(data[0]).filter(columna => columna !== 'puesto_nombre' && columna !== 'ing_contingente' && columna !== 'ing_id' && columna !== 'ing_codigo');
-
- const columnas = [
-    {
-        title: 'NO',
-        render: () => contenedornotas++
-    },
-    {
-        title: 'Puesto',
-        data: 'puesto_nombre'
-    },
-    ...columnasDinamicas.map(columna => ({
-        title: columna,
-        data: columna,
-        render: function (data, type, row) {
-            if (type === 'display' && (data === null || data === undefined || data === '')) {
-                return '<span class="nota-pendiente text-danger">NOTA PENDIENTE</span>';
-            } else {
-                // Verificar si es un número y si es menor a 60
-                if (!isNaN(data) && parseFloat(data) < 60) {
-                    return '<span style="color: red;">' + data + '</span>';
-                } else {
-                    return data;
+                    if (notasPendientes) {
+                        // Si hay al menos una "NOTA PENDIENTE", mostrar el botón de "PENDIENTE EN INGRESAR NOTAS"
+                        return '<button class="btn btn-warning btn-pendiente-ingresar-notas">Pendiente a Ingresar Notas</button>';
+                    } else {
+                        // Si no hay "NOTA PENDIENTE", mostrar el botón de "APROBAR FASE 1"
+                        return `<button class="btn btn-success btn-aprobar-fase1" data-ing-id='${data}'>Aprobar fase 1</button>`;
+                    }
                 }
             }
-        }
-    })),
-    {
-        title: 'Promedio',
-        data: null,
-        render: function (data, type, row) {
-            const notas = columnasDinamicas.map(columna => row[columna]).filter(valor => valor !== null && !isNaN(valor));
-            const sum = notas.reduce((acc, nota) => acc + parseFloat(nota || 0), 0);
-            const promedio = notas.length > 0 ? sum / notas.length : 0;
-            return type === 'display' ? promedio.toFixed(2) : promedio;
-        }
-    },
-    {
-        title: 'APROVAR FASE 1',
-        data: 'ing_id',
-        searchable: false,
-        orderable: false,
-        render: function (data, type, row) {
-            const notasPendientes = columnasDinamicas.some(columna => row[columna] === null || row[columna] === undefined || row[columna] === '');
+        ];
 
-            if (notasPendientes) {
-                // Si hay al menos una "NOTA PENDIENTE", mostrar el botón de "PENDIENTE EN INGRESAR NOTAS"
-                return '<button class="btn btn-warning btn-pendiente-ingresar-notas">Pendiente a Ingresar Notas</button>';
-            } else {
-                // Si no hay "NOTA PENDIENTE", mostrar el botón de "APROBAR FASE 1"
-                return `<button class="btn btn-success btn-aprobar-fase1" data-ing-id='${data}'>Aprobar fase 1</button>`;
-            }
-        }
-    }
- ];
+        // Limpiar y destruir la DataTable existente antes de crear una nueva
+        limpiarDataTableNotas();
 
-            datatableNotas = $('#tablaNotas').DataTable({
-                data: data,
-                columns: columnas
-            });
-            datatableNotas.draw();
-        }
+        datatableNotas = $('#tablaNotas').DataTable({
+            data: data,
+            columns: columnas
+        });
+        datatableNotas.draw();
     } catch (error) {
         console.error('Error al buscar notas:', error);
     }
 };
 
+// Función para limpiar la DataTable de notas
+const limpiarDataTableNotas = () => {
+    if (datatableNotas) {
+        datatableNotas.clear().destroy();
+        datatableNotas = null;
+    }
+};
 let ing_id;
 // Agregar manejador de eventos para los botones de aprobación de requisitos
 $('#tablaNotas').on('click', '.btn-aprobar-fase1', function () {
