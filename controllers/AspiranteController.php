@@ -18,14 +18,32 @@ class AspiranteController
     public static function index(Router $router)
     {
         $contingentes = static::buscaContingentes();
+        $armas = static::buscaArmas();
         $grados = static::buscarGrados();
         $puestos = static::buscarPuestoAPI();
         $router->render('aspirantes/index', [
              'contingentes' => $contingentes,
+             'armas' => $armas,
             'puestos' => $puestos,
             'grados' => $grados,
         ]);
     }
+
+
+    //!Funcion Select Armas
+public static function buscaArmas()
+{
+    $sql = "SELECT *
+    FROM armas
+    ORDER BY arm_desc_md ASC";
+
+    try {
+        $armas = Arma::fetchArray($sql);
+        return $armas;
+    } catch (Exception $e) {
+        return [];
+    }
+}
 
     //!Funcion Select Contingentes
 public static function buscaContingentes()
@@ -98,7 +116,7 @@ public static function buscarAPI()
             END AS asp_genero_desc,
             mper.per_arma,
             g.gra_codigo AS per_grado_id, -- Cambiado: Ahora se selecciona el ID del grado
-            a.arm_desc_md AS arma
+            a.arm_codigo
         FROM 
             cont_aspirantes ca
         LEFT JOIN 

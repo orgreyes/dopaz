@@ -3,6 +3,8 @@ import { lenguaje } from "../lenguaje";
 import { Toast , validarFormulario } from "../funciones";
 import Swal from "sweetalert2";
 import Toastify from 'toastify-js';
+
+
 const formulario = document.querySelector('form');
 const tablaNotasContainer = document.getElementById('tablaNotasContainer');
 const btnGuardar = document.getElementById('btnGuardar');

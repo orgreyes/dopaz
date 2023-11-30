@@ -5,9 +5,15 @@ import Datatable from "datatables.net-bs5";
 import { lenguaje  } from "../lenguaje";
 
 
-const formulario = document.querySelector('#formularioPersonal');
 const btnBuscar = document.getElementById('btnBuscar');
 const btnGuardar = document.getElementById('btnGuardar');
+const formulario = document.querySelector('#formularioPersonal');
+const containerBtn = document.getElementById('containerBtn');
+const formularioPrincipal = document.getElementById('formulario');
+const btnMilitar = document.getElementById('btnMilitar');
+const btnCivil = document.getElementById('btnCivil');
+const BtnRegresar = document.getElementById('containerBtnRegresar');
+const InputCatalogo = document.getElementById('InputCatalogo');
 
 
 //?--------------------------------------------------------------
@@ -162,7 +168,7 @@ const buscar = async () => {
             formulario.asp_genero.value = d.asp_genero_desc;
             formulario.asp_dpi.value = d.asp_dpi;
             formulario.per_grado.value = d.per_grado_id;
-            formulario.per_arma.value = d.arma;
+            formulario.per_arma.value = d.arm_codigo;
             formulario.asp_id.value = d.asp_id;
             formulario.foto.src = `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${d.asp_catalogo}.jpg`;
 
@@ -326,8 +332,37 @@ async function obtenerRequisitos() {
     }
 }
 
+
+//!Ocultar el Datatable al inicio
+containerBtn.style.display = 'block';
+formularioPrincipal.style.display = 'none'; 
+
+const mostrarFormularioMilitar = () => {
+    containerBtn.style.display = 'none';
+    formularioPrincipal.style.display = 'block'; 
+    };
+
+    const mostrarFormularioCivil = () => {
+        containerBtn.style.display = 'none';
+        InputCatalogo.style.display = 'none';
+        formularioPrincipal.style.display = 'block'; 
+        };
+
+const ocultarFormulario = () => {
+    containerBtn.style.display = 'block';
+    InputCatalogo.style.display = 'block';
+    formularioPrincipal.style.display = 'none'; 
+    formulario.reset();
+    formulario.foto.src = './images/foto.jpg';
+    const contenedorDocumentos = document.getElementById('contenedorDocumentos');
+    contenedorDocumentos.innerHTML = '';
+    btnGuardar.style.display = 'none';
+    };
+    
+
 //!Ocultar btnGuardar
 btnGuardar.style.display = 'none';
+
 
 //!Mostrar btnGuardar
 const mostrarBtnGuardar = () => {
@@ -338,13 +373,13 @@ const mostrarBtnGuardar = () => {
 const ocultarBtnGuardar = () => {
     btnGuardar.style.display = 'none';
     };
+    
+
+btnMilitar.addEventListener('click', mostrarFormularioMilitar);
+btnCivil.addEventListener('click', mostrarFormularioCivil);
+BtnRegresar.addEventListener('click', ocultarFormulario);
 
 btnBuscar.addEventListener('click', buscar);
 btnGuardar.addEventListener('click', guardar);
 
 
-// buscar();
-
-
-btnBuscar.addEventListener('click', buscar);
-btnGuardar.addEventListener('click', guardar);

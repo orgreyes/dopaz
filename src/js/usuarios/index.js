@@ -1,14 +1,21 @@
 //?--------------------------------------------------------------
-
+import { Alert, Dropdown } from "bootstrap";
 import Swal from "sweetalert2";
 import { validarFormulario, Toast, confirmacion} from "../funciones";
-
+import Datatable from "datatables.net-bs5";
+import { lenguaje  } from "../lenguaje";
 
 //?--------------------------------------------------------------
 
 const btnBuscar = document.getElementById('btnBuscar');
+const containerBtn = document.getElementById('containerBtn');
 const btnGuardar = document.getElementById('btnGuardar');
 const formulario = document.querySelector('#formularioPersonal');
+const formularioPrincipal = document.getElementById('formulario');
+const btnMilitar = document.getElementById('btnMilitar');
+const btnCivil = document.getElementById('btnCivil');
+const BtnRegresar = document.getElementById('containerBtnRegresar');
+const InputCatalogo = document.getElementById('InputCatalogo');
 
 //?--------------------------------------------------------------
 // //!Funcion para generar Codigos Aleatorios
@@ -25,13 +32,68 @@ function generarCodigoAleatorio(longitud) {
     return codigo;
 }
 //?--------------------------------------------------------------
+// Definir la función verificarDPI al principio del bloque
+const verificarDPI = () => {
+    let cui = formulario.asp_dpi.value;
+
+    // Resto del código de validación del DPI
+    var cuiRegExp = /^[0-9]{4}\s?[0-9]{5}\s?[0-9]{4}$/;
+
+    if (!cui) {
+        Toast.fire({
+            icon: 'warning',
+            title: 'LLENE EL CAMPO DEL DPI'
+        });
+        return false;
+    }
+
+    if (!cuiRegExp.test(cui)) {
+        Toast.fire({
+            icon: 'warning',
+            title: 'DPI INCORRECTO'
+        });
+        formulario.asp_dpi.value = ""; // Cambiado a formulario en lugar de formaltas
+        return false;
+    }
+
+    // Si llega aquí, el DPI es válido
+    return true;
+};
+
 
 //!Funcion Guardar
 const guardar = async (evento) => {
     evento.preventDefault();
+    if (!validarFormulario(formulario, ['asp_catalogo'])) {
+        Toast.fire({
+            icon: 'info',
+            text: 'Debe llenar todos los datos'
+        });
+        return;
+    }
+    // Validar DPI
+    if (!verificarDPI()) {
+        Toast.fire({
+            icon: 'warning',
+            title: 'DPI NO VALIDO'
+        });
+        return;
+    }
 
     // Agrega los archivos PDF al formulario con validación de formato
     const archivosPDF = document.querySelectorAll('input[type="file"][name^="pdf_ruta"]');
+
+    // Verifica si hay al menos un archivo PDF adjunto
+    if (archivosPDF.length === 0 || !archivosPDF[0].files || archivosPDF[0].files.length === 0) {
+        // Muestra un mensaje de error si no hay archivos adjuntos
+        Toast.fire({
+            icon: 'error',
+            text: 'Debe adjuntar al menos un archivo PDF.',
+        });
+        return;
+    }
+
+    // Validación de formato PDF
     for (const archivo of archivosPDF) {
         const nombreArchivo = archivo.files[0].name;
         if (!nombreArchivo.toLowerCase().endsWith('.pdf')) {
@@ -46,9 +108,9 @@ const guardar = async (evento) => {
     }
 
     // Genera un código aleatorio
-    const codigoAleatorio = generarCodigoAleatorio(10); // Cambia la longitud según tus necesidades
+    const codigoAleatorio = generarCodigoAleatorio(10);
 
-    // Construye el cuerpo de la solicitud  
+    // Construye el cuerpo de la solicitud
     const body = new FormData(formulario);
     body.delete('per_catalogo');
     body.append('ing_codigo', codigoAleatorio);
@@ -56,7 +118,7 @@ const guardar = async (evento) => {
     // Agrega los archivos PDF al formulario
     archivosPDF.forEach((archivo, index) => {
         console.log(`Adjuntando archivo ${index + 1}:`, archivo.files[0]);
-        body.append(`pdf_ruta[]`, archivo.files[0]); // Cambia pdf_documento por pdf_ruta
+        body.append(`pdf_ruta[]`, archivo.files[0]);
     });
 
     // Agrega estos console.log adicionales
@@ -67,7 +129,7 @@ const guardar = async (evento) => {
     const url = '/dopaz/API/usuarios/guardar';
     const headers = new Headers();
     headers.append('X-Requested-With', 'fetch');
-    
+
     // Define la configuración
     const config = {
         method: 'POST',
@@ -114,6 +176,7 @@ const guardar = async (evento) => {
 };
 
 
+
 //?--------------------------------------------------------------
 
 //!Función Buscar
@@ -136,6 +199,7 @@ const buscar = async () => {
     try {
         const respuesta = await fetch(url, config);
         const data = await respuesta.json();
+        console.log(data);
         if (data === null) {
             Toast.fire({
                 icon: 'info',
@@ -154,7 +218,7 @@ const buscar = async () => {
             formulario.asp_genero.value = d.per_sexo;
             formulario.asp_dpi.value = d.per_dpi;
             formulario.per_grado.value = d.per_grado_id;
-            formulario.per_arma.value = d.arm_desc_md;
+            formulario.per_arma.value = d.arm_codigo;
             formulario.foto.src = `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${d.per_catalogo}.jpg`;
 
             // Limpiar el contenedor antes de insertar nuevos campos
@@ -320,8 +384,38 @@ async function obtenerRequisitos() {
     }
 }
 
+
+
+//!Ocultar el Datatable al inicio
+containerBtn.style.display = 'block';
+formularioPrincipal.style.display = 'none'; 
+
+const mostrarFormularioMilitar = () => {
+    containerBtn.style.display = 'none';
+    formularioPrincipal.style.display = 'block'; 
+    };
+
+    const mostrarFormularioCivil = () => {
+        containerBtn.style.display = 'none';
+        InputCatalogo.style.display = 'none';
+        formularioPrincipal.style.display = 'block'; 
+        };
+
+const ocultarFormulario = () => {
+    containerBtn.style.display = 'block';
+    InputCatalogo.style.display = 'block';
+    formularioPrincipal.style.display = 'none'; 
+    formulario.reset();
+    formulario.foto.src = './images/foto.jpg';
+    const contenedorDocumentos = document.getElementById('contenedorDocumentos');
+    contenedorDocumentos.innerHTML = '';
+    btnGuardar.style.display = 'none';
+    };
+    
+
 //!Ocultar btnGuardar
 btnGuardar.style.display = 'none';
+
 
 //!Mostrar btnGuardar
 const mostrarBtnGuardar = () => {
@@ -332,6 +426,11 @@ const mostrarBtnGuardar = () => {
 const ocultarBtnGuardar = () => {
     btnGuardar.style.display = 'none';
     };
+    
+
+btnMilitar.addEventListener('click', mostrarFormularioMilitar);
+btnCivil.addEventListener('click', mostrarFormularioCivil);
+BtnRegresar.addEventListener('click', ocultarFormulario);
 
 btnBuscar.addEventListener('click', buscar);
 btnGuardar.addEventListener('click', guardar);

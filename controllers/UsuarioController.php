@@ -20,15 +20,32 @@ class UsuarioController
     public static function index(Router $router)
     {
         $contingentes = static::buscaContingentes();
+        $armas = static::buscaArmas();
         $grados = static::buscarGrados();
         $puestos = static::buscarPuestoAPI();
         
         $router->render('usuarios/index', [
             'contingentes' => $contingentes,
+            'armas' => $armas,
             'puestos' => $puestos,
             'grados' => $grados,
         ]);
     }
+
+//!Funcion Select Armas
+public static function buscaArmas()
+{
+    $sql = "SELECT *
+    FROM armas
+    ORDER BY arm_desc_md ASC";
+
+    try {
+        $armas = Arma::fetchArray($sql);
+        return $armas;
+    } catch (Exception $e) {
+        return [];
+    }
+}
 
 //!Funcion Select Contingentes
 public static function buscaContingentes()
@@ -65,8 +82,7 @@ public static function buscaContingentes()
 
         try {
 
-        $sql = "
-        SELECT p.*
+        $sql = "SELECT p.*
                 FROM cont_puestos p
                 JOIN asig_grado_puesto agp ON p.pue_id = agp.asig_puesto
                 JOIN grados g ON agp.asig_grado = g.gra_codigo
@@ -103,7 +119,7 @@ public static function buscarAPI()
                     ELSE 'DESCONOCIDO'
                 END AS per_sexo,
                 grados.gra_codigo as per_grado_id,
-                armas.arm_desc_md
+                armas.arm_codigo
             FROM mper
             INNER JOIN grados ON mper.per_grado = grados.gra_codigo
             INNER JOIN armas ON mper.per_arma = armas.arm_codigo

@@ -8,6 +8,24 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css">
         <style>
+             #containerBtn {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        #containerBtnRegresar {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
             img {
                 border: 2px solid #ccc;
                 max-width: 100%;
@@ -40,7 +58,19 @@
     </head>
 
     <body>
-        <div class="container mt-4">
+    <div id="containerBtn">
+        <div  class="row mb-3 d-flex">
+                    <center><h1>Seleccione Una Opcion</h1></center>
+                    <br><br>
+                    <div class="col-6">
+                        <button type="button" id="btnMilitar" class="btn btn-info w-100">Aspirante Militar</button>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" id="btnCivil" class="btn btn-warning w-100">Aspirante Civil</button>
+                    </div>
+        </div>
+    </div>
+        <div id="formulario" class="container mt-4">
             <h2 id="titulo">Formulario para personal que ha participado en Contingente antes</h2><br>
 
             <form class="form-container" id="formularioPersonal" enctype="multipart/form-data">
@@ -50,7 +80,7 @@
                         <input type="hidden" name="asp_id" id="asp_id">
                     </div>
                     <div class="col-md-9">
-                        <div class="form-row">
+                        <div class="form-row"  id="InputCatalogo">
                             <div class="form-group col-md-6">
                                 <label for="catalogo"><i class="fas fa-id-card"></i> Buscar Datos por Catalogo:</label>
                                 <div class="input-group">
@@ -70,28 +100,29 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="asp_nom1"><i class="fas fa-user-tie"></i> Nombres:</label>
-                                    <input type="text" class="form-control" id="asp_nom1"  name="asp_nom1" disabled placeholder="Primer Nombre">
+                                    <input type="text" class="form-control" id="asp_nom1" name="asp_nom1" placeholder="Primer Nombre" oninput="this.value = this.value.toUpperCase()">
+
                                 </div>
 
                                 <div class="form-group col-md-6">
                                     <label for="asp_nom2"><i class="fas fa-user"></i></label>
-                                    <input type="text" class="form-control" id="asp_nom2"  name= "asp_nom2" disabled placeholder="Segundo Nombre">
+                                    <input type="text" class="form-control" id="asp_nom2" name="asp_nom2" placeholder="Segundo Nombre" oninput="this.value = this.value.toUpperCase()">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="asp_ape1"><i class="fas fa-user-tie"></i> Apellidos:</label>
-                                    <input type="text" class="form-control" id="asp_ape1"  name= "asp_ape1" disabled placeholder="Primer apellido">
+                                    <input type="text" class="form-control" id="asp_ape1" name="asp_ape1" placeholder="Primer Apellido" oninput="this.value = this.value.toUpperCase()">
                                 </div>
                             <div class="form-group col-md-6">
                                 <label for="asp_ape2"><i class="fas fa-user"></i></label>
-                                <input type="text" class="form-control" id="asp_ape2"  name= "asp_ape2" disabled placeholder="Segundo apellido">
+                                <input type="text" class="form-control" id="asp_ape2" name="asp_ape2" placeholder="Segundo Apellido" oninput="this.value = this.value.toUpperCase()">
                             </div>
 
                             <div class="form-group col-md-6">
                                 <label for="asp_genero"><i class="fas fa-venus-mars"></i>Genero:</label>
-                                <input type="text" class="form-control" id="asp_genero"  name= "asp_genero" disabled  placeholder="Genero">
+                                <input type="text" class="form-control" id="asp_genero"  name= "asp_genero"   placeholder="Genero">
                             </div>
 
                             <!--//!------------------------->
@@ -108,9 +139,17 @@
                                 </div>
                             </div>
 
-                            <div class="form-group col-md-6">
-                                <label for="per_arma"><i class="fas fa-crosshairs"></i>Arma:</label>
-                                <input type="text" class="form-control" id="per_arma"  name="per_arma" disabled placeholder="Arma">
+                            <div class=" form-group  col-md-6">
+                                <div class="col">
+                                    <label for="per_arma"><i class="fas fa-shield"></i> Seleccione Arma</label><br>
+                                    <select name="per_arma" id="per_arma" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+                                        <option value="">SELECCIONE...</option>
+                                        <?php foreach ($armas as $arma) : ?>
+                                        <option value="<?= $arma['arm_codigo'] ?>">
+                                            <?= $arma['arm_desc_md'] ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
                             </div>
                             
                             <div class="row mb-3 col-md-6">
@@ -133,7 +172,7 @@
                             
                             <div class="form-group col-md-6">
                                 <label for="asp_dpi"><i class="fas fa-id-card"></i>DPI:</label>
-                                <input type="text" class="form-control" id="asp_dpi" disabled  name= "asp_dpi" placeholder="DPI">
+                                <input type="text" class="form-control" id="asp_dpi"   name= "asp_dpi" placeholder="DPI">
                             </div>
 
                             <div class="row mb-3 col-md-6">
@@ -165,7 +204,15 @@
                 </div>
             </form>
             <br>
-
+            <div id="containerBtnRegresar">
+                <div class="row mb-3 d-flex">
+                            <center><h1>Menu Anterior</h1></center>
+                            <br><br>
+                            <div style="margin-left:16%" class="col-8">
+                                <button type="button" id="btnMilitar" class="btn btn-danger w-100">Regresar</button>
+                            </div>
+                </div>
+            </div>
             <br>
         </div>
         <script src="<?= asset('./build/js/aspirantes/index.js') ?>"></script>
