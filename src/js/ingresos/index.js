@@ -806,7 +806,7 @@ const desaprobar = async e => {
                     buscarRequisitoPuestoAPI(ing_puesto_global, ing_id_global);
                     Swal.fire({
                         icon: 'success',
-                        title: 'Desaprovado Exitosamente',
+                        title: 'Desaprobado Exitosamente',
                         text: mensaje,
                         confirmButtonText: 'OK'
                     });

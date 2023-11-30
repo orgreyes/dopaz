@@ -23,7 +23,7 @@ class ReporteController
                     ci.ing_id,
                     p.pue_nombre AS nombre_puesto
                 FROM
-                    cont_aprovados ca
+                    cont_aprobados ca
                 JOIN
                     cont_ingresos ci ON ca.apro_asp = ci.ing_aspirante
                 JOIN

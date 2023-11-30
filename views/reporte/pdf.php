@@ -110,13 +110,13 @@
         </thead>
         <tbody>
     <?php $contador = 1; ?>
-    <?php foreach($solicitud as $aprovados) : ?>
+    <?php foreach($solicitud as $aprobados) : ?>
         <tr>
             <td><?= $contador++ ?></td>
-            <td><?= ($aprovados['nombre_aspirante']) ?></td>
-            <td><?= ($aprovados['nombre_puesto']) ?></td>
-            <td><?= ($aprovados['nombre_contingente']) ?></td>
-            <td><?= ($aprovados['cont_fecha_inicio']) ?></td>
+            <td><?= ($aprobados['nombre_aspirante']) ?></td>
+            <td><?= ($aprobados['nombre_puesto']) ?></td>
+            <td><?= ($aprobados['nombre_contingente']) ?></td>
+            <td><?= ($aprobados['cont_fecha_inicio']) ?></td>
 
         </tr>
     <?php endforeach; ?>

@@ -185,7 +185,7 @@ CREATE TABLE cont_pdf(
 	FOREIGN KEY (pdf_ingreso) REFERENCES cont_ingresos (ing_id)
 );
 
-CREATE TABLE cont_req_aprovado (
+CREATE TABLE cont_req_aprobado (
     apro_id SERIAL PRIMARY KEY,
     apro_ingreso INT,
     apro_requisito INT,
@@ -194,7 +194,7 @@ CREATE TABLE cont_req_aprovado (
     FOREIGN KEY (apro_ingreso) REFERENCES cont_ingresos(ing_id)
 );
 
-CREATE TABLE cont_aprovados (
+CREATE TABLE cont_aprobados (
     apro_id SERIAL PRIMARY KEY,
     apro_asp INT,
     apro_situacion SMALLINT,
@@ -218,8 +218,8 @@ DROP TABLE cont_pdf
 DROP TABLE contingentes
 DROP TABLE cont_requisitos
 DROP TABLE cont_asig_requisitos
-DROP TABLE cont_req_aprovado
-DROP TABLE cont_aprovados
+DROP TABLE cont_req_aprobado
+DROP TABLE cont_aprobados
 DROP TABLE cont_evaluaciones
 DROP TABLE cont_puestos
 DROP TABLE cont_aspirantes

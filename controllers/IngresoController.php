@@ -7,7 +7,7 @@ use Model\Ingreso;
 use Model\Pdf;
 use Model\Aprobado;
 use Model\AsigRequisito;
-use Model\RequisitoAprovado;
+use Model\RequisitoAprobado;
 use MVC\Router;
 
 class IngresoController {
@@ -383,7 +383,7 @@ public static function buscarRequisitoPuestoAPI(){
                 JOIN
                     cont_ingresos ci ON ar.asig_req_puesto = ci.ing_puesto
                 LEFT JOIN
-                    cont_req_aprovado ca ON ar.asig_req_id = ca.apro_requisito AND ci.ing_id = ca.apro_ingreso
+                    cont_req_aprobado ca ON ar.asig_req_id = ca.apro_requisito AND ci.ing_id = ca.apro_ingreso
                 WHERE
                     ar.asig_req_puesto = $puestoId
                     AND ar.asig_req_situacion = 1
@@ -403,19 +403,19 @@ public static function buscarRequisitoPuestoAPI(){
  
  //!Funcion Para Aprovar los requisitos por primera vez
 public static function guardarAPI() {
+    $Id_Ingreso = $_GET['ing_id'];
+    $Id_Requisito = $_GET['asig_req_id'];
+    $req_id = $_GET['req_id'];
+    
     try {
-        $Id_Ingreso = $_GET['ing_id'];
-        $Id_Requisito = $_GET['asig_req_id'];
-        $req_id = $_GET['req_id'];
-
         
         // ! Aca se recibe los datos que se guardaran en otra tabla.
         $datos['apro_ingreso'] = $Id_Ingreso;
         $datos['apro_requisito'] = $Id_Requisito;
         $datos['apro_id_requisito'] = $req_id;
         
-        $Requisito_Aprovado = new RequisitoAprovado($datos);
-        $result = $Requisito_Aprovado->guardar();
+        $Requisito_Aprobado = new RequisitoAprobado($datos);
+        $result = $Requisito_Aprobado->guardar();
 
         // ! Solo envía una respuesta JSON al final
         if ($result['resultado'] == 1) {
@@ -433,7 +433,7 @@ public static function guardarAPI() {
         // ! Si hay una excepción, envía una respuesta JSON de error
         echo json_encode([
             'detalle' => $e->getMessage(),
-            'mensaje' => 'El Requisito ya fue Aprovado',
+            'mensaje' => 'El Requisito ya fue Aprobado',
             'codigo' => 2
         ]);
     }
@@ -443,7 +443,7 @@ public static function guardarAPI() {
  public static function desaprovarAPI(){
      $apro_id = $_POST['apro_id'];
      try {
-         $requisito = RequisitoAprovado::find($apro_id);
+         $requisito = RequisitoAprobado::find($apro_id);
  
          // Verificar si la evaluación existe
          if ($requisito) {
@@ -452,7 +452,7 @@ public static function guardarAPI() {
  
              if ($resultado['resultado'] == 1) {
                  echo json_encode([
-                     'mensaje' => 'Requisito Desaprovado correctamente',
+                     'mensaje' => 'Requisito Desaprobado correctamente',
                      'codigo' => 1
                  ]);
              } else {
@@ -480,7 +480,7 @@ public static function guardarAPI() {
  public static function aprovarAPI(){
      $apro_id = $_POST['apro_id'];
      try {
-         $requisito = RequisitoAprovado::find($apro_id);
+         $requisito = RequisitoAprobado::find($apro_id);
  
          // Verificar si la evaluación existe
          if ($requisito) {
@@ -600,11 +600,11 @@ public static function aprobarPlazaAPI() {
 
         // Consulta para obtener los requisitos aprobados para el ingreso
         $sql2 = "SELECT cr.req_nombre
-                FROM cont_req_aprovado cra
+                FROM cont_req_aprobado cra
                 JOIN cont_requisitos cr ON cra.apro_id_requisito = cr.req_id
                 WHERE cra.apro_ingreso = $ing_id";
 
-        $requisitosAprobados = RequisitoAprovado::fetchArray($sql2);
+        $requisitosAprobados = RequisitoAprobado::fetchArray($sql2);
 
         // Combina los resultados en un solo array asociativo
         $resultado = [
@@ -629,18 +629,18 @@ public static function guardarPlazaAPI() {
 
         $ing_id = $_GET['ing_id'];
 
-        $aprovado = Ingreso::find($ing_id);
-                $aprovado->ing_situacion = 4;
-                $resultado = $aprovado->actualizar();
+        $aprobado = Ingreso::find($ing_id);
+                $aprobado->ing_situacion = 4;
+                $resultado = $aprobado->actualizar();
         
         $datos['apro_asp'] = $ing_id;
-        $Aprovado = new Aprobado($datos);
-        $result = $Aprovado->guardar();
+        $Aprobado = new Aprobado($datos);
+        $result = $Aprobado->guardar();
 
         // ! Solo envía una respuesta JSON al final
         if ($result['resultado'] == 1) {
             echo json_encode([
-                'mensaje' => 'Aspirante Aprovado',
+                'mensaje' => 'Aspirante Aprobado',
                 'codigo' => 1
             ]);
         } else {
@@ -654,7 +654,7 @@ public static function guardarPlazaAPI() {
         // ! Si hay una excepción, envía una respuesta JSON de error
         echo json_encode([
             'detalle' => $e->getMessage(),
-            'mensaje' => 'El Requisito ya fue Aprovado',
+            'mensaje' => 'El Requisito ya fue Aprobado',
             'codigo' => 2
         ]);
     }

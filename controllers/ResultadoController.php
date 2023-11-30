@@ -150,7 +150,7 @@ public static function guardarAPI() {
         // ! Si hay una excepción, envía una respuesta JSON de error
         echo json_encode([
             'detalle' => $e->getMessage(),
-            'mensaje' => 'El Requisito ya fue Aprovado',
+            'mensaje' => 'El Requisito ya fue Aprobado',
             'codigo' => 2
         ]);
     }

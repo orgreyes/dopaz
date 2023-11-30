@@ -66,11 +66,11 @@ const getEstadisticas = async (selectedContId) => {
             const activosCount = data.filter(registro => registro.estado ===   'Solicitante       ').length;
             const inactivosCount = data.filter(registro => registro.estado === 'CalificarNotas    ').length;
             const requisitosCount = data.filter(registro => registro.estado ==='RevisionRequisitos').length;
-            const aprovadosCount = data.filter(registro => registro.estado === 'Aprobados         ').length;
+            const aprobadosCount = data.filter(registro => registro.estado === 'Aprobados         ').length;
 
             chartEstados.data.datasets[0].borderColor = getRandomColors(3); // Asignamos colores de borde también
 
-            updateChart([activosCount, inactivosCount, requisitosCount, aprovadosCount]);
+            updateChart([activosCount, inactivosCount, requisitosCount, aprobadosCount]);
         } else {
             Toast.fire({
                 title: 'No se encontraron Registros',

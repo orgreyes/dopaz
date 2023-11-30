@@ -36,6 +36,7 @@ $router->get('/aprobado', [ReporteController::class, 'pdf']);
 $router->get('/aprobados', [AprobadoController::class,'index']);
 $router->get('/API/aprobados/buscarPorContingente', [AprobadoController::class,'buscarPorContingenteAPI']);
 $router->post('/API/aprobados/eliminar', [AprobadoController::class,'eliminarAPI']);
+$router->get('/API/aprobados/verDetalles', [AprobadoController::class,'verDetallesAPI']);
 
 
 

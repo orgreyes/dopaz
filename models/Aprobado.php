@@ -4,7 +4,7 @@ namespace Model;
 
 class Aprobado extends ActiveRecord
 {
-    protected static $tabla = 'cont_aprovados';
+    protected static $tabla = 'cont_aprobados';
     protected static $columnasDB = ['apro_asp','apro_situacion'];
     protected static $idTabla = 'apro_id';
 

@@ -8,6 +8,7 @@ import $ from "jquery";
 
 const btnPdf = document.getElementById('btnPdf');
 const selectContingente = document.getElementById('cont_id');
+const formulario = document.querySelector('#formularioPersonal');
 
 document.addEventListener('DOMContentLoaded', function () {
     selectContingente.addEventListener('change', function () {
@@ -108,7 +109,7 @@ const datatable = new Datatable('#tablaEvaluacion', {
         },
         {
             title: 'NOMBRES DEL ASPIRANTE',
-            data: 'nombre_aspirante'
+            data: 'nombre_aspirante' // Asegúrate de que coincide con el alias en tu SQL
         },
         {
             title: 'PUESTO A DESEMPEÑAR',
@@ -133,6 +134,13 @@ const datatable = new Datatable('#tablaEvaluacion', {
             },
         },
         {
+            title: 'VER DETALLES',
+            data: 'ing_id',
+            searchable: false,
+            orderable: false,
+            render: (data, type, row, meta) => `<button class="btn btn-primary btn-detalles bi bi-people" data-bs-toggle='modal' data-bs-target='#modalDetalles' data-ing-id='${data}'>  Ver Detalles</button>`
+        },
+        {
             title: 'ELIMINAR',
             data: 'ing_id',
             searchable: false,
@@ -141,6 +149,44 @@ const datatable = new Datatable('#tablaEvaluacion', {
         }
     ]
 });
+$('#tablaEvaluacion').on('click', '.btn-primary', function () {
+    const ing_id = parseInt($(this).data('ing-id'));
+    verDetalles(ing_id);
+});
+
+const verDetalles = async (ing_id) => {
+    contenedor = 1;
+
+    const url = `API/aprobados/verDetalles?ing_id=${ing_id}`;
+    console.log(url);
+    const config = {
+        method: 'GET'
+    }
+
+    try {
+        const respuesta = await fetch(url, config)
+        const data = await respuesta.json();
+        console.log(data);
+
+        if (Array.isArray(data) && data.length > 0) {
+            const d = data[0];
+
+            formulario.asp_catalogo.value = d.asp_catalogo;
+            formulario.asp_nom1.value = d.asp_nom1;
+            formulario.asp_nom2.value = d.asp_nom2;
+            formulario.asp_ape1.value = d.asp_ape1;
+            formulario.asp_ape2.value = d.asp_ape2;
+            formulario.asp_genero.value = d.asp_genero;
+            formulario.asp_dpi.value = d.asp_dpi;
+            formulario.per_grado.value = d.asp_grado_desc;
+            formulario.asp_puesto.value = d.asp_puesto;
+            formulario.foto.src = `https://sistema.ipm.org.gt/sistema/fotos_afiliados/ACTJUB/${d.asp_catalogo}.jpg`;
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 $('#tablaEvaluacion').on('click', '.btn-eliminar', function () {
     const ing_id = parseInt($(this).data('ing-id'));

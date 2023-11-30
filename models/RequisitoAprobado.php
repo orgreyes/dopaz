@@ -2,8 +2,8 @@
 
 namespace Model;
 
-class RequisitoAprovado extends ActiveRecord{
-    protected static $tabla = 'cont_req_aprovado';
+class RequisitoAprobado extends ActiveRecord{
+    protected static $tabla = 'cont_req_aprobado';
     protected static $columnasDB = ['apro_ingreso','apro_requisito','apro_id_requisito','apro_situacion'];
     protected static $idTabla = 'apro_id';
 
