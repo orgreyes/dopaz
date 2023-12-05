@@ -46,12 +46,13 @@ public static function buscaArmas()
 }
 
     //!Funcion Select Contingentes
-public static function buscaContingentes()
-{
+public static function buscaContingentes(){
     $sql = "SELECT *
     FROM contingentes
     WHERE cont_situacion = 1
-        AND cont_fecha_inicio > TODAY";
+        AND cont_fecha_inicio >= (CURRENT YEAR TO MONTH) + 6 UNITS MONTH
+        AND cont_fecha_inicio < (CURRENT YEAR TO MONTH) + 18 UNITS MONTH
+    ORDER BY cont_nombre";
 
     try {
         $contingentes = Contingente::fetchArray($sql);
@@ -61,7 +62,7 @@ public static function buscaContingentes()
     }
 }
 //!Funcion Select Grados
-    public static function buscarGrados()
+public static function buscarGrados()
     {
         $sql = "SELECT * FROM grados
         ORDER BY gra_desc_md ASC";
@@ -72,9 +73,10 @@ public static function buscaContingentes()
         } catch (Exception $e) {
             return [];
         }
-    }
+}
+
 //!Funcion Select Puestos
-    public static function buscarPuestoAPI()
+public static function buscarPuestoAPI()
     {
     $Grado = $_GET['pue_grado'];
     
@@ -84,7 +86,8 @@ public static function buscaContingentes()
         JOIN asig_grado_puesto agp ON p.pue_id = agp.asig_puesto
         JOIN grados g ON agp.asig_grado = g.gra_codigo
         WHERE p.pue_situacion = 1
-        AND g.gra_codigo = $Grado;";
+        AND g.gra_codigo = $Grado
+        ORDER BY p.pue_nombre";
         
 
             $Puestos = Puesto::fetchArray($sql);
@@ -93,7 +96,8 @@ public static function buscaContingentes()
         } catch (Exception $e) {
             return [];
         }
-    }
+}
+
 //!Funcion Buscar
 public static function buscarAPI()
 {
@@ -102,31 +106,31 @@ public static function buscarAPI()
     try {
         if ($catalogo != '') {
             $sql = "SELECT 
-            ca.asp_id,
-            ca.asp_catalogo,
-            ca.asp_dpi, 
-            ca.asp_nom1, 
-            ca.asp_nom2, 
-            ca.asp_ape1, 
-            ca.asp_ape2, 
-            CASE
-                WHEN ca.asp_genero = 'M' THEN 'MASCULINO'
-                WHEN ca.asp_genero = 'F' THEN 'FEMENINO'
-                ELSE 'OTRO'
-            END AS asp_genero_desc,
-            mper.per_arma,
-            g.gra_codigo AS per_grado_id, -- Cambiado: Ahora se selecciona el ID del grado
-            a.arm_codigo
-        FROM 
-            cont_aspirantes ca
-        LEFT JOIN 
-            mper ON ca.asp_catalogo = mper.per_catalogo
-        LEFT JOIN
-            grados g ON mper.per_grado = g.gra_codigo
-        LEFT JOIN
-            armas a ON mper.per_arma = a.arm_codigo
-        WHERE 
-            ca.asp_catalogo = $catalogo";
+                        ca.asp_id,
+                        ca.asp_catalogo,
+                        TRIM(BOTH ' ' FROM ca.asp_dpi) AS asp_dpi, -- Elimina espacios al principio y al final
+                        ca.asp_nom1, 
+                        ca.asp_nom2, 
+                        ca.asp_ape1, 
+                        ca.asp_ape2, 
+                        CASE
+                            WHEN ca.asp_genero = 'M' THEN 'MASCULINO'
+                            WHEN ca.asp_genero = 'F' THEN 'FEMENINO'
+                            ELSE 'OTRO'
+                        END AS asp_genero_desc,
+                        mper.per_arma,
+                        g.gra_codigo AS per_grado_id,
+                        a.arm_codigo
+                    FROM 
+                        cont_aspirantes ca
+                    LEFT JOIN 
+                        mper ON ca.asp_catalogo = mper.per_catalogo
+                    LEFT JOIN
+                        grados g ON mper.per_grado = g.gra_codigo
+                    LEFT JOIN
+                        armas a ON mper.per_arma = a.arm_codigo
+                    WHERE 
+                        ca.asp_catalogo = $catalogo";
 
             $aspirantes = Aspirante::fetchArray($sql);
         

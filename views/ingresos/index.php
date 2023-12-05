@@ -33,34 +33,6 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
         }
-        #containerBtn h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        #contenedorBotones {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        /* Estilo para los botones (puedes ajustar según tus necesidades) */
-        #containerBtn .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px;
-            text-align: center;
-            text-decoration: none;
-            background-color: #4CAF50;
-            color: #fff;
-            border: 1px solid #4CAF50;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Cambio de color al pasar el ratón sobre el botón */
-        #containerBtn .btn:hover {
-            background-color: #45a049;
-        }
     </style>
 <body>
 

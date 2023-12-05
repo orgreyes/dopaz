@@ -54,7 +54,10 @@ const buscarPuestosSolicitudes = async () => {
                 const boton = document.createElement('button');
                 boton.textContent = puesto.puesto_nombre;
                 boton.setAttribute('data-idpuesto', puesto.ing_puesto);
-                boton.classList.add('btn', 'btn-primary', 'btn-block'); // Clases de Bootstrap para botones
+                boton.classList.add('btn', 'btn-success', 'btn-block', 'btn-custom'); // Añade una clase personalizada para el tamaño del botón
+
+                boton.style.width = '150px'; 
+                boton.style.height = '60px';
 
                 boton.addEventListener('click', async () => {
                     const ing_puesto = puesto.ing_puesto;
@@ -179,7 +182,10 @@ const buscarPuestosNotas = async () => {
                 const boton = document.createElement('button');
                 boton.textContent = puesto.puesto_nombre;
                 boton.setAttribute('data-idpuesto', puesto.ing_puesto);
-                boton.classList.add('btn', 'btn-success', 'btn-block');
+                boton.classList.add('btn', 'btn-success', 'btn-block', 'btn-custom'); // Añade una clase personalizada para el tamaño del botón
+
+                boton.style.width = '150px'; 
+                boton.style.height = '60px';
 
                 boton.addEventListener('click', async () => {
                     // Captura el ing_puesto seleccionado y almacénalo en la variable ingPuesto
@@ -349,7 +355,10 @@ const buscarPuestosRequisitos = async () => {
                 const boton = document.createElement('button');
                 boton.textContent = puesto.puesto_nombre;
                 boton.setAttribute('data-idpuesto', puesto.ing_puesto);
-                boton.classList.add('btn', 'btn-success', 'btn-block'); // Clases de Bootstrap para botones
+                boton.classList.add('btn', 'btn-success', 'btn-block', 'btn-custom'); // Añade una clase personalizada para el tamaño del botón
+
+                boton.style.width = '150px'; 
+                boton.style.height = '60px';
 
                 boton.addEventListener('click', async () => {
                     const ing_puesto = puesto.ing_puesto;
@@ -673,9 +682,7 @@ const buscarTodo = async () => {
 //!Función para buscar al personal antes de buscar los requisitos.
 
 const buscar = async () => {
-    contenedorrr = 1;
-    contador = 1;
-
+    contenedor = 1;
     const url = `API/ingresos/buscar`;
     const config = {
         method: 'GET'

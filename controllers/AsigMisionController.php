@@ -23,7 +23,12 @@ class AsigMisionController {
 //!Funcion Select Contingentes
 public static function buscaContingentes()
 {
-    $sql = "SELECT * FROM contingentes where cont_situacion = 1";
+    $sql = "SELECT *
+    FROM contingentes
+    WHERE cont_situacion = 1
+        AND cont_fecha_inicio >= (CURRENT YEAR TO MONTH) + 6 UNITS MONTH
+        AND cont_fecha_inicio < (CURRENT YEAR TO MONTH) + 18 UNITS MONTH
+    ORDER BY cont_nombre";
 
     try {
         $contingentes = Contingente::fetchArray($sql);
@@ -35,7 +40,10 @@ public static function buscaContingentes()
 //!Funcion Select Misiones
 public static function buscarMisiones()
 {
-    $sql = "SELECT * FROM cont_misiones_contingente where mis_situacion = 1";
+    $sql = "SELECT *
+    FROM cont_misiones_contingente
+    WHERE mis_situacion = 1
+    ORDER BY mis_nombre";
 
     try {
         $misiones = Mision::fetchArray($sql);

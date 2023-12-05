@@ -1,9 +1,15 @@
-    <!DOCTYPE html>
-    <html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Militar</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
     <head>
         <title>Formulario Militar</title>
         <style>
@@ -59,15 +65,15 @@
     <body>
 
     <div id="containerBtn">
-        <div  class="row mb-3 d-flex">
-                    <center><h1>Seleccione Una Opcion</h1></center>
-                    <br><br>
-                    <div class="col-6">
-                        <button type="button" id="btnMilitar" class="btn btn-info w-100">Aspirante Militar</button>
-                    </div>
-                    <div class="col-6">
-                        <button type="button" id="btnCivil" class="btn btn-warning w-100">Aspirante Civil</button>
-                    </div>
+        <div class="row mb-3 d-flex">
+            <center><h1>Seleccione Una Opción</h1></center>
+            <br><br>
+            <div class="col-6">
+                <button type="button" id="btnMilitar" class="btn btn-info w-100">Aspirante Militar</button>
+            </div>
+            <div class="col-6">
+                <button type="button" id="btnCivil" class="btn btn-warning w-100">Aspirante Civil</button>
+            </div>
         </div>
     </div>
 
@@ -85,7 +91,7 @@
                             <div class="form-group col-md-6">
                                 <label for="asp_catalogo"><i class="fas fa-id-card"></i> Buscar Datos por Catalogo:</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" id="asp_catalogo" name="asp_catalogo">
+                                    <input type="number" min="0" class="form-control" id="asp_catalogo" name="asp_catalogo">
                                     <div class="input-group-append">
                                         <button type="button" id="btnBuscar" class="btn btn-outline-success">
                                             <i class="fas fa-search"></i> Buscar
@@ -129,46 +135,43 @@
 
                             <!--//!------------------------->
                             <div class="form-group col-md-6">
-                                <div class="col">
-                                    <label for="per_grado"><i class="fas fa-shield"></i> Seleccione Grado</label><br>
-                                    <select name="per_grado" id="per_grado" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
-                                        <option value="">SELECCIONE...</option>
-                                        <?php foreach ($grados as $grado) : ?>
+                                <label for="per_grado"><i class="fas fa-shield"></i> Seleccione Grado</label><br>
+                                <select name="per_grado" id="per_grado" class="form-control">
+                                    <option value="">SELECCIONE...</option>
+                                    <?php foreach ($grados as $grado) : ?>
                                         <option value="<?= $grado['gra_codigo'] ?>">
-                                            <?= $grado['gra_desc_md'] ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                </div>
+                                            <?= $grado['gra_desc_md'] ?>
+                                        </option>
+                                    <?php endforeach ?>
+                                </select>
                             </div>
 
 
-                            <div class=" form-group  col-md-6">
-                                <div class="col">
-                                    <label for="per_arma"><i class="fas fa-shield"></i> Seleccione Arma</label><br>
-                                    <select name="per_arma" id="per_arma" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
-                                        <option value="">SELECCIONE...</option>
-                                        <?php foreach ($armas as $arma) : ?>
+                            <div class=" form-group col-md-6">
+                                <label for="per_arma"><i class="fas fa-shield"></i> Seleccione Arma</label><br>
+                                <select name="per_arma" id="per_arma" class="form-control">
+                                    <option value="">SELECCIONE...</option>
+                                    <?php foreach ($armas as $arma) : ?>
                                         <option value="<?= $arma['arm_codigo'] ?>">
-                                            <?= $arma['arm_desc_md'] ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                </div>
+                                            <?= $arma['arm_desc_md'] ?>
+                                        </option>
+                                    <?php endforeach ?>
+                                </select>
                             </div>
 
                             
                             <div class="form-group col-md-6">
-                                <div class="col">
                                     <label for="asig_contingente"><i  class="fas fa-globe"></i> Seleccione Un Contingente </label><br>
-                                    <select name="asig_contingente" id="asig_contingente" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+                                    <select name="asig_contingente" id="asig_contingente" class="form-control">
                                         <option value="">SELECCIONE...</option>
                                         <?php foreach ($contingentes as $contingente) : ?>
                                         <option value="<?= $contingente['cont_id'] ?>">
                                             <?= $contingente['cont_nombre'] ?></option>
                                         <?php endforeach ?>
                                     </select>
-                                </div>
                             </div>
 
+                            
                             
                             
                             <!--//!------------------------->
@@ -180,16 +183,14 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <div class="col">
                                     <label for="ing_puesto"><i class="fas fa-shield"></i> Seleccione Puesto a Desempeñar</label><br>
-                                    <select name="ing_puesto" id="ing_puesto" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+                                    <select name="ing_puesto" id="ing_puesto" class="form-control">
                                         <option value="">SELECCIONE...</option>
                                         <?php foreach ($puestos as $puesto) : ?>
                                         <option value="<?= $puesto['pue_id'] ?>">
                                             <?= $puesto['pue_nombre'] ?></option>
                                         <?php endforeach ?>
                                     </select>
-                                </div>
                             </div>
                             
                             <div id="contenedorDocumentos" class="col-lg-12">

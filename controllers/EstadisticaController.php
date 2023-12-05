@@ -25,7 +25,9 @@ public static function buscaContingentes()
     $sql = "SELECT *
     FROM contingentes
     WHERE cont_situacion = 1
-        AND cont_fecha_inicio > TODAY";
+        AND cont_fecha_inicio >= (CURRENT YEAR TO MONTH) + 6 UNITS MONTH
+        AND cont_fecha_inicio < (CURRENT YEAR TO MONTH) + 18 UNITS MONTH
+    ORDER BY cont_nombre";
 
     try {
         $contingentes = Contingente::fetchArray($sql);

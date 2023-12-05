@@ -23,7 +23,10 @@ class AsigEvaluacionController {
 //!Funcion Select Puestos
 public static function buscarPuestos()
 {
-    $sql = "SELECT * FROM cont_puestos where pue_situacion = 1";
+    $sql = "SELECT pue_id, pue_nombre
+    FROM cont_puestos 
+    WHERE pue_situacion = 1
+    ORDER BY pue_nombre ASC";
 
     try {
         $puestos = Puesto::fetchArray($sql);
@@ -35,7 +38,10 @@ public static function buscarPuestos()
 //!Funcion Select requisitoelria
 public static function buscarEvaluaciones()
 {
-    $sql = "SELECT * FROM cont_evaluaciones where eva_situacion = 1";
+    $sql = "SELECT *
+    FROM cont_evaluaciones
+    WHERE eva_situacion = 1
+    ORDER BY eva_nombre";
 
     try {
         $evaluaciones = AsigEvaluacion::fetchArray($sql);

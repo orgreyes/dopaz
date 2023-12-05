@@ -23,7 +23,10 @@ class AsigRequisitoController {
 //!Funcion Select Puestos
 public static function buscarPuestos()
 {
-    $sql = "SELECT * FROM cont_puestos where pue_situacion = 1";
+    $sql = "SELECT pue_id, pue_nombre
+    FROM cont_puestos 
+    WHERE pue_situacion = 1
+    ORDER BY pue_nombre ASC";
 
     try {
         $puestos = Puesto::fetchArray($sql);
@@ -35,7 +38,10 @@ public static function buscarPuestos()
 //!Funcion Select requisitoelria
 public static function buscarRequisito()
 {
-    $sql = "SELECT * FROM cont_requisitos where req_situacion = 1";
+    $sql = "SELECT *
+    FROM cont_requisitos
+    WHERE req_situacion = 1
+    ORDER BY req_nombre";
 
     try {
         $requisitos = Requisito::fetchArray($sql);
@@ -83,20 +89,23 @@ public static function buscarRequisito()
          }
  
          $sql = "SELECT 
-         pue.pue_id AS puesto_id,
-         pue.pue_nombre AS puesto_nombre,
-         req.req_id AS requisito_id,
-         req.req_nombre AS requisito_nombre,
-         asig_req.asig_req_id
-     FROM 
-     cont_requisitos req
-     JOIN 
-         cont_asig_requisitos asig_req ON req.req_id = asig_req.asig_req_requisito
-     JOIN 
-         cont_puestos pue ON asig_req.asig_req_puesto = pue.pue_id
-     WHERE 
-         pue.pue_id = $puestoId AND asig_req.asig_req_situacion = 1
-         ORDER BY requisito_nombre ASC";
+                        MIN(pue.pue_id) AS puesto_id,
+                        MIN(pue.pue_nombre) AS puesto_nombre,
+                        MIN(req.req_id) AS requisito_id,
+                        MIN(req.req_nombre) AS requisito_nombre,
+                        MIN(asig_req.asig_req_id) AS asig_req_id
+                    FROM 
+                        cont_requisitos req
+                    JOIN 
+                        cont_asig_requisitos asig_req ON req.req_id = asig_req.asig_req_requisito
+                    JOIN 
+                        cont_puestos pue ON asig_req.asig_req_puesto = pue.pue_id
+                    WHERE 
+                        pue.pue_id = $puestoId AND asig_req.asig_req_situacion = 1
+                    GROUP BY 
+                        req.req_nombre
+                    ORDER BY 
+                        requisito_nombre ASC";
  
          // Ejecutar la consulta y obtener las misiones del contingente.
          $asigrequisitos = AsigRequisito::fetchArray($sql);

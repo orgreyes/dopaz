@@ -74,27 +74,27 @@ where per_catalogo =--catalogo
 
 CREATE TABLE cont_evaluaciones (
     eva_id SERIAL PRIMARY KEY,
-    eva_nombre CHAR(50),
+    eva_nombre CHAR(50) NOT NULL UNIQUE,
     eva_situacion SMALLINT
 );
 
 
 CREATE TABLE cont_requisitos(
     req_id SERIAL PRIMARY KEY,
-    req_nombre CHAR(50),
+    req_nombre CHAR(50) NOT NULL UNIQUE,
     req_situacion SMALLINT
 );
 
 CREATE TABLE cont_puestos (
     pue_id SERIAL PRIMARY KEY,
-    pue_nombre CHAR(150),
+    pue_nombre CHAR(150) NOT NULL UNIQUE,
     pue_situacion SMALLINT
 );
 
 CREATE TABLE cont_asig_evaluaciones(
     asig_eva_id SERIAL PRIMARY KEY,
-    asig_eva_nombre INT,
-    asig_eva_puesto INT,
+    asig_eva_nombre INT NOT NULL,
+    asig_eva_puesto INT NOT NULL,
     asig_eva_situacion SMALLINT,
     FOREIGN KEY (asig_eva_nombre) REFERENCES cont_evaluaciones(eva_id),
     FOREIGN KEY (asig_eva_puesto) REFERENCES cont_puestos(pue_id) 
@@ -103,8 +103,8 @@ CREATE TABLE cont_asig_evaluaciones(
 
 CREATE TABLE cont_asig_requisitos(
     asig_req_id SERIAL PRIMARY KEY,
-    asig_req_puesto INT,
-    asig_req_requisito INT,
+    asig_req_puesto INT NOT NULL,
+    asig_req_requisito INT NOT NULL,
     asig_req_situacion SMALLINT,
     FOREIGN KEY (asig_req_puesto) REFERENCES cont_puestos(pue_id),
     FOREIGN KEY (asig_req_requisito) REFERENCES cont_requisitos(req_id) 
@@ -114,8 +114,8 @@ CREATE TABLE cont_asig_requisitos(
 
 CREATE TABLE asig_grado_puesto (
     asig_grado_id SERIAL PRIMARY KEY,
-    asig_puesto INT,
-    asig_grado SMALLINT,
+    asig_puesto INT NOT NULL,
+    asig_grado SMALLINT NOT NULL,
     asig_grado_situacion SMALLINT,
     FOREIGN KEY (asig_grado) REFERENCES grados (gra_codigo),
     FOREIGN KEY (asig_puesto) REFERENCES cont_puestos (pue_id)
@@ -123,13 +123,13 @@ CREATE TABLE asig_grado_puesto (
 
 CREATE TABLE cont_aspirantes (
     asp_id SERIAL PRIMARY KEY,
-    asp_catalogo INTEGER UNIQUE,
-    asp_nom1 CHAR(15),
+    asp_catalogo INTEGER NOT NULL UNIQUE,
+    asp_nom1 CHAR(15) NOT NULL,
     asp_nom2 CHAR(15),
-    asp_ape1 CHAR(15),
+    asp_ape1 CHAR(15) NOT NULL,
     asp_ape2 CHAR(15),
-    asp_dpi CHAR(15) UNIQUE,
-    asp_genero CHAR(1),
+    asp_dpi CHAR(15) NOT NULL UNIQUE,
+    asp_genero CHAR(1) NOT NULL,
     asp_situacion SMALLINT,
     FOREIGN KEY (asp_catalogo) REFERENCES mper(per_catalogo)
 );

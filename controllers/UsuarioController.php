@@ -53,7 +53,9 @@ public static function buscaContingentes()
     $sql = "SELECT *
     FROM contingentes
     WHERE cont_situacion = 1
-        AND cont_fecha_inicio > TODAY";
+        AND cont_fecha_inicio >= (CURRENT YEAR TO MONTH) + 6 UNITS MONTH
+        AND cont_fecha_inicio < (CURRENT YEAR TO MONTH) + 18 UNITS MONTH
+    ORDER BY cont_nombre";
 
     try {
         $contingentes = Contingente::fetchArray($sql);
@@ -83,12 +85,13 @@ public static function buscaContingentes()
         try {
 
         $sql = "SELECT p.*
-                FROM cont_puestos p
-                JOIN asig_grado_puesto agp ON p.pue_id = agp.asig_puesto
-                JOIN grados g ON agp.asig_grado = g.gra_codigo
-                WHERE p.pue_situacion = 1
-                AND agp.asig_grado_situacion = 1
-                AND g.gra_codigo = $grado";
+        FROM cont_puestos p
+        JOIN asig_grado_puesto agp ON p.pue_id = agp.asig_puesto
+        JOIN grados g ON agp.asig_grado = g.gra_codigo
+        WHERE p.pue_situacion = 1
+          AND agp.asig_grado_situacion = 1
+          AND g.gra_codigo = $grado
+        ORDER BY p.pue_nombre";
 
             $puestos = Puesto::fetchArray($sql);
             echo json_encode($puestos);
@@ -107,25 +110,25 @@ public static function buscarAPI()
     try {
         if ($catalogo != '') {
             $sql = "SELECT 
-                per_catalogo,
-                per_nom1,
-                per_nom2,
-                per_ape1,
-                per_ape2,
-                per_dpi,
-                CASE 
-                    WHEN per_sexo = 'M' THEN 'MASCULINO'
-                    WHEN per_sexo = 'F' THEN 'FEMENINO'
-                    ELSE 'DESCONOCIDO'
-                END AS per_sexo,
-                grados.gra_codigo as per_grado_id,
-                armas.arm_codigo
-            FROM mper
-            INNER JOIN grados ON mper.per_grado = grados.gra_codigo
-            INNER JOIN armas ON mper.per_arma = armas.arm_codigo
-            where per_catalogo = $catalogo
-            AND per_situacion = 11
-            ";
+                            per_catalogo,
+                            per_nom1,
+                            per_nom2,
+                            per_ape1,
+                            per_ape2,
+                            TRIM(BOTH ' ' FROM per_dpi) AS per_dpi,
+                            CASE 
+                                WHEN per_sexo = 'M' THEN 'MASCULINO'
+                                WHEN per_sexo = 'F' THEN 'FEMENINO'
+                                ELSE 'DESCONOCIDO'
+                            END AS per_sexo,
+                            grados.gra_codigo as per_grado_id,
+                            armas.arm_codigo
+                        FROM mper
+                        INNER JOIN grados ON mper.per_grado = grados.gra_codigo
+                        INNER JOIN armas ON mper.per_arma = armas.arm_codigo
+                        WHERE per_catalogo = $catalogo
+                        AND per_situacion = 11";
+                        
             $usuarios = Usuario::fetchArray($sql);
         
             echo json_encode($usuarios);
@@ -239,7 +242,7 @@ public static function obtenerRequisitosAPI()
             }
 
             // Consulta SQL para obtener nombres de requisitos
-            $query1 = "SELECT
+            $query1 = "SELECT DISTINCT
                             cp.pue_id,
                             cp.pue_nombre AS puesto,
                             cr.req_nombre AS requisito

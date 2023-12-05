@@ -366,14 +366,14 @@ public static function buscarRequisitoPuestoAPI(){
          }
  
          $sql = "SELECT 
-                    ar.asig_req_id,
+                    MIN(ar.asig_req_id) as asig_req_id,
                     r.req_nombre,
-                    r.req_id,
-                    p.pue_nombre,
-                    ca.apro_id,
-                    ca.apro_situacion,
-                    ci.ing_puesto,
-                    ci.ing_id AS ing_id
+                    MIN(r.req_id) as req_id,
+                    MIN(p.pue_nombre) as pue_nombre,
+                    MIN(ca.apro_id) as apro_id,
+                    MIN(ca.apro_situacion) as apro_situacion,
+                    MIN(ci.ing_puesto) as ing_puesto,
+                    MIN(ci.ing_id) AS ing_id
                 FROM 
                     cont_asig_requisitos ar
                 JOIN
@@ -387,7 +387,11 @@ public static function buscarRequisitoPuestoAPI(){
                 WHERE
                     ar.asig_req_puesto = $puestoId
                     AND ar.asig_req_situacion = 1
-                    AND ci.ing_id = $ingId";
+                    AND ci.ing_id = $ingId
+                GROUP BY
+                    r.req_nombre
+                ORDER BY
+                    req_id";
  
          // Ejecutar la consulta y obtener las misiones del contingente.
          $asigrequisitos = AsigRequisito::fetchArray($sql);
@@ -590,11 +594,13 @@ public static function aprobarPlazaAPI() {
         $ing_id = $_GET['ing_id'];
 
         // Consulta para obtener los requisitos asignados al puesto
-        $sql = "SELECT req_nombre
+        $sql = "SELECT MIN(cr.req_nombre) AS req_nombre
                 FROM cont_asig_requisitos car
                 JOIN cont_requisitos cr ON car.asig_req_requisito = cr.req_id
                 JOIN cont_ingresos ci ON car.asig_req_puesto = ci.ing_puesto
-                WHERE ci.ing_id = $ing_id";
+                WHERE ci.ing_id = $ing_id
+                GROUP BY cr.req_id
+                ORDER BY req_nombre ASC";
 
         $requisitosAsignados = Ingreso::fetchArray($sql);
 
@@ -602,7 +608,8 @@ public static function aprobarPlazaAPI() {
         $sql2 = "SELECT cr.req_nombre
                 FROM cont_req_aprobado cra
                 JOIN cont_requisitos cr ON cra.apro_id_requisito = cr.req_id
-                WHERE cra.apro_ingreso = $ing_id";
+                WHERE cra.apro_ingreso = $ing_id
+                ORDER BY cr.req_nombre ASC";
 
         $requisitosAprobados = RequisitoAprobado::fetchArray($sql2);
 

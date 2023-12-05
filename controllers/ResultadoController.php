@@ -20,7 +20,10 @@ class ResultadoController {
 // //!Funcion Select Evaluaciones
 public static function buscarEvaluaciones()
 {
-    $sql = "SELECT * FROM cont_evaluaciones where eva_situacion = 1";
+    $sql = "SELECT *
+    FROM cont_evaluaciones
+    WHERE eva_situacion = 1
+    ORDER BY eva_nombre";
 
     try {
         $evaluaciones = Evaluacion::fetchArray($sql);
